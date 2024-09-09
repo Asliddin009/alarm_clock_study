@@ -1,0 +1,33 @@
+name: alearn
+description: Demonstrates how to use the alarm plugin.
+version: 0.1.2
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  alarm: ^3.1.7
+  another_flushbar: ^1.12.30
+  bloc: ^8.1.4
+  cupertino_icons: ^1.0.2
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.4
+  flutter_launcher_icons: ^0.13.1
+  permission_handler: ^11.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^5.1.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/mozart.mp3
+    - assets/nokia.mp3
+    - assets/one_piece.mp3
+    - assets/star_wars.mp3
+    - assets/marimba.mp3
