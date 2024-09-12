@@ -15,7 +15,9 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.4
   flutter_launcher_icons: ^0.13.1
+  hydrated_bloc: ^9.1.5
   permission_handler: ^11.1.0
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:

@@ -5,9 +5,9 @@ class ExampleAlarmRingScreen extends StatelessWidget {
   const ExampleAlarmRingScreen({required this.alarmSettings, super.key});
 
   final AlarmSettings alarmSettings;
-
   @override
   Widget build(BuildContext context) {
+    // final repo = context.read<AlarmCubit>().alarmRepo.name;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -17,7 +17,6 @@ class ExampleAlarmRingScreen extends StatelessWidget {
               'Выберите правильный перевод слова Alarm',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            const Text('🔔', style: TextStyle(fontSize: 50)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

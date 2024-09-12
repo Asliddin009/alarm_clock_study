@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
-import 'package:alearn/screens/edit_alarm.dart';
-import 'package:alearn/screens/ring.dart';
-import 'package:alearn/screens/shortcut_button.dart';
-import 'package:alearn/services/permission.dart';
-import 'package:alearn/widgets/tile.dart';
+import 'package:alearn/features/alarm/domain/permission.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm.dart';
+import 'package:alearn/features/alarm/ui/ring.dart';
+import 'package:alearn/features/alarm/ui/shortcut_button.dart';
+import 'package:alearn/features/alarm/ui/tile.dart';
 import 'package:flutter/material.dart';
 
 class ExampleAlarmHomeScreen extends StatefulWidget {
@@ -15,15 +15,19 @@ class ExampleAlarmHomeScreen extends StatefulWidget {
   State<ExampleAlarmHomeScreen> createState() => _ExampleAlarmHomeScreenState();
 }
 
-class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen> {
+class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen>
+    with SingleTickerProviderStateMixin {
   late List<AlarmSettings> alarms;
-
   static StreamSubscription<AlarmSettings>? ringSubscription;
   static StreamSubscription<int>? updateSubscription;
-
+  late final AnimationController controller;
   @override
   void initState() {
     super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
     if (Alarm.android) {
       AlarmPermissions.checkAndroidNotificationPermission();
       AlarmPermissions.checkAndroidScheduleExactAlarmPermission();
@@ -55,6 +59,7 @@ class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen> {
 
   Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
     final res = await showModalBottomSheet<bool?>(
+      transitionAnimationController: controller,
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
