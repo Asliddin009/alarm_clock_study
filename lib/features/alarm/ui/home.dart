@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
+import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/permission.dart';
 import 'package:alearn/features/alarm/ui/edit_alarm.dart';
-import 'package:alearn/features/alarm/ui/ring.dart';
+import 'package:alearn/features/alarm/ui/ring_screen.dart';
 import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,7 @@ class ExampleAlarmHomeScreen extends StatefulWidget {
   State<ExampleAlarmHomeScreen> createState() => _ExampleAlarmHomeScreenState();
 }
 
-class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen>
-    with SingleTickerProviderStateMixin {
+class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen> with SingleTickerProviderStateMixin {
   late List<AlarmSettings> alarms;
   static StreamSubscription<AlarmSettings>? ringSubscription;
   static StreamSubscription<int>? updateSubscription;
@@ -50,8 +50,10 @@ class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen>
     await Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: (context) =>
-            ExampleAlarmRingScreen(alarmSettings: alarmSettings),
+        builder: (context) => AlarmRingScreen(
+          alarmSettings: alarmSettings,
+          alarmEntity: AlarmEntity(id: 0, time: alarmSettings.dateTime, isActive: true, volume: 0.8),
+        ),
       ),
     );
     loadAlarms();

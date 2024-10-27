@@ -1,4 +1,5 @@
 import 'package:alearn/features/category/domain/entity/category_entity.dart';
+import 'package:alearn/features/category/domain/entity/word_entity.dart';
 import 'package:alearn/features/category/domain/i_category_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -13,15 +14,19 @@ class CategoryCubit extends HydratedCubit<CategoryState> {
     if (state is CategoryInitial) {}
   }
 
+  List<WordEntity> getWordsFromCategory(List<int> listCategoryId) {
+    final listCategory = (state as CategoryDoneState).listCategory;
+    final words = listCategory.firstWhere((element) => listCategoryId.contains(element.id)).wordList;
+    return words;
+  }
+
   @override
   CategoryState? fromJson(Map<String, dynamic> json) {
     if (json.containsKey('listCategory') == false) {
       return null;
     }
     return CategoryDoneState(
-      (json['listCategory'] as List<dynamic>)
-          .map((e) => CategoryEntity.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      (json['listCategory'] as List<dynamic>).map((e) => CategoryEntity.fromJson(e as Map<String, dynamic>)).toList(),
     );
   }
 

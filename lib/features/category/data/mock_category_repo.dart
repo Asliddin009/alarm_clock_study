@@ -5,7 +5,6 @@ import 'package:alearn/features/category/domain/i_category_repo.dart';
 class MockCategoryRepo implements ICategoryRepo {
   @override
   Future<List<CategoryEntity>> getCategories() {
-    // TODO: implement getCategories
     throw UnimplementedError();
   }
 
@@ -16,7 +15,6 @@ class MockCategoryRepo implements ICategoryRepo {
 
   @override
   Future<CategoryEntity> getCategory(String name) {
-    // TODO: implement getCategory
     throw UnimplementedError();
   }
 

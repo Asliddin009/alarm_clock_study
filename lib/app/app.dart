@@ -1,4 +1,4 @@
-import 'package:alearn/app/ui_kit/theme/light_theme.dart';
+import 'package:alearn/app/ui/ui_kit/theme/light_theme.dart';
 import 'package:alearn/di/app_depends.dart';
 import 'package:alearn/di/app_depends_provider.dart';
 import 'package:alearn/features/alarm/data/shared_pref_alarm_cache.dart';
@@ -23,12 +23,10 @@ class App extends StatelessWidget {
             create: (BuildContext context) => AuthBloc(appDepends.authRepo),
           ),
           BlocProvider(
-            create: (BuildContext context) =>
-                AlarmCubit(appDepends.alarmRepo, SharedPrefAlarmCache()),
+            create: (BuildContext context) => AlarmCubit(appDepends.alarmRepo, SharedPrefAlarmCache()),
           ),
           BlocProvider(
-            create: (BuildContext context) =>
-                CategoryCubit(appDepends.categoryRepo),
+            create: (BuildContext context) => CategoryCubit(appDepends.categoryRepo),
           ),
         ],
         child: const _App(),
@@ -44,6 +42,7 @@ class _App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: lightTheme,
+      // home: const AlarmScreenNew(),
       home: const ExampleAlarmHomeScreen(),
     );
   }

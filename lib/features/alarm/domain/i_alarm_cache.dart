@@ -5,4 +5,5 @@ abstract interface class IAlarmCashRepo {
 
   Future<bool> saveAlarmEntity(AlarmEntity alarm);
   Future<List<AlarmEntity>> getAllAlarms();
+  Future<bool> deleteAlarm(int id);
 }

@@ -1,13 +1,36 @@
 import 'package:alarm/alarm.dart';
+import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
+import 'package:alearn/features/category/domain/cubit/category_cubit.dart';
+import 'package:alearn/features/category/domain/entity/word_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ExampleAlarmRingScreen extends StatelessWidget {
-  const ExampleAlarmRingScreen({required this.alarmSettings, super.key});
-
+class AlarmRingScreen extends StatefulWidget {
+  const AlarmRingScreen({required this.alarmSettings, required this.alarmEntity, super.key});
+  final AlarmEntity alarmEntity;
   final AlarmSettings alarmSettings;
+
+  @override
+  State<AlarmRingScreen> createState() => _AlarmRingScreenState();
+}
+
+class _AlarmRingScreenState extends State<AlarmRingScreen> {
+  late final List<WordEntity> words;
+
+  @override
+  void initState() {
+    words = context.read<CategoryCubit>().getWordsFromCategory(widget.alarmEntity.listCategoryId);
+
+    super.initState();
+  }
+
+  WordEntity getRandomWord() {
+    words.shuffle();
+    return words.first;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // final repo = context.read<AlarmCubit>().alarmRepo.name;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -24,7 +47,7 @@ class ExampleAlarmRingScreen extends StatelessWidget {
                   onPressed: () {
                     final now = DateTime.now();
                     Alarm.set(
-                      alarmSettings: alarmSettings.copyWith(
+                      alarmSettings: widget.alarmSettings.copyWith(
                         dateTime: DateTime(
                           now.year,
                           now.month,
@@ -44,7 +67,7 @@ class ExampleAlarmRingScreen extends StatelessWidget {
                 ),
                 RawMaterialButton(
                   onPressed: () {
-                    Alarm.stop(alarmSettings.id).then((_) {
+                    Alarm.stop(widget.alarmSettings.id).then((_) {
                       if (context.mounted) Navigator.pop(context);
                     });
                   },

@@ -4,6 +4,7 @@ import 'package:alearn/features/category/domain/entity/word_entity.dart';
 final List<CategoryEntity> baseListCategory = [
   CategoryEntity(
     name: 'Для разработчиков',
+    id: 1,
     wordList: [
       WordEntity(
         ruWord: 'Разработчик',
@@ -69,6 +70,7 @@ final List<CategoryEntity> baseListCategory = [
   ),
   CategoryEntity(
     name: 'Глаголы',
+    id: 2,
     wordList: [
       WordEntity(
         ruWord: 'Изучать',
@@ -133,6 +135,7 @@ final List<CategoryEntity> baseListCategory = [
     ],
   ),
   CategoryEntity(
+    id: 3,
     name: 'топ 100 слов',
     wordList: [
       WordEntity(

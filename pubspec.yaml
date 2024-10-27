@@ -1,5 +1,5 @@
 name: alearn
-description: Demonstrates how to use the alarm plugin.
+description: alarm for study english language.
 version: 0.1.2
 
 environment:
@@ -22,7 +22,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  very_good_analysis: ^5.1.0
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true

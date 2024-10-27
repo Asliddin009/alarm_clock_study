@@ -1,4 +1,4 @@
-import 'package:alearn/app/ui_kit/components/app_text_button.dart';
+import 'package:alearn/app/ui/ui_kit/components/app_text_button.dart';
 import 'package:alearn/features/alarm/ui/alarm_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             const SizedBox(height: 10),
             AppTextButton(
               onPressed: () {

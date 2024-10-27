@@ -28,4 +28,19 @@ class SharedPrefAlarmCache implements IAlarmCashRepo {
       return false;
     }
   }
+
+  @override
+  Future<bool> deleteAlarm(int id) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final list = prefs.getStringList(key) ?? [];
+      final newList = list
+          .where((element) => AlarmEntity.fromString(element).id != id)
+          .toList();
+      await prefs.setStringList(key, newList);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
 }

@@ -1,7 +1,9 @@
 import 'package:alearn/features/alarm/domain/cubit/alarm_cubit.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/ui/alarm_edit_widget.dart';
+import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,8 +14,14 @@ class AlarmScreenNew extends StatefulWidget {
   State<AlarmScreenNew> createState() => _AlarmScreenNewState();
 }
 
-class _AlarmScreenNewState extends State<AlarmScreenNew>
-    with SingleTickerProviderStateMixin {
+// ignore: lines_longer_than_80_chars
+class _AlarmScreenNewState extends State<AlarmScreenNew> with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    context.read<AlarmCubit>().getAllAlarm();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AlarmCubit, AlarmState>(
@@ -21,30 +29,55 @@ class _AlarmScreenNewState extends State<AlarmScreenNew>
         if (state is AlarmDoneState) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(state.toString()),
+              title: const Text('Будильник'),
             ),
             body: SafeArea(
-              child: ListView.separated(
-                itemCount: state.listAlarm.length,
-                separatorBuilder: (context, index) => const Divider(height: 1),
-                itemBuilder: (context, index) {
-                  return ExampleAlarmTile(
-                    key: Key(state.listAlarm[index].id.toString()),
-                    title: TimeOfDay(
-                      hour: state.listAlarm[index].time.hour,
-                      minute: state.listAlarm[index].time.minute,
-                    ).format(context),
-                    onPressed: () {
-                      //navigateToAlarmScreen(state.listAlarm[index]),
-                    },
-                    onDismissed: () {
-                      // Alarm.stop(state.listAlarm[index].id)
-                      //     .then((_) => loadAlarms());
-                    },
-                  );
-                },
+              child: state.listAlarm.isEmpty
+                  ? const Center(
+                      child: Text('Нет будильников'),
+                    )
+                  : ListView.separated(
+                      itemCount: state.listAlarm.length,
+                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        return ExampleAlarmTile(
+                          key: Key(state.listAlarm[index].id.toString()),
+                          title: TimeOfDay(
+                            hour: state.listAlarm[index].time.hour,
+                            minute: state.listAlarm[index].time.minute,
+                          ).format(context),
+                          onPressed: () {
+                            navigateToAlarmScreen(state.listAlarm[index]);
+                          },
+                          onDismissed: () {
+                            // Alarm.stop(state.listAlarm[index].id)
+                            //     .then((_) => loadAlarms());
+                          },
+                        );
+                      },
+                    ),
+            ),
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ExampleAlarmHomeShortcutButton(refreshAlarms: () {}),
+                  FloatingActionButton(
+                    // ignore: lines_longer_than_80_chars
+                    onPressed: () => navigateToAlarmScreen(
+                      AlarmEntity(
+                        id: 1,
+                        time: DateTime.now(),
+                        isActive: true,
+                      ),
+                    ),
+                    child: const Icon(Icons.alarm_add_rounded, size: 33),
+                  ),
+                ],
               ),
             ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           );
         }
         return Scaffold(
@@ -77,6 +110,10 @@ class _AlarmScreenNewState extends State<AlarmScreenNew>
       },
     );
 
-    //if (res != null && res == true) ();
+    if (res != null && res == true) {
+      if (kDebugMode) {
+        print(res);
+      }
+    }
   }
 }

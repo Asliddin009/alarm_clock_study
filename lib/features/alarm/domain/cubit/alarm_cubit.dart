@@ -23,7 +23,7 @@ class AlarmCubit extends Cubit<AlarmState> {
     List<Weekday>? weekdays,
   }) async {
     final listAlarm = (state as AlarmDoneState).listAlarm;
-    //добавить слова для перевода в будущем
+    //TODO: добавить слова для перевода в будущем
     final newAlarm = AlarmEntity(
       id: listAlarm.last.id + 1,
       time: dateTime,
@@ -35,13 +35,15 @@ class AlarmCubit extends Cubit<AlarmState> {
     emit(AlarmDoneState([...listAlarm, newAlarm]));
   }
 
-  Future<void> updateAlarmEntity(AlarmEntity alarm) async {}
-
-  Future<void> _createAlarm(AlarmEntity alarm) async {
+  Future<void> _createAlarm(
+    AlarmEntity alarm, {
+    String notificationTitle = 'Пора Вставать))',
+    String notificationBody = '',
+  }) async {
     final flag = await alarmRepo.addAlarm(
       time: alarm.time,
-      notificationTitle: 'Пора Вставать))',
-      notificationBody: '',
+      notificationTitle: notificationTitle,
+      notificationBody: notificationBody,
       id: alarm.id,
     );
     if (flag == false) {
@@ -51,6 +53,11 @@ class AlarmCubit extends Cubit<AlarmState> {
   }
 
   Future<void> deleteAlarm(int id) async {
+    final isDelete = await alarmCashRepo.deleteAlarm(id);
+    if (isDelete == false) {
+      emit(const AlarmErrorState('Ошибка при удалении будильника'));
+      return;
+    }
     final flag = await alarmRepo.deleteAlarm(id);
     if (flag == false) {
       emit(const AlarmErrorState('Ошибка при удалении будильника'));
