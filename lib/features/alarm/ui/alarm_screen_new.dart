@@ -1,6 +1,7 @@
-import 'package:alearn/features/alarm/domain/cubit/alarm_cubit.dart';
+import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/ui/alarm_edit_widget.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm_new.dart';
 import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';
 import 'package:flutter/foundation.dart';
@@ -14,17 +15,16 @@ class AlarmScreenNew extends StatefulWidget {
   State<AlarmScreenNew> createState() => _AlarmScreenNewState();
 }
 
-// ignore: lines_longer_than_80_chars
 class _AlarmScreenNewState extends State<AlarmScreenNew> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    context.read<AlarmCubit>().getAllAlarm();
+    context.read<AlarmBloc>().add(GetAllAlarmsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AlarmCubit, AlarmState>(
+    return BlocBuilder<AlarmBloc, AlarmState>(
       builder: (context, state) {
         if (state is AlarmDoneState) {
           return Scaffold(
@@ -64,14 +64,9 @@ class _AlarmScreenNewState extends State<AlarmScreenNew> with SingleTickerProvid
                 children: [
                   ExampleAlarmHomeShortcutButton(refreshAlarms: () {}),
                   FloatingActionButton(
-                    // ignore: lines_longer_than_80_chars
-                    onPressed: () => navigateToAlarmScreen(
-                      AlarmEntity(
-                        id: 1,
-                        time: DateTime.now(),
-                        isActive: true,
-                      ),
-                    ),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateAlarmScreen()));
+                    },
                     child: const Icon(Icons.alarm_add_rounded, size: 33),
                   ),
                 ],

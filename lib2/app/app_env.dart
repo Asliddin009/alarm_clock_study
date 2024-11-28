@@ -1,1 +1,0 @@
-enum AppEnv { test, prod }

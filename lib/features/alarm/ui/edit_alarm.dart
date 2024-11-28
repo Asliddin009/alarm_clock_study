@@ -84,9 +84,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
   }
 
   AlarmSettings buildAlarmSettings() {
-    final id = creating
-        ? DateTime.now().millisecondsSinceEpoch % 10000 + 1
-        : widget.alarmSettings!.id;
+    final id = creating ? DateTime.now().millisecondsSinceEpoch % 10000 + 1 : widget.alarmSettings!.id;
 
     final alarmSettings = AlarmSettings(
       id: id,
@@ -98,10 +96,6 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
       notificationTitle: 'Alarm example',
       notificationBody: 'Your alarm ($id) is ringing',
       enableNotificationOnKill: Platform.isIOS,
-      // notificationActionSettings: const NotificationActionSettings(
-      //   hasStopButton: true,
-      //   stopButtonText: 'Stop the alarm',
-      // ),
     );
     return alarmSettings;
   }
@@ -109,10 +103,10 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
   void saveAlarm() {
     if (loading) return;
     setState(() => loading = true);
-    Alarm.set(alarmSettings: buildAlarmSettings()).then((res) {
-      if (res && mounted) Navigator.pop(context, true);
-      setState(() => loading = false);
-    });
+    // Alarm.set(alarmSettings: buildAlarmSettings()).then((res) {
+    //   if (res && mounted) Navigator.pop(context, true);
+    //   setState(() => loading = false);
+    // });
   }
 
   void deleteAlarm() {
@@ -135,10 +129,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
                 onPressed: () => Navigator.pop(context, false),
                 child: Text(
                   'Cancel',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleLarge!
-                      .copyWith(color: Colors.blueAccent),
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blueAccent),
                 ),
               ),
               TextButton(
@@ -147,20 +138,14 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
                     ? const CircularProgressIndicator()
                     : Text(
                         'Save',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge!
-                            .copyWith(color: Colors.blueAccent),
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.blueAccent),
                       ),
               ),
             ],
           ),
           Text(
             getDay(),
-            style: Theme.of(context)
-                .textTheme
-                .titleMedium!
-                .copyWith(color: Colors.blueAccent.withOpacity(0.8)),
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.blueAccent.withOpacity(0.8)),
           ),
           RawMaterialButton(
             onPressed: pickTime,
@@ -169,10 +154,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
               margin: const EdgeInsets.all(20),
               child: Text(
                 TimeOfDay.fromDateTime(selectedDateTime).format(context),
-                style: Theme.of(context)
-                    .textTheme
-                    .displayMedium!
-                    .copyWith(color: Colors.blueAccent),
+                style: Theme.of(context).textTheme.displayMedium!.copyWith(color: Colors.blueAccent),
               ),
             ),
           ),
@@ -246,8 +228,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
               ),
               Switch(
                 value: volume != null,
-                onChanged: (value) =>
-                    setState(() => volume = value ? 0.5 : null),
+                onChanged: (value) => setState(() => volume = value ? 0.5 : null),
               ),
             ],
           ),
@@ -281,10 +262,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
               onPressed: deleteAlarm,
               child: Text(
                 'Delete Alarm',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Colors.red),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.red),
               ),
             ),
           const SizedBox(),

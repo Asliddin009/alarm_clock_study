@@ -11,21 +11,17 @@ class ExampleAlarmHomeShortcutButton extends StatefulWidget {
   final void Function() refreshAlarms;
 
   @override
-  State<ExampleAlarmHomeShortcutButton> createState() =>
-      _ExampleAlarmHomeShortcutButtonState();
+  State<ExampleAlarmHomeShortcutButton> createState() => _ExampleAlarmHomeShortcutButtonState();
 }
 
-class _ExampleAlarmHomeShortcutButtonState
-    extends State<ExampleAlarmHomeShortcutButton> {
+class _ExampleAlarmHomeShortcutButtonState extends State<ExampleAlarmHomeShortcutButton> {
   bool showMenu = false;
 
   Future<void> onPressButton(int delayInHours) async {
     var dateTime = DateTime.now().add(Duration(hours: delayInHours));
-    double? volume;
 
     if (delayInHours != 0) {
       dateTime = dateTime.copyWith(second: 0, millisecond: 0);
-      volume = 0.5;
     }
 
     setState(() => showMenu = false);
@@ -33,11 +29,11 @@ class _ExampleAlarmHomeShortcutButtonState
     final alarmSettings = AlarmSettings(
       id: DateTime.now().millisecondsSinceEpoch % 10000,
       dateTime: dateTime,
-      assetAudioPath: 'assets/marimba.mp3',
-      volume: volume,
+      assetAudioPath: 'assets/star_wars.mp3',
+      volume: 0,
+      loopAudio: false,
       notificationTitle: 'Alarm example',
-      notificationBody:
-          'Shortcut button alarm with delay of $delayInHours hours',
+      notificationBody: 'Shortcut button alarm with delay of $delayInHours hours',
       enableNotificationOnKill: Platform.isIOS,
     );
 

@@ -4,6 +4,7 @@ import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/permission.dart';
 import 'package:alearn/features/alarm/ui/edit_alarm.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm_new.dart';
 import 'package:alearn/features/alarm/ui/ring_screen.dart';
 import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';
@@ -122,7 +123,10 @@ class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen> with Si
           children: [
             ExampleAlarmHomeShortcutButton(refreshAlarms: loadAlarms),
             FloatingActionButton(
-              onPressed: () => navigateToAlarmScreen(null),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateAlarmScreen()));
+              },
+              // onPressed: () => navigateToAlarmScreen(null),
               child: const Icon(Icons.alarm_add_rounded, size: 33),
             ),
           ],

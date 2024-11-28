@@ -53,8 +53,7 @@ class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen> with Si
       MaterialPageRoute<void>(
         builder: (context) => AlarmRingScreen(
           alarmSettings: alarmSettings,
-          alarmEntity:
-              AlarmEntity(id: 0, time: alarmSettings.dateTime, isActive: true, volume: 0.8, listCategoryId: [1]),
+          alarmEntity: AlarmEntity(id: 0, time: alarmSettings.dateTime, isActive: true, volume: 0, listCategoryId: [1]),
         ),
       ),
     );
