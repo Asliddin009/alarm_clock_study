@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:alearn/app/app_env.dart';
+import 'package:alearn/app/app_runner/app_env.dart';
 import 'package:alearn/features/alarm/data/android_alarm_repo.dart';
 import 'package:alearn/features/alarm/domain/i_alarm_repo.dart';
 import 'package:alearn/features/auth/data/mock_app_repo.dart';
@@ -33,10 +33,7 @@ final class AppDepends {
   }) async {
     ///AuthRepo
     try {
-      authRepo = switch (appEnv) {
-        AppEnv.test => MockAuthRepo(),
-        AppEnv.prod => ProdAuthRepo()
-      };
+      authRepo = switch (appEnv) { AppEnv.test => MockAuthRepo(), AppEnv.prod => ProdAuthRepo() };
       onProgress(
         'authRepo',
         _calc(_AppDeps.authRepo.index, _AppDeps.values.length),
@@ -77,10 +74,7 @@ final class AppDepends {
         );
         return;
       }
-      categoryRepo = switch (appEnv) {
-        AppEnv.test => MockCategoryRepo(),
-        AppEnv.prod => MockCategoryRepo()
-      };
+      categoryRepo = switch (appEnv) { AppEnv.test => MockCategoryRepo(), AppEnv.prod => MockCategoryRepo() };
       onProgress(
         'categoryRepo',
         _calc(_AppDeps.categoryRepo.index, _AppDeps.values.length),

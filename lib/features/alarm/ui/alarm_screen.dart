@@ -4,7 +4,7 @@ import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/permission.dart';
 import 'package:alearn/features/alarm/ui/alarm_screen_new.dart';
-import 'package:alearn/features/alarm/ui/edit_alarm.dart';
+import 'package:alearn/features/alarm/ui/components/edit_alarm.dart';
 import 'package:alearn/features/alarm/ui/ring_screen.dart';
 import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';

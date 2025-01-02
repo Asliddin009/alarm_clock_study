@@ -4,6 +4,8 @@ class AppTextField extends StatefulWidget {
   const AppTextField({
     required this.controller,
     required this.labelText,
+    required this.textInputAction,
+    required this.keyboardType,
     super.key,
     this.obscureText = false,
     this.autofillHints = const [],
@@ -12,6 +14,9 @@ class AppTextField extends StatefulWidget {
 
   final TextEditingController controller;
   final String labelText;
+  final TextInputAction textInputAction;
+  final TextInputType keyboardType;
+
   final bool obscureText;
   final bool autofocus;
   final List<String> autofillHints;
@@ -26,7 +31,7 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.grey.withOpacity(0.2),
+        color: Colors.grey.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(6),
       ),
       child: TextFormField(
@@ -34,6 +39,8 @@ class _AppTextFieldState extends State<AppTextField> {
         autofillHints: widget.autofillHints,
         obscureText: _passwordVisible,
         validator: emptyValidator,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
         controller: widget.controller,
         decoration: InputDecoration(
           border: InputBorder.none,

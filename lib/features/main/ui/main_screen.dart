@@ -1,4 +1,4 @@
-import 'package:alearn/app/ui/ui_kit/components/app_text_button.dart';
+import 'package:alearn/app/ui/ui_kit/app_text_button.dart';
 import 'package:alearn/features/alarm/ui/alarm_screen_new.dart';
 import 'package:flutter/material.dart';
 

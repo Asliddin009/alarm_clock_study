@@ -1,7 +1,7 @@
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/ui/alarm_edit_widget.dart';
-import 'package:alearn/features/alarm/ui/edit_alarm_new.dart';
+import 'package:alearn/features/alarm/ui/components/edit_alarm_new.dart';
 import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';
 import 'package:flutter/foundation.dart';

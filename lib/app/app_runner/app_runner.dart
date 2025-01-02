@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:alarm/alarm.dart';
-import 'package:alearn/app/app.dart';
-import 'package:alearn/app/app_env.dart';
+import 'package:alearn/app/app_runner/app.dart';
+import 'package:alearn/app/app_runner/app_env.dart';
 import 'package:alearn/di/app_depends.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

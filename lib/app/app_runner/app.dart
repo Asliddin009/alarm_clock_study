@@ -1,4 +1,4 @@
-import 'package:alearn/app/ui/ui_kit/theme/light_theme.dart';
+import 'package:alearn/app/ui/theme/light_theme.dart';
 import 'package:alearn/di/app_depends.dart';
 import 'package:alearn/di/app_depends_provider.dart';
 import 'package:alearn/features/alarm/data/shared_pref_alarm_cache.dart';

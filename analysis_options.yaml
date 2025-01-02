@@ -100,7 +100,6 @@ linter:
     directives_ordering: true
     empty_catches: true
     empty_constructor_bodies: true
-    enable_null_safety: true
     exhaustive_cases: true
     file_names: true
     implementation_imports: true
