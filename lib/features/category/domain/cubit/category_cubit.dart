@@ -1,40 +1,21 @@
 import 'package:alearn/features/category/domain/entity/category_entity.dart';
-import 'package:alearn/features/category/domain/entity/word_entity.dart';
 import 'package:alearn/features/category/domain/i_category_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 part 'category_state.dart';
 
-class CategoryCubit extends HydratedCubit<CategoryState> {
+class CategoryCubit extends Cubit<CategoryState> {
   CategoryCubit(this.repo) : super(CategoryInitial());
   ICategoryRepo repo;
 
   Future<void> getCategories() async {
-    if (state is CategoryInitial) {}
-  }
-
-  List<WordEntity> getWordsFromCategory(List<int> listCategoryId) {
-    final listCategory = (state as CategoryDoneState).listCategory;
-    final words = listCategory.firstWhere((element) => listCategoryId.contains(element.id)).wordList;
-    return words;
-  }
-
-  @override
-  CategoryState? fromJson(Map<String, dynamic> json) {
-    if (json.containsKey('listCategory') == false) {
-      return null;
+    final baseListCategory = repo.getCategoriesBase();
+    emit(CategoryDoneState(baseListCategory));
+    final fullListCategory = await repo.getCategories();
+    if (fullListCategory.isEmpty) {
+      return;
     }
-    return CategoryDoneState(
-      (json['listCategory'] as List<dynamic>).map((e) => CategoryEntity.fromJson(e as Map<String, dynamic>)).toList(),
-    );
-  }
-
-  @override
-  Map<String, dynamic>? toJson(CategoryState state) {
-    if (state is CategoryDoneState) {
-      return state.toJson();
-    }
-    return null;
+    emit(CategoryDoneState([...baseListCategory, ...fullListCategory]));
   }
 }

@@ -37,7 +37,10 @@ class AppRuner {
     WidgetsFlutterBinding.ensureInitialized();
     await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     await Alarm.init();
-
+    await Alarm.setNotificationOnAppKillContent(
+      'Будильник может не сработать',
+      'Вы закрыли приложение из-за чего может не сработать будильник',
+    );
     WidgetsBinding.instance.deferFirstFrame();
   }
 }

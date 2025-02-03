@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/i_alarm_repo.dart';
+import 'package:alearn/features/alarm/domain/permission.dart';
 
-final class AndroidAlarmRepo implements IAlarmRepo {
+final class AlarmPlusRepo implements IAlarmRepo {
   @override
-  String get name => 'AndroidAlarmRepo';
+  String get name => 'AlarmPlusRepo';
 
   @override
   Future<bool> deleteAlarm(int id) async {
@@ -21,16 +24,19 @@ final class AndroidAlarmRepo implements IAlarmRepo {
 
   @override
   List<AlarmSettings> getAllAlarms() {
-    final alarms = Alarm.getAlarms()
-      ..sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    final alarms = Alarm.getAlarms()..sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
     return alarms;
   }
 
   @override
-  void requestPermission() {}
+  Future<void> requestPermission() async {
+    await AlarmPermissions.checkAndroidNotificationPermission();
+    await AlarmPermissions.checkAndroidScheduleExactAlarmPermission();
+    await AlarmPermissions.checkAndroidExternalStoragePermission();
+  }
 
   @override
-  Future<bool> addAlarm({
+  Future<bool> createAlarm({
     required DateTime time,
     required String notificationTitle,
     required String notificationBody,
@@ -48,16 +54,21 @@ final class AndroidAlarmRepo implements IAlarmRepo {
       alarmSettings: AlarmSettings(
         id: id,
         dateTime: time,
-        assetAudioPath: 'assets/marimba.mp3',
+        assetAudioPath: urlAudio,
         notificationTitle: notificationTitle,
         notificationBody: notificationBody,
         loopAudio: loopAudio,
         vibrate: vibrate,
-        volume: volume,
+        volume: 0,
         fadeDuration: fadeDuration,
-        enableNotificationOnKill: enableNotificationOnKill,
+        enableNotificationOnKill: Platform.isAndroid ? false : enableNotificationOnKill,
         androidFullScreenIntent: androidFullScreenIntent,
       ),
     );
+  }
+
+  @override
+  Stream getRingStream() {
+    return Alarm.ringStream.stream;
   }
 }

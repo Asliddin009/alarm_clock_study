@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/permission.dart';
-import 'package:alearn/features/alarm/ui/components/edit_alarm.dart';
-import 'package:alearn/features/alarm/ui/components/edit_alarm_new.dart';
-import 'package:alearn/features/alarm/ui/ring_screen.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm/edit_alarm.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm/edit_alarm_new.dart';
+import 'package:alearn/features/alarm/ui/ring_screen/ring_screen.dart';
 import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';
 import 'package:flutter/material.dart';
@@ -35,9 +35,6 @@ class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen> with Si
     }
     loadAlarms();
     ringSubscription ??= Alarm.ringStream.stream.listen(navigateToRingScreen);
-    // updateSubscription ??= Alarm.updateStream.stream.listen((_) {
-    //   loadAlarms();
-    // });
   }
 
   void loadAlarms() {
@@ -53,7 +50,7 @@ class _ExampleAlarmHomeScreenState extends State<ExampleAlarmHomeScreen> with Si
       MaterialPageRoute<void>(
         builder: (context) => AlarmRingScreen(
           alarmSettings: alarmSettings,
-          alarmEntity: AlarmEntity(id: 0, time: alarmSettings.dateTime, isActive: true, volume: 0.8),
+          alarmEntity: AlarmEntity(id: 0, time: alarmSettings.dateTime, isActive: true, volume: 0.8, alarmId: 9),
         ),
       ),
     );

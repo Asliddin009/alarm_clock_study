@@ -6,13 +6,17 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
   alarm: ^3.1.7
   another_flushbar: ^1.12.30
   bloc: ^8.1.4
+  intl: 0.19.0
   cupertino_icons: ^1.0.2
   equatable: ^2.0.5
-  flutter:
-    sdk: flutter
   flutter_bloc: ^8.1.4
   flutter_launcher_icons: ^0.13.1
   hydrated_bloc: ^9.1.5
@@ -26,6 +30,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
+  generate: true
   uses-material-design: true
 
   assets:

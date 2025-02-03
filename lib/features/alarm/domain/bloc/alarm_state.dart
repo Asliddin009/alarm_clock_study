@@ -7,7 +7,7 @@ sealed class AlarmState extends Equatable {
   List<Object> get props => [];
 }
 
-final class AlarmInitial extends AlarmState {}
+final class AlarmInitialState extends AlarmState {}
 
 final class AlarmLoadingState extends AlarmState {
   const AlarmLoadingState({required this.message});

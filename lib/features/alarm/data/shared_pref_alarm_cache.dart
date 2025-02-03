@@ -34,9 +34,26 @@ class SharedPrefAlarmCache implements IAlarmCashRepo {
     try {
       final prefs = await SharedPreferences.getInstance();
       final list = prefs.getStringList(key) ?? [];
-      final newList = list
-          .where((element) => AlarmEntity.fromString(element).id != id)
-          .toList();
+      final newList = list.where((element) => AlarmEntity.fromString(element).id != id).toList();
+      await prefs.setStringList(key, newList);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> updateAlarmEntity(AlarmEntity alarm) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final list = prefs.getStringList(key) ?? [];
+      final newList = list.map((element) {
+        final alarmEntity = AlarmEntity.fromString(element);
+        if (alarmEntity.id == alarm.id) {
+          return alarm.toString();
+        }
+        return element;
+      }).toList();
       await prefs.setStringList(key, newList);
       return true;
     } catch (_) {

@@ -2,13 +2,8 @@ import 'package:alearn/app/ui/theme/eleveted_button_style.dart';
 import 'package:flutter/material.dart';
 
 ThemeData lightTheme = ThemeData(
-  hintColor: Colors.grey.withOpacity(0.5),
+  hintColor: Colors.grey.withValues(alpha: 0.5),
   elevatedButtonTheme: lightElevatedButtonThemeData,
   scaffoldBackgroundColor: Colors.grey.shade300,
-  textTheme: const TextTheme(
-      // labelMedium: GoogleFonts.montserrat(),
-      // titleMedium: GoogleFonts.montserrat(),
-      // titleLarge: GoogleFonts.montserrat(),
-      // titleSmall: GoogleFonts.montserrat(),
-      ),
+  textTheme: const TextTheme(),
 );

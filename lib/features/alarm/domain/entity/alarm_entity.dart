@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 class AlarmEntity {
   AlarmEntity({
     required this.id,
+    required this.alarmId,
     required this.time,
     required this.isActive,
     this.isRepeat,
@@ -11,25 +14,8 @@ class AlarmEntity {
     this.assetAudioPath = 'assets/marimba.mp3',
   });
 
-  factory AlarmEntity.fromString(String str) {
-    final list = str.split(';');
-    final id = int.parse(list[0]);
-    final time = DateTime.parse(list[1]);
-    final isActive = list[2];
-    final isRepeat = list[3] == 'true';
-    final weekdays = list[4] == 'null' ? null : list[4].split('|').map((e) => Weekday.values.byName(e)).toList();
-    final listCategoryId = list[5] == 'null' ? null : list[5].split('|').map((e) => int.parse(e)).toList();
-    return AlarmEntity(
-      id: id,
-      time: time,
-      isActive: bool.parse(isActive),
-      isRepeat: isRepeat,
-      weekdays: weekdays,
-      listCategoryId: listCategoryId ?? [],
-    );
-  }
-
   final int id;
+  final int alarmId;
   final DateTime time;
   final bool isActive;
   final bool? isRepeat;
@@ -43,9 +29,43 @@ class AlarmEntity {
     return '${time.hour}:${time.minute}';
   }
 
+  factory AlarmEntity.fromString(String str) {
+    // Декодируем JSON-строку в Map
+    final Map<String, dynamic> json = jsonDecode(str);
+
+    return AlarmEntity(
+      id: json['id'],
+      alarmId: json['alarmId'],
+      time: DateTime.parse(json['time']),
+      isActive: json['isActive'],
+      isRepeat: json['isRepeat'],
+      weekdays:
+          json['weekdays'] != null ? (json['weekdays'] as List).map((e) => Weekday.values.byName(e)).toList() : null,
+      vibrate: json['vibrate'] ?? true,
+      volume: (json['volume'] as num).toDouble(), // Для обработки double
+      assetAudioPath: json['assetAudioPath'] ?? 'assets/marimba.mp3',
+      listCategoryId:
+          json['listCategoryId'] != null ? (json['listCategoryId'] as List).map((e) => e as int).toList() : [],
+    );
+  }
+
   @override
   String toString() {
-    return '$id;$time;$isActive;$isRepeat;$weekdays;${listCategoryId.join('|')}';
+    // Преобразуем объект в Map и затем сериализуем в JSON
+    final Map<String, dynamic> json = {
+      'id': id,
+      'alarmId': alarmId,
+      'time': time.toIso8601String(),
+      'isActive': isActive,
+      'isRepeat': isRepeat,
+      'weekdays': weekdays?.map((e) => e.name).toList(),
+      'vibrate': vibrate,
+      'volume': volume,
+      'assetAudioPath': assetAudioPath,
+      'listCategoryId': listCategoryId,
+    };
+
+    return jsonEncode(json);
   }
 }
 

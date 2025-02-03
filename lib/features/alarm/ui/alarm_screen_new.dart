@@ -1,7 +1,13 @@
+import 'dart:async';
+
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
+import 'package:alearn/app/helper/localization_helper.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/ui/alarm_edit_widget.dart';
-import 'package:alearn/features/alarm/ui/components/edit_alarm_new.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm/edit_alarm_new.dart';
+import 'package:alearn/features/alarm/ui/ring_screen/ring_screen.dart';
 import 'package:alearn/features/alarm/ui/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/tile.dart';
 import 'package:flutter/foundation.dart';
@@ -16,25 +22,51 @@ class AlarmScreenNew extends StatefulWidget {
 }
 
 class _AlarmScreenNewState extends State<AlarmScreenNew> with SingleTickerProviderStateMixin {
+  StreamSubscription? _ringStreamSubscription;
+
   @override
   void initState() {
     super.initState();
-    context.read<AlarmBloc>().add(GetAllAlarmsEvent());
+    _ringStreamSubscription = context.read<AlarmBloc>().getRingStream().listen(navigateToRingScreen);
+    context.read<AlarmBloc>().add(AlarmGetAllEvent());
+  }
+
+  Future<void> navigateToRingScreen(dynamic value) async {
+    final alarmSettings = value as AlarmSettings;
+    // log('alarmSettings: $alarmSettings', name: 'navigateToRingScreen');
+    // final alarmState = context.read<AlarmBloc>().state as AlarmDoneState;
+    // final alarm = alarmState.listAlarm.firstWhere((element) => element.id == alarmSettings.id);
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AlarmRingScreen(
+          alarmSettings: alarmSettings,
+          alarmEntity: AlarmEntity(id: 0, alarmId: 1, time: DateTime.now(), isActive: true),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ringStreamSubscription?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final localization = LocalizationHelper.getLocalizations(context);
     return BlocBuilder<AlarmBloc, AlarmState>(
       builder: (context, state) {
         if (state is AlarmDoneState) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Будильник'),
+              title: Text(localization.alarm),
             ),
             body: SafeArea(
               child: state.listAlarm.isEmpty
-                  ? const Center(
-                      child: Text('Нет будильников'),
+                  ? Center(
+                      child: Text(localization.no_alarms),
                     )
                   : ListView.separated(
                       itemCount: state.listAlarm.length,

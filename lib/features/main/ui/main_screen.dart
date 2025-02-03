@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => const AlarmScreenNew(),
-                    // builder: (context) => const ExampleAlarmHomeScreen(),
                   ),
                 );
               },

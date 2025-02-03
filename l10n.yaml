@@ -1,0 +1,5 @@
+arb-dir: lib/app/localization/
+template-arb-file: intl_ru.arb
+output-localization-file: app_localizations.dart
+untranslated-messages-file: desiredFileName.txt
+synthetic-package: false

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/i_alarm_cache.dart';
 import 'package:alearn/features/alarm/domain/i_alarm_repo.dart';
@@ -14,16 +17,28 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
   AlarmBloc({
     required this.alarmRepo,
     required this.alarmCashRepo,
-  }) : super(AlarmInitial()) {
+  }) : super(AlarmInitialState()) {
     // Подписываемся на события
-    on<GetAllAlarmsEvent>(_onGetAllAlarmsEvent);
-    on<CreateAlarmEvent>(_onCreateAlarmEvent);
-    on<DeleteAlarmEvent>(_onDeleteAlarmEvent);
+    on<AlarmGetAllEvent>(_onGetAllAlarmsEvent);
+    on<AlarmCreateEvent>(_onCreateAlarmEvent);
+    on<AlarmDeleteEvent>(_onDeleteAlarmEvent);
+    on<AlarmUpdateEvent>(_onUpdateAlarmEvent);
+    on<AlarmInitialEvent>(_onInitialEvent);
   }
 
-  // Обработка события GetAllAlarmsEvent
+  Future<void> _onInitialEvent(
+    AlarmInitialEvent event,
+    Emitter<AlarmState> emit,
+  ) async {
+    alarmRepo.requestPermission();
+  }
+
+  Stream getRingStream() {
+    return alarmRepo.getRingStream();
+  }
+
   Future<void> _onGetAllAlarmsEvent(
-    GetAllAlarmsEvent event,
+    AlarmGetAllEvent event,
     Emitter<AlarmState> emit,
   ) async {
     emit(const AlarmLoadingState(message: 'Загрузка будильников'));
@@ -35,9 +50,8 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
     }
   }
 
-  // Обработка события CreateAlarmEvent
   Future<void> _onCreateAlarmEvent(
-    CreateAlarmEvent event,
+    AlarmCreateEvent event,
     Emitter<AlarmState> emit,
   ) async {
     if (state is! AlarmDoneState) return;
@@ -48,19 +62,21 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
     try {
       final newAlarm = AlarmEntity(
         id: listAlarm.isNotEmpty ? listAlarm.last.id + 1 : 1,
+        //в будущем лучше переписать под нормальные id
+        alarmId: Random.secure().nextInt(1000000),
         time: event.dateTime,
         isActive: true,
         isRepeat: event.isRepeat,
         weekdays: event.weekdays,
+        listCategoryId: event.listCategoryId,
       );
-
-      final flag = await alarmRepo.addAlarm(
+      //создаем будильник
+      final flag = await alarmRepo.createAlarm(
         time: newAlarm.time,
         id: newAlarm.id,
-        notificationTitle: '',
-        notificationBody: '',
+        notificationTitle: 'Доброе утро))',
+        notificationBody: 'пора вставать и начинать новый день',
       );
-
       if (!flag) {
         emit(const AlarmErrorState('Ошибка при создании будильника'));
         return;
@@ -74,22 +90,23 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
 
   // Обработка события DeleteAlarmEvent
   Future<void> _onDeleteAlarmEvent(
-    DeleteAlarmEvent event,
+    AlarmDeleteEvent event,
     Emitter<AlarmState> emit,
   ) async {
     if (state is! AlarmDoneState) return;
 
     try {
+      //Удаление будильника из кэша
       final isDeleteCache = await alarmCashRepo.deleteAlarm(event.id);
 
-      if (!isDeleteCache) {
+      if (isDeleteCache == false) {
         emit(const AlarmErrorState('Ошибка при удалении будильника (кеш)'));
         return;
       }
-
+      //Удаление будильника из сервиса
       final isDeleteRepo = await alarmRepo.deleteAlarm(event.id);
 
-      if (!isDeleteRepo) {
+      if (isDeleteRepo == false) {
         emit(const AlarmErrorState('Ошибка при удалении будильника (сервисы)'));
         return;
       }
@@ -98,6 +115,25 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
       emit(AlarmDoneState(updatedAlarms));
     } catch (e) {
       emit(const AlarmErrorState('Ошибка при удалении будильника'));
+    }
+  }
+
+  Future<void> _onUpdateAlarmEvent(
+    AlarmUpdateEvent event,
+    Emitter<AlarmState> emit,
+  ) async {
+    if (state is! AlarmDoneState) return;
+
+    try {
+      final flag = await alarmCashRepo.updateAlarmEntity(event.alarmEntity);
+      if (flag == false) {
+        emit(const AlarmErrorState('Ошибка при обновлении будильника (кеш)'));
+        return;
+      }
+      final updatedAlarmsList = await alarmCashRepo.getAllAlarms();
+      emit(AlarmDoneState(updatedAlarmsList));
+    } catch (e) {
+      emit(const AlarmErrorState('Ошибка при обновлении будильника'));
     }
   }
 }
