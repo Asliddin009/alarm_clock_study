@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
-import 'package:alearn/features/alarm/domain/i_alarm_cache.dart';
-import 'package:alearn/features/alarm/domain/i_alarm_repo.dart';
+import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
+import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -70,14 +70,22 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
         weekdays: event.weekdays,
         listCategoryId: event.listCategoryId,
       );
+      final flagSaveInCash = await alarmCashRepo.saveAlarmEntity(newAlarm);
+
       //создаем будильник
-      final flag = await alarmRepo.createAlarm(
+      //TODO replace mock
+      final date = {
+        'alarmId': newAlarm.alarmId,
+        'trueWord': 'alarm',
+        'falseWord': 'clock, timer, stopwatch',
+      };
+      final flagCreateAlarm = await alarmRepo.createAlarm(
         time: newAlarm.time,
         id: newAlarm.id,
         notificationTitle: 'Доброе утро))',
-        notificationBody: 'пора вставать и начинать новый день',
+        notificationBody: 'пора вставать и начинать новый день\n\n$date',
       );
-      if (!flag) {
+      if (!flagSaveInCash || !flagCreateAlarm) {
         emit(const AlarmErrorState('Ошибка при создании будильника'));
         return;
       }

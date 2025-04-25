@@ -122,6 +122,24 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Время'**
   String get time;
+
+  /// No description provided for @error.
+  ///
+  /// In ru, this message translates to:
+  /// **'Ошибка'**
+  String get error;
+
+  /// No description provided for @try_again.
+  ///
+  /// In ru, this message translates to:
+  /// **'Повторите попытку'**
+  String get try_again;
+
+  /// No description provided for @select_time.
+  ///
+  /// In ru, this message translates to:
+  /// **'выберите время будильника'**
+  String get select_time;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

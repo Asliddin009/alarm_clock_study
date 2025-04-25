@@ -10,10 +10,8 @@ final class AppDependsProvider extends InheritedWidget {
   final AppDepends appDepends;
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
-
   static AppDepends of(BuildContext context) {
-    final provider =
-        context.dependOnInheritedWidgetOfExactType<AppDependsProvider>();
+    final provider = context.dependOnInheritedWidgetOfExactType<AppDependsProvider>();
     assert(provider != null, 'Depends not found');
     return provider!.appDepends;
   }

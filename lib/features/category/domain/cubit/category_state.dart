@@ -27,5 +27,10 @@ final class CategoryDoneState extends CategoryState {
   }
 
   @override
+  String toString() {
+    return 'CategoryDoneState{listCategory: $listCategory}';
+  }
+
+  @override
   List<Object> get props => [listCategory];
 }

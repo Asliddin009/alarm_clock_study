@@ -53,10 +53,33 @@ class _AppErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: Text(message),
+        appBar: AppBar(),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 8,
+            children: [
+              const Icon(
+                Icons.error,
+                size: 45,
+                color: Colors.red,
+              ),
+              Text(message),
+              ElevatedButton(
+                onPressed: () {
+                  _restartApp();
+                },
+                child: const Text('Повторить'),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _restartApp() {
+    WidgetsBinding.instance.reassembleApplication();
   }
 }

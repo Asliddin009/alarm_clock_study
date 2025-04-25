@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:alearn/app/app_runner/app_env.dart';
 import 'package:alearn/features/alarm/data/alarm_plus_repo.dart';
-import 'package:alearn/features/alarm/domain/i_alarm_repo.dart';
+import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 import 'package:alearn/features/auth/data/mock_app_repo.dart';
 import 'package:alearn/features/auth/data/prod_app_repo.dart';
 import 'package:alearn/features/auth/domain/i_auth_repo.dart';

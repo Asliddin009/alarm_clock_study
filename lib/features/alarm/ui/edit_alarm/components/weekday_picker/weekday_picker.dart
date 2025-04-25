@@ -4,6 +4,16 @@ import 'package:alearn/features/alarm/ui/edit_alarm/components/weekday_picker/we
 import 'package:alearn/features/alarm/ui/edit_alarm/edit_alarm_inherited.dart';
 import 'package:flutter/material.dart';
 
+const List<WeekdayType> daysOfWeek = [
+  WeekdayType.monday,
+  WeekdayType.tuesday,
+  WeekdayType.wednesday,
+  WeekdayType.thursday,
+  WeekdayType.friday,
+  WeekdayType.saturday,
+  WeekdayType.sunday,
+];
+
 class DayOfWeekSelector extends StatefulWidget {
   const DayOfWeekSelector({super.key});
 
@@ -14,20 +24,11 @@ class DayOfWeekSelector extends StatefulWidget {
 class DayOfWeekSelectorState extends State<DayOfWeekSelector> {
   List<WeekdayType> selectedDay = []; // Переменная для хранения выбранного дня
   // Список дней недели
-  final List<WeekdayType> daysOfWeek = [
-    WeekdayType.monday,
-    WeekdayType.tuesday,
-    WeekdayType.wednesday,
-    WeekdayType.thursday,
-    WeekdayType.friday,
-    WeekdayType.saturday,
-    WeekdayType.sunday,
-  ];
 
   @override
   Widget build(BuildContext context) {
     log('build DayOfWeekSelector');
-    // final selectedDay = EditAlarmProvider.of(context).selectedDays;
+    final selectedDay = EditAlarmProvider.of(context).selectedDays;
     return Wrap(
       spacing: 8,
       children: daysOfWeek.map((day) {

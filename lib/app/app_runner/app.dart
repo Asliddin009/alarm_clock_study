@@ -3,8 +3,8 @@ import 'package:alearn/app/ui/theme/light_theme.dart';
 import 'package:alearn/di/app_depends.dart';
 import 'package:alearn/di/app_depends_provider.dart';
 import 'package:alearn/features/alarm/data/shared_pref_alarm_cache.dart';
-import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
-import 'package:alearn/features/alarm/ui/alarm_screen_new.dart';
+import 'package:alearn/features/alarm/domain/bloc/alarm_bloc/alarm_bloc.dart';
+import 'package:alearn/features/alarm/ui/alarm_screen/alarm_screen_new.dart';
 import 'package:alearn/features/auth/domain/bloc/auth_bloc.dart';
 import 'package:alearn/features/category/domain/cubit/category_cubit.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +24,7 @@ class App extends StatelessWidget {
             create: (BuildContext context) => AuthBloc(appDepends.authRepo),
           ),
           BlocProvider(
-            create: (BuildContext context) =>
-                AlarmBloc(alarmRepo: appDepends.alarmRepo, alarmCashRepo: SharedPrefAlarmCache())
-                  ..add(AlarmInitialEvent()),
+            create: (BuildContext context) => AlarmBloc(alarmRepo: appDepends.alarmRepo, alarmCashRepo: SharedPrefAlarmCache())..add(AlarmInitialEvent()),
           ),
           BlocProvider(
             create: (BuildContext context) => CategoryCubit(appDepends.categoryRepo)..getCategories(),
@@ -48,10 +46,7 @@ class _App extends StatelessWidget {
       locale: const Locale('ru'),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-
-      // home: const ExampleAlarmHomeScreen(),
-      home: const AlarmScreenNew(),
-      // home: const HomePage(),
+      home: const AlarmScreen(),
     );
   }
 }

@@ -1,3 +1,5 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -20,4 +22,13 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get time => 'Время';
+
+  @override
+  String get error => 'Ошибка';
+
+  @override
+  String get try_again => 'Повторите попытку';
+
+  @override
+  String get select_time => 'выберите время будильника';
 }

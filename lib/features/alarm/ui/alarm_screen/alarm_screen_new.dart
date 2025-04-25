@@ -3,45 +3,51 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:alearn/app/helper/localization_helper.dart';
-import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
-import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
-import 'package:alearn/features/alarm/ui/alarm_edit_widget.dart';
+import 'package:alearn/features/alarm/data/alarm_helper.dart';
+import 'package:alearn/features/alarm/domain/bloc/alarm_bloc/alarm_bloc.dart';
+import 'package:alearn/features/alarm/ui/alarm_screen/shortcut_button.dart';
+import 'package:alearn/features/alarm/ui/alarm_screen/tile.dart';
 import 'package:alearn/features/alarm/ui/edit_alarm/edit_alarm_new.dart';
 import 'package:alearn/features/alarm/ui/ring_screen/ring_screen.dart';
-import 'package:alearn/features/alarm/ui/shortcut_button.dart';
-import 'package:alearn/features/alarm/ui/tile.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 
-class AlarmScreenNew extends StatefulWidget {
-  const AlarmScreenNew({super.key});
+class AlarmScreen extends StatefulWidget {
+  const AlarmScreen({super.key});
 
   @override
-  State<AlarmScreenNew> createState() => _AlarmScreenNewState();
+  State<AlarmScreen> createState() => _AlarmScreenState();
 }
 
-class _AlarmScreenNewState extends State<AlarmScreenNew> with SingleTickerProviderStateMixin {
+class _AlarmScreenState extends State<AlarmScreen> with SingleTickerProviderStateMixin {
   StreamSubscription? _ringStreamSubscription;
 
   @override
   void initState() {
     super.initState();
+    checkAndroidScheduleExactAlarmPermission();
+    // getAutoStartPermission();
     _ringStreamSubscription = context.read<AlarmBloc>().getRingStream().listen(navigateToRingScreen);
     context.read<AlarmBloc>().add(AlarmGetAllEvent());
   }
 
   Future<void> navigateToRingScreen(dynamic value) async {
     final alarmSettings = value as AlarmSettings;
-    // log('alarmSettings: $alarmSettings', name: 'navigateToRingScreen');
-    // final alarmState = context.read<AlarmBloc>().state as AlarmDoneState;
-    // final alarm = alarmState.listAlarm.firstWhere((element) => element.id == alarmSettings.id);
+    await FlutterRingtonePlayer().play(
+      android: AndroidSounds.alarm,
+      ios: IosSounds.alarm,
+      looping: true, // Android only - API >= 28
+      volume: 0.7, // Android only - API >= 28
+      asAlarm: true, // Android only - all APIs
+    );
+    if (mounted == false) return;
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => AlarmRingScreen(
           alarmSettings: alarmSettings,
-          alarmEntity: AlarmEntity(id: 0, alarmId: 1, time: DateTime.now(), isActive: true),
+          // alarmEntity: AlarmEntity(id: 0, alarmId: 1, time: DateTime.now(), isActive: true),
         ),
       ),
     );
@@ -79,7 +85,7 @@ class _AlarmScreenNewState extends State<AlarmScreenNew> with SingleTickerProvid
                             minute: state.listAlarm[index].time.minute,
                           ).format(context),
                           onPressed: () {
-                            navigateToAlarmScreen(state.listAlarm[index]);
+                            // navigateToAlarmScreen(state.listAlarm[index]);
                           },
                           onDismissed: () {
                             // Alarm.stop(state.listAlarm[index].id)
@@ -116,31 +122,31 @@ class _AlarmScreenNewState extends State<AlarmScreenNew> with SingleTickerProvid
     );
   }
 
-  Future<void> navigateToAlarmScreen(AlarmEntity alarm) async {
-    final res = await showModalBottomSheet<bool?>(
-      transitionAnimationController: AnimationController(
-        duration: const Duration(milliseconds: 400),
-        vsync: this,
-      ),
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.75,
-          child: AlarmEditWidget(
-            alarm: alarm,
-          ),
-        );
-      },
-    );
+  // Future<void> navigateToAlarmScreen(AlarmEntity alarm) async {
+  //   final res = await showModalBottomSheet<bool?>(
+  //     transitionAnimationController: AnimationController(
+  //       duration: const Duration(milliseconds: 400),
+  //       vsync: this,
+  //     ),
+  //     context: context,
+  //     isScrollControlled: true,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.circular(10),
+  //     ),
+  //     builder: (context) {
+  //       return FractionallySizedBox(
+  //         heightFactor: 0.75,
+  //         child: AlarmEditWidget(
+  //           alarm: alarm,
+  //         ),
+  //       );
+  //     },
+  //   );
 
-    if (res != null && res == true) {
-      if (kDebugMode) {
-        print(res);
-      }
-    }
-  }
+  //   if (res != null && res == true) {
+  //     if (kDebugMode) {
+  //       print(res);
+  //     }
+  //   }
+  // }
 }

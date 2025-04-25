@@ -23,7 +23,9 @@ dependencies:
   permission_handler: ^11.1.0
   shared_preferences: ^2.3.2
   flutter_ringtone_player: ^4.0.0+3
+  numberpicker: ^2.1.2
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,5 +1,5 @@
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
-import 'package:alearn/features/alarm/domain/i_alarm_cache.dart';
+import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefAlarmCache implements IAlarmCashRepo {

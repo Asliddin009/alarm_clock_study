@@ -1,8 +1,6 @@
-import 'dart:io';
-
 import 'package:alarm/alarm.dart';
-import 'package:alearn/features/alarm/domain/i_alarm_repo.dart';
-import 'package:alearn/features/alarm/domain/permission.dart';
+import 'package:alearn/features/alarm/data/permission.dart';
+import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 
 final class AlarmPlusRepo implements IAlarmRepo {
   @override
@@ -61,7 +59,7 @@ final class AlarmPlusRepo implements IAlarmRepo {
         vibrate: vibrate,
         volume: 0,
         fadeDuration: fadeDuration,
-        enableNotificationOnKill: Platform.isAndroid ? false : enableNotificationOnKill,
+        enableNotificationOnKill: enableNotificationOnKill,
         androidFullScreenIntent: androidFullScreenIntent,
       ),
     );

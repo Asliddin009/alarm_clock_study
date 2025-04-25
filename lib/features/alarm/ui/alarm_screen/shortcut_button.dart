@@ -1,7 +1,6 @@
-import 'dart:io';
-
-import 'package:alarm/alarm.dart';
+import 'package:alearn/features/alarm/domain/bloc/alarm_bloc/alarm_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ExampleAlarmHomeShortcutButton extends StatefulWidget {
   const ExampleAlarmHomeShortcutButton({
@@ -23,23 +22,31 @@ class _ExampleAlarmHomeShortcutButtonState extends State<ExampleAlarmHomeShortcu
     if (delayInHours != 0) {
       dateTime = dateTime.copyWith(second: 0, millisecond: 0);
     }
+    context.read<AlarmBloc>().add(
+          AlarmCreateEvent(
+            dateTime: dateTime,
+            isRepeat: true,
+            weekdays: [],
+            listCategoryId: [],
+          ),
+        );
 
     setState(() => showMenu = false);
 
-    final alarmSettings = AlarmSettings(
-      id: DateTime.now().millisecondsSinceEpoch % 10000,
-      dateTime: dateTime,
-      assetAudioPath: 'assets/star_wars.mp3',
-      volume: 0,
-      loopAudio: false,
-      notificationTitle: 'Alarm example',
-      notificationBody: 'Shortcut button alarm with delay of $delayInHours hours',
-      enableNotificationOnKill: Platform.isIOS,
-    );
+    // final alarmSettings = AlarmSettings(
+    //   id: DateTime.now().millisecondsSinceEpoch % 10000,
+    //   dateTime: dateTime,
+    //   assetAudioPath: 'assets/star_wars.mp3',
+    //   volume: 0,
+    //   loopAudio: false,
+    //   notificationTitle: 'Alarm example',
+    //   notificationBody: '',
+    //   enableNotificationOnKill: Platform.isIOS,
+    // );
 
-    await Alarm.set(alarmSettings: alarmSettings);
+    // await Alarm.set(alarmSettings: alarmSettings);
 
-    widget.refreshAlarms();
+    // widget.refreshAlarms();
   }
 
   @override

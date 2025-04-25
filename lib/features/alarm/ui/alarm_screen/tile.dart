@@ -16,9 +16,7 @@ class ExampleAlarmTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: key!,
-      direction: onDismissed != null
-          ? DismissDirection.endToStart
-          : DismissDirection.none,
+      direction: onDismissed != null ? DismissDirection.endToStart : DismissDirection.none,
       background: Container(
         color: Colors.red,
         alignment: Alignment.centerRight,

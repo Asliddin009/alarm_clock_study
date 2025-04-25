@@ -1,5 +1,5 @@
 import 'package:alearn/app/ui/ui_kit/app_text_button.dart';
-import 'package:alearn/features/alarm/ui/alarm_screen_new.dart';
+import 'package:alearn/features/alarm/ui/alarm_screen/alarm_screen_new.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AlarmScreenNew(),
+                    builder: (context) => const AlarmScreen(),
                   ),
                 );
               },

@@ -1,10 +1,11 @@
 import 'dart:developer';
 
 import 'package:alearn/app/helper/localization_helper.dart';
-import 'package:alearn/app/ui/ui_kit/text_field/app_text_field.dart';
-import 'package:alearn/app/ui/ui_kit/text_field/input_formatters.dart';
-import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
+import 'package:alearn/app/ui/theme/app_color.dart';
+import 'package:alearn/features/alarm/domain/bloc/alarm_bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm/components/edit_alarm_tile.dart';
+import 'package:alearn/features/alarm/ui/edit_alarm/components/time_picker.dart';
 import 'package:alearn/features/alarm/ui/edit_alarm/components/weekday_picker/weekday_picker.dart';
 import 'package:alearn/features/alarm/ui/edit_alarm/edit_alarm_inherited.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +13,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CreateAlarmScreen extends StatelessWidget {
   const CreateAlarmScreen({super.key});
-  static final TextEditingController _dateController = TextEditingController();
-  static final TextEditingController _timeController = TextEditingController();
+  static final TextEditingController _dateController = TextEditingController()..text = getDate();
 
   @override
   Widget build(BuildContext context) {
-    log('build CreateAlarmScreen');
     final localization = LocalizationHelper.getLocalizations(context);
     return EditAlarmInherited(
       child: Scaffold(
@@ -30,25 +29,26 @@ class CreateAlarmScreen extends StatelessWidget {
             spacing: 8,
             children: [
               //Выбор даты
-              BaseTextField(
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.datetime,
-                controller: _dateController,
-                hintText: localization.date,
-                inputFormatters: [
-                  DateInputFormatter(),
-                ],
+              EditItemWidget(
+                title: localization.time,
+                parameter: Text(
+                  _dateController.text,
+                  style: const TextStyle(
+                    color: ColorResource.orange500,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                onTap: () {
+                  pickDate(context).then((value) {
+                    if (value != null) {
+                      _dateController.text = '${value.day < 10 ? '0${value.day}' : value.day}.${value.month < 10 ? '0${value.month}' : value.month}.${value.year}';
+                    }
+                  });
+                },
               ),
               //Выбор времени
-              BaseTextField(
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.datetime,
-                controller: _timeController,
-                hintText: localization.time,
-                inputFormatters: [
-                  DateInputFormatter(),
-                ],
-              ),
+              const AlarmTimePicker(),
               //Дни недели
               const DayOfWeekSelector(),
               //создать
@@ -83,15 +83,42 @@ class CreateAlarmScreen extends StatelessWidget {
 
   DateTime? _getDateTime() {
     try {
-      return DateTime.now().add(const Duration(seconds: 5));
-      // final dates = _dateController.text.split('.').toList();
-      // if (dates.length != 3) {
-      //   return null;
-      // }
-      // return DateTime(int.parse(dates[2]), int.parse(dates[1]), int.parse(dates[0]));
+      return DateTime.now().add(const Duration(seconds: 10));
     } on Exception catch (e) {
       log(e.toString(), name: 'CreateAlarmScreen _getDateTime');
       return null;
     }
   }
+
+  static String getDate() {
+    final now = DateTime.now();
+    return '${now.day < 10 ? '0${now.day}' : now.day}.${now.month < 10 ? '0${now.month}' : now.month}.${now.year}';
+  }
+}
+
+Future<DateTime?> pickDate(BuildContext context) async {
+  final DateTime currentDate = DateTime.now();
+
+  final DateTime? selectedDate = await showDatePicker(
+    context: context,
+    initialDate: currentDate,
+    firstDate: DateTime(1900),
+    lastDate: DateTime(2100),
+    builder: (BuildContext context, Widget? child) {
+      return Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme: const ColorScheme.light(
+            primary: Colors.blue,
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.blue,
+            ),
+          ),
+        ),
+        child: child ?? const SizedBox.shrink(),
+      );
+    },
+  );
+  return selectedDate;
 }

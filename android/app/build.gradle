@@ -7,6 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.alearn_flutter"
+    // compileSdk = 34
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -28,6 +29,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true
     }
 
     buildTypes {
