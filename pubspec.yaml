@@ -1,0 +1,42 @@
+name: alearn
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  alarm: ^3.1.7
+  another_flushbar: ^1.12.30
+  bloc: ^8.1.4
+  intl: ^0.20.2 
+  equatable: ^2.0.5 
+  flutter_bloc: ^8.1.4
+  flutter_launcher_icons: ^0.13.1
+  hydrated_bloc: ^9.1.5
+  permission_handler: ^11.1.0
+  shared_preferences: ^2.5.3
+  flutter_ringtone_player: ^4.0.0+3
+  numberpicker: ^2.1.2
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/mozart.mp3
+    - assets/nokia.mp3
+    - assets/one_piece.mp3
+    - assets/star_wars.mp3
+    - assets/marimba.mp3
