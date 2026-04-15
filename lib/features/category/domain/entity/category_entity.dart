@@ -1,7 +1,8 @@
 import 'package:alearn/features/category/domain/entity/word_entity.dart';
+import 'package:equatable/equatable.dart';
 
-class CategoryEntity {
-  CategoryEntity({
+class CategoryEntity extends Equatable {
+  const CategoryEntity({
     required this.name,
     required this.id,
     required this.wordList,
@@ -10,9 +11,10 @@ class CategoryEntity {
   factory CategoryEntity.fromJson(Map<String, dynamic> json) {
     return CategoryEntity(
       name: json['name'].toString(),
-      wordList: (json['wordList'] as List<dynamic>).map((json) => WordEntity.fromJson(json as Map<String, dynamic>))
-          as List<WordEntity>,
-      id: json['id'],
+      id: json['id'] as int,
+      wordList: (json['wordList'] as List<dynamic>? ?? const <dynamic>[])
+          .map((dynamic value) => WordEntity.fromJson(value as Map<String, dynamic>))
+          .toList(growable: false),
     );
   }
 
@@ -21,10 +23,13 @@ class CategoryEntity {
   final int id;
 
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'name': name,
-      'wordList': wordList.map((e) => e.toJson()),
+      'wordList': wordList.map((word) => word.toJson()).toList(growable: false),
       'id': id,
     };
   }
+
+  @override
+  List<Object?> get props => <Object?>[name, id, wordList];
 }

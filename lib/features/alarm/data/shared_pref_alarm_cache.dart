@@ -1,63 +1,71 @@
+import 'package:alearn/features/alarm/domain/alarm_exception.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPrefAlarmCache implements IAlarmCashRepo {
-  @override
-  String get name => 'SharedPrefAlarmCache';
-  final String key = 'ALARM_LIST';
+class SharedPrefAlarmCache implements IAlarmCacheRepo {
+  SharedPrefAlarmCache(this._sharedPreferences);
+
+  static const String storageKey = 'ALARM_LIST';
+
+  final SharedPreferences _sharedPreferences;
 
   @override
-  Future<List<AlarmEntity>> getAllAlarms() async {
-    final prefs = await SharedPreferences.getInstance();
-    final list = prefs.getStringList(key) ?? [];
-    return list.map(AlarmEntity.fromString).toList();
-  }
-
-  @override
-  Future<bool> saveAlarmEntity(AlarmEntity alarm) async {
+  Future<List<AlarmEntity>> getAll() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final list = prefs.getStringList(key) ?? [];
-      await prefs.setStringList(
-        key,
-        [...list, alarm.toString()],
+      final rawList = _sharedPreferences.getStringList(storageKey) ?? <String>[];
+      final alarms = rawList
+          .map(AlarmEntity.fromEncodedJson)
+          .toList(growable: false)
+        ..sort((left, right) => left.time.compareTo(right.time));
+      final normalizedList = alarms
+          .map((alarm) => alarm.toEncodedJson())
+          .toList(growable: false);
+      if (!listEquals(rawList, normalizedList)) {
+        await _sharedPreferences.setStringList(storageKey, normalizedList);
+      }
+      return alarms;
+    } on Object catch (error) {
+      throw AlarmCacheException(
+        'Не удалось прочитать сохранённые будильники.',
+        cause: error,
       );
-      return true;
-    } on Exception catch (_) {
-      return false;
     }
   }
 
   @override
-  Future<bool> deleteAlarm(int id) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final list = prefs.getStringList(key) ?? [];
-      final newList = list.where((element) => AlarmEntity.fromString(element).id != id).toList();
-      await prefs.setStringList(key, newList);
-      return true;
-    } catch (_) {
-      return false;
-    }
+  Future<void> save(AlarmEntity alarm) async {
+    final alarms = await getAll();
+    final updatedAlarms = <AlarmEntity>[...alarms, alarm];
+    await _write(updatedAlarms);
   }
 
   @override
-  Future<bool> updateAlarmEntity(AlarmEntity alarm) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final list = prefs.getStringList(key) ?? [];
-      final newList = list.map((element) {
-        final alarmEntity = AlarmEntity.fromString(element);
-        if (alarmEntity.id == alarm.id) {
-          return alarm.toString();
-        }
-        return element;
-      }).toList();
-      await prefs.setStringList(key, newList);
-      return true;
-    } catch (_) {
-      return false;
+  Future<void> update(AlarmEntity alarm) async {
+    final alarms = await getAll();
+    final updatedAlarms = alarms
+        .map((currentAlarm) => currentAlarm.id == alarm.id ? alarm : currentAlarm)
+        .toList(growable: false);
+    await _write(updatedAlarms);
+  }
+
+  @override
+  Future<void> delete(int id) async {
+    final alarms = await getAll();
+    final updatedAlarms = alarms
+        .where((alarm) => alarm.id != id)
+        .toList(growable: false);
+    await _write(updatedAlarms);
+  }
+
+  Future<void> _write(List<AlarmEntity> alarms) async {
+    final didSave = await _sharedPreferences.setStringList(
+      storageKey,
+      alarms.map((alarm) => alarm.toEncodedJson()).toList(growable: false),
+    );
+    if (!didSave) {
+      throw const AlarmCacheException('Не удалось сохранить будильники.');
     }
   }
 }

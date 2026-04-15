@@ -1,11 +1,11 @@
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 
-abstract interface class IAlarmCashRepo {
-  String get name;
+abstract interface class IAlarmCacheRepo {
+  Future<List<AlarmEntity>> getAll();
 
-  Future<bool> saveAlarmEntity(AlarmEntity alarm);
-  Future<bool> updateAlarmEntity(AlarmEntity alarm);
-  Future<List<AlarmEntity>> getAllAlarms();
+  Future<void> save(AlarmEntity alarm);
 
-  Future<bool> deleteAlarm(int id);
+  Future<void> update(AlarmEntity alarm);
+
+  Future<void> delete(int id);
 }

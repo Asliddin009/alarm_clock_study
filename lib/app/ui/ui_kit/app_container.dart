@@ -17,17 +17,18 @@ class AppContainer extends StatelessWidget {
   final double? height;
   final double? width;
   final Widget? child;
-  final EdgeInsets? padding;
-  final EdgeInsets? margin;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: margin ?? const EdgeInsets.all(9),
-      padding: padding ?? const EdgeInsets.all(6),
-      width: width ?? MediaQuery.of(context).size.width,
-      height: height ?? MediaQuery.of(context).size.height,
+      margin: margin,
+      padding: padding ?? const EdgeInsets.all(12),
+      width: width,
+      height: height,
       decoration: BoxDecoration(
-        color: color ?? Colors.white,
+        color: color ?? Theme.of(context).cardColor,
         borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
       ),
       child: child,

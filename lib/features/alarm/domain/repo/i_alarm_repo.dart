@@ -1,34 +1,22 @@
 import 'package:alarm/alarm.dart';
+import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 
 abstract interface class IAlarmRepo {
-  String get name;
+  Future<void> requestPermissions();
 
-  /// запрашивает нужные разрешения
-  void requestPermission();
+  Stream<AlarmSettings> get ringStream;
 
-  Stream getRingStream();
-
-  /// получает будильник по [id]
-  AlarmSettings getAlarm(int id);
-
-  /// получает все будильники которые есть в системе
-  List<AlarmSettings> getAllAlarms();
-
-  /// Создает будильник который прозвучит в [time]
-  Future<bool> createAlarm({
-    required DateTime time,
+  Future<void> scheduleAlarm({
+    required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
-    required int id,
-    String urlAudio = '',
-    bool loopAudio = true,
-    bool vibrate = true,
-    double? volume,
-    double fadeDuration = 0.0,
-    bool enableNotificationOnKill = true,
-    bool androidFullScreenIntent = true,
   });
 
-  /// удаляет будильник по [id]
-  Future<bool> deleteAlarm(int id);
+  Future<void> updateAlarm({
+    required AlarmEntity alarm,
+    required String notificationTitle,
+    required String notificationBody,
+  });
+
+  Future<void> deleteAlarm(int id);
 }

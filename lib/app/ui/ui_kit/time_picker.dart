@@ -1,175 +1,128 @@
-import 'package:alearn/app/ui/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 
-class TimePicker extends StatefulWidget {
-  const TimePicker({required this.hour, required this.minute, super.key});
-  final int hour;
-  final int minute;
-
-  @override
-  State<TimePicker> createState() => _TimePickerState();
+Future<TimeOfDay?> showAppTimePickerDialog(
+  BuildContext context, {
+  required TimeOfDay initialTime,
+}) {
+  return showDialog<TimeOfDay>(
+    context: context,
+    builder: (_) => AppTimePickerDialog(initialTime: initialTime),
+  );
 }
 
-class _TimePickerState extends State<TimePicker> {
-  int hour = 0;
-  int minute = 0;
+class AppTimePickerDialog extends StatefulWidget {
+  const AppTimePickerDialog({
+    required this.initialTime,
+    super.key,
+  });
+
+  final TimeOfDay initialTime;
+
+  @override
+  State<AppTimePickerDialog> createState() => _AppTimePickerDialogState();
+}
+
+class _AppTimePickerDialogState extends State<AppTimePickerDialog> {
+  late int _hour;
+  late int _minute;
 
   @override
   void initState() {
     super.initState();
-    hour = widget.hour;
-    minute = widget.minute;
+    _hour = widget.initialTime.hour;
+    _minute = widget.initialTime.minute;
   }
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: ColorResource.naturalGrey850,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
               children: [
-                const Text(
-                  'Выберите время будильника',
+                Expanded(
+                  child: Text(
+                    'Выберите время будильника',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
                 IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 32),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
-                  flex: 3,
-                  child: TimeScrollWidget(
-                    value: hour,
-                    onChanged: (value) {
-                      setState(() {
-                        hour = value;
-                      });
-                    },
+                  child: _TimeScrollPicker(
+                    value: _hour,
                     minValue: 0,
                     maxValue: 23,
+                    onChanged: (value) => setState(() => _hour = value),
                   ),
                 ),
-                const Expanded(
-                  child: Center(
-                    child: Text(
-                      ':',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                  ),
+                Text(
+                  ':',
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Expanded(
-                  flex: 3,
-                  child: TimeScrollWidget(
-                    value: minute,
-                    onChanged: (value) {
-                      setState(() {
-                        minute = value;
-                      });
-                    },
+                  child: _TimeScrollPicker(
+                    value: _minute,
                     minValue: 0,
                     maxValue: 59,
+                    onChanged: (value) => setState(() => _minute = value),
                   ),
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 10),
-            child: ElevatedButton(
-              child: const Text(
-                'Сохранить',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
+            const SizedBox(height: 12),
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop(
-                  DateTime.now().copyWith(
-                    hour: hour,
-                    minute: minute,
-                  ),
+                  TimeOfDay(hour: _hour, minute: _minute),
                 );
               },
+              child: const Text('Сохранить'),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class TimeScrollWidget extends StatelessWidget {
-  const TimeScrollWidget({
+class _TimeScrollPicker extends StatelessWidget {
+  const _TimeScrollPicker({
     required this.value,
-    required this.onChanged,
     required this.minValue,
     required this.maxValue,
-    this.step = 1,
-    super.key,
+    required this.onChanged,
   });
-  final int step;
+
   final int value;
-  final Function(int) onChanged;
   final int minValue;
   final int maxValue;
+  final ValueChanged<int> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(
-        minHeight: 100,
-        minWidth: 100,
-        maxHeight: 150,
-        maxWidth: 150,
-      ),
-      child: Stack(
-        children: [
-          Align(
-            child: Container(
-              constraints: const BoxConstraints(
-                minHeight: 40,
-                minWidth: 100,
-                maxHeight: 60,
-                maxWidth: 120,
-              ),
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: ColorResource.naturalGrey200,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          Align(
-            child: NumberPicker(
-              step: step,
-              minValue: minValue,
-              maxValue: maxValue,
-              value: value,
-              zeroPad: true,
-              infiniteLoop: true,
-              onChanged: onChanged,
-              textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(color: ColorResource.naturalGrey700),
-              selectedTextStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 24),
-            ),
-          ),
-        ],
-      ),
+    final textTheme = Theme.of(context).textTheme;
+    return NumberPicker(
+      minValue: minValue,
+      maxValue: maxValue,
+      value: value,
+      zeroPad: true,
+      infiniteLoop: true,
+      onChanged: onChanged,
+      textStyle: textTheme.bodyLarge?.copyWith(color: Colors.grey),
+      selectedTextStyle: textTheme.headlineSmall,
     );
   }
 }

@@ -6,11 +6,11 @@ final class ProdAuthRepo implements IAuthRepo {
 
   @override
   Future<(String, String)> sendSms(String email, String code) {
-    throw UnimplementedError();
+    throw UnsupportedError('Production auth is not implemented yet.');
   }
 
   @override
   Future<String> signInSms(String email) {
-    throw UnimplementedError();
+    throw UnsupportedError('Production auth is not implemented yet.');
   }
 }

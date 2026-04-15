@@ -1,34 +1,51 @@
 part of 'alarm_bloc.dart';
 
-abstract class AlarmEvent {
+sealed class AlarmEvent extends Equatable {
   const AlarmEvent();
+
+  @override
+  List<Object?> get props => const <Object?>[];
 }
 
-class AlarmGetAllEvent extends AlarmEvent {}
+final class AlarmStarted extends AlarmEvent {
+  const AlarmStarted();
+}
 
-class AlarmCreateEvent extends AlarmEvent {
-  final DateTime dateTime;
-  final bool isRepeat;
-  final List<Weekday>? weekdays;
-  final List<int> listCategoryId;
+final class AlarmRefreshRequested extends AlarmEvent {
+  const AlarmRefreshRequested();
+}
 
-  const AlarmCreateEvent({
+final class AlarmCreateRequested extends AlarmEvent {
+  const AlarmCreateRequested({
     required this.dateTime,
     required this.isRepeat,
-    required this.listCategoryId,
-    this.weekdays,
+    required this.weekdays,
+    required this.categoryIds,
   });
+
+  final DateTime dateTime;
+  final bool isRepeat;
+  final List<Weekday> weekdays;
+  final List<int> categoryIds;
+
+  @override
+  List<Object?> get props => <Object?>[dateTime, isRepeat, weekdays, categoryIds];
 }
 
-class AlarmDeleteEvent extends AlarmEvent {
+final class AlarmDeleteRequested extends AlarmEvent {
+  const AlarmDeleteRequested(this.id);
+
   final int id;
 
-  const AlarmDeleteEvent(this.id);
+  @override
+  List<Object?> get props => <Object?>[id];
 }
 
-class AlarmUpdateEvent extends AlarmEvent {
-  final AlarmEntity alarmEntity;
-  const AlarmUpdateEvent(this.alarmEntity);
-}
+final class AlarmUpdateRequested extends AlarmEvent {
+  const AlarmUpdateRequested(this.alarm);
 
-class AlarmInitialEvent extends AlarmEvent {}
+  final AlarmEntity alarm;
+
+  @override
+  List<Object?> get props => <Object?>[alarm];
+}

@@ -1,72 +1,119 @@
 import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/data/permission.dart';
+import 'package:alearn/features/alarm/domain/alarm_exception.dart';
+import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 
 final class AlarmPlusRepo implements IAlarmRepo {
-  @override
-  String get name => 'AlarmPlusRepo';
+  AlarmPlusRepo({
+    required AlarmPermissionService permissionService,
+  }) : _permissionService = permissionService;
+
+  final AlarmPermissionService _permissionService;
 
   @override
-  Future<bool> deleteAlarm(int id) async {
-    return Alarm.stop(id);
+  Stream<AlarmSettings> get ringStream => Alarm.ringStream.stream;
+
+  @override
+  Future<void> requestPermissions() {
+    return _permissionService.requestPermissions();
   }
 
   @override
-  AlarmSettings getAlarm(int id) {
-    final alarm = Alarm.getAlarm(id);
-    if (alarm == null) {
-      throw Exception('Alarm not found');
-    }
-    return alarm;
-  }
-
-  @override
-  List<AlarmSettings> getAllAlarms() {
-    final alarms = Alarm.getAlarms()..sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
-    return alarms;
-  }
-
-  @override
-  Future<void> requestPermission() async {
-    await AlarmPermissions.checkAndroidNotificationPermission();
-    await AlarmPermissions.checkAndroidScheduleExactAlarmPermission();
-    await AlarmPermissions.checkAndroidExternalStoragePermission();
-  }
-
-  @override
-  Future<bool> createAlarm({
-    required DateTime time,
+  Future<void> scheduleAlarm({
+    required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
-    required int id,
-    String urlAudio = 'assets/marimba.mp3',
-    bool loopAudio = true,
-    bool vibrate = true,
-    double? volume,
-    double fadeDuration = 0.0,
-    bool enableNotificationOnKill = true,
-    bool androidFullScreenIntent = true,
-  }) {
-    //create Alarm
-    return Alarm.set(
-      alarmSettings: AlarmSettings(
-        id: id,
-        dateTime: time,
-        assetAudioPath: urlAudio,
-        notificationTitle: notificationTitle,
-        notificationBody: notificationBody,
-        loopAudio: loopAudio,
-        vibrate: vibrate,
-        volume: 0,
-        fadeDuration: fadeDuration,
-        enableNotificationOnKill: enableNotificationOnKill,
-        androidFullScreenIntent: androidFullScreenIntent,
-      ),
+  }) async {
+    await _setAlarm(
+      alarm: alarm,
+      notificationTitle: notificationTitle,
+      notificationBody: notificationBody,
     );
   }
 
   @override
-  Stream getRingStream() {
-    return Alarm.ringStream.stream;
+  Future<void> updateAlarm({
+    required AlarmEntity alarm,
+    required String notificationTitle,
+    required String notificationBody,
+  }) async {
+    await _setAlarm(
+      alarm: alarm,
+      notificationTitle: notificationTitle,
+      notificationBody: notificationBody,
+    );
+  }
+
+  @override
+  Future<void> deleteAlarm(int id) async {
+    final didDelete = await Alarm.stop(id);
+    if (!didDelete) {
+      throw AlarmRepositoryException('Не удалось удалить системный будильник.');
+    }
+  }
+
+  Future<void> _setAlarm({
+    required AlarmEntity alarm,
+    required String notificationTitle,
+    required String notificationBody,
+  }) async {
+    final didSet = await Alarm.set(
+      alarmSettings: AlarmSettings(
+        id: alarm.id,
+        dateTime: alarm.time,
+        assetAudioPath: alarm.assetAudioPath,
+        notificationTitle: notificationTitle,
+        notificationBody: notificationBody,
+        loopAudio: true,
+        vibrate: alarm.vibrate,
+        volume: alarm.volume,
+        androidFullScreenIntent: true,
+      ),
+    );
+    if (!didSet) {
+      throw AlarmRepositoryException('Не удалось запланировать системный будильник.');
+    }
+  }
+}
+
+final class UnsupportedAlarmRepo implements IAlarmRepo {
+  const UnsupportedAlarmRepo({required this.platformName});
+
+  final String platformName;
+
+  @override
+  Stream<AlarmSettings> get ringStream => const Stream<AlarmSettings>.empty();
+
+  @override
+  Future<void> requestPermissions() async {}
+
+  @override
+  Future<void> scheduleAlarm({
+    required AlarmEntity alarm,
+    required String notificationTitle,
+    required String notificationBody,
+  }) {
+    throw AlarmRepositoryException(
+      'Платформа $platformName не поддерживает планирование будильников.',
+    );
+  }
+
+  @override
+  Future<void> updateAlarm({
+    required AlarmEntity alarm,
+    required String notificationTitle,
+    required String notificationBody,
+  }) {
+    throw AlarmRepositoryException(
+      'Платформа $platformName не поддерживает обновление будильников.',
+    );
+  }
+
+  @override
+  Future<void> deleteAlarm(int id) {
+    throw AlarmRepositoryException(
+      'Платформа $platformName не поддерживает удаление будильников.',
+    );
   }
 }

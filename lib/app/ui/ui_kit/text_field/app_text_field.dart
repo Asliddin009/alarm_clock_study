@@ -1,5 +1,3 @@
-import 'package:alearn/app/ui/theme/app_color.dart';
-import 'package:alearn/app/ui/ui_kit/text_field/input_formatters.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,7 +11,7 @@ class BaseTextField extends StatelessWidget {
     this.filled,
     this.autoFocus,
     this.suffixIcon,
-    this.preffixIcon,
+    this.prefixIcon,
     this.padding,
     this.suffixIconConstraints,
     this.focusNode,
@@ -28,7 +26,7 @@ class BaseTextField extends StatelessWidget {
     this.keyboardType,
     this.inputFormatters,
     this.onTapOutside,
-    this.preffix,
+    this.prefix,
     this.errorText,
     this.suffix,
     this.textCapitalization = TextCapitalization.sentences,
@@ -41,7 +39,6 @@ class BaseTextField extends StatelessWidget {
     this.enabled,
     this.fillColor,
     this.counterText,
-    this.firstWorkCapitalization = true,
     this.onFieldSubmitted,
     this.autovalidateMode,
     this.focusedBorder,
@@ -64,7 +61,7 @@ class BaseTextField extends StatelessWidget {
   final bool? filled;
   final bool? autoFocus;
   final Widget? suffixIcon;
-  final Widget? preffixIcon;
+  final Widget? prefixIcon;
   final EdgeInsetsGeometry? padding;
   final BoxConstraints? suffixIconConstraints;
   final FocusNode? focusNode;
@@ -73,13 +70,13 @@ class BaseTextField extends StatelessWidget {
   final int? maxLength;
   final TextStyle? errorStyle;
   final TextStyle style;
-  final Function(String value)? onChanged;
+  final ValueChanged<String>? onChanged;
   final VoidCallback? onEditingComplete;
   final TextInputAction? textInputAction;
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
-  final Function(PointerDownEvent)? onTapOutside;
-  final Widget? preffix;
+  final TapRegionCallback? onTapOutside;
+  final Widget? prefix;
   final Widget? suffix;
   final String? errorText;
   final TextCapitalization textCapitalization;
@@ -91,8 +88,7 @@ class BaseTextField extends StatelessWidget {
   final bool? enabled;
   final Color? fillColor;
   final String? counterText;
-  final bool firstWorkCapitalization;
-  final Function(String)? onFieldSubmitted;
+  final ValueChanged<String>? onFieldSubmitted;
   final InputBorder? focusedBorder;
   final InputBorder? border;
   final InputBorder? disabledBorder;
@@ -106,8 +102,14 @@ class BaseTextField extends StatelessWidget {
   final ScrollPhysics? scrollPhysics;
   final bool readOnly;
   final Color? cursorColor;
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final defaultBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(16),
+    );
+
     return TextFormField(
       onChanged: onChanged,
       cursorHeight: cursorHeight,
@@ -131,71 +133,40 @@ class BaseTextField extends StatelessWidget {
       enableSuggestions: enableSuggestions,
       keyboardType: keyboardType,
       style: style,
-      inputFormatters: inputFormatters ??
-          [
-            LetterWithSpaceInputFormatter(
-              firstWordCapitalization: firstWorkCapitalization,
-            ),
-          ],
+      inputFormatters: inputFormatters,
       cursorColor: cursorColor,
+      onTapOutside: onTapOutside,
       decoration: InputDecoration(
         errorText: errorText,
         filled: filled,
-        focusedErrorBorder: focusedErrorBorder ??
-            const OutlineInputBorder(
-              borderSide: BorderSide(color: ColorResource.primaryRed500),
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
-            ),
-        errorBorder: errorBorder ??
-            const OutlineInputBorder(
-              borderSide: BorderSide(color: ColorResource.primaryRed500),
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
-            ),
-        contentPadding: padding,
-        isDense: isDense,
         fillColor: fillColor,
         hintText: hintText,
         hintStyle: hintStyle,
-        prefix: preffix,
-        prefixIcon: preffixIcon,
+        prefix: prefix,
+        prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         suffix: suffix,
         counterText: counterText,
+        contentPadding: padding,
+        isDense: isDense,
+        errorStyle: errorStyle,
         focusedBorder: focusedBorder ??
-            const OutlineInputBorder(
-              borderSide: BorderSide(color: ColorResource.naturalGrey950),
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
+            defaultBorder.copyWith(
+              borderSide: BorderSide(color: theme.colorScheme.primary),
             ),
-        border: border ??
-            const OutlineInputBorder(
-              borderSide: BorderSide(color: ColorResource.naturalGrey950),
-              borderRadius: BorderRadius.all(Radius.circular(16)),
+        border: border ?? defaultBorder,
+        disabledBorder: disabledBorder ?? defaultBorder,
+        enabledBorder: enabledBorder ?? defaultBorder,
+        errorBorder: errorBorder ??
+            defaultBorder.copyWith(
+              borderSide: BorderSide(color: theme.colorScheme.error),
             ),
-        disabledBorder: disabledBorder ??
-            const OutlineInputBorder(
-              borderSide: BorderSide(color: ColorResource.naturalGrey950),
-              borderRadius: BorderRadius.all(Radius.circular(16)),
+        focusedErrorBorder: focusedErrorBorder ??
+            defaultBorder.copyWith(
+              borderSide: BorderSide(color: theme.colorScheme.error),
             ),
-        enabledBorder: enabledBorder ??
-            const OutlineInputBorder(
-              borderSide: BorderSide(color: ColorResource.naturalGrey950),
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
-            ),
-        prefixIconConstraints: prefixIconConstraints ??
-            const BoxConstraints(
-              minHeight: 20,
-              maxHeight: 40,
-              minWidth: 20,
-              maxWidth: 40,
-            ),
+        prefixIconConstraints: prefixIconConstraints,
+        suffixIconConstraints: suffixIconConstraints,
       ),
       scrollPhysics: scrollPhysics,
       expands: expands,

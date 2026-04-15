@@ -1,36 +1,37 @@
 part of 'category_cubit.dart';
 
 sealed class CategoryState extends Equatable {
-  const CategoryState();
+  const CategoryState({
+    this.categories = const <CategoryEntity>[],
+  });
+
+  final List<CategoryEntity> categories;
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => <Object?>[categories];
 }
 
 final class CategoryInitial extends CategoryState {
-  @override
-  List<Object> get props => [];
+  const CategoryInitial();
 }
 
-final class CategoryLoadingState extends CategoryState {}
+final class CategoryLoadingState extends CategoryState {
+  const CategoryLoadingState({super.categories});
+}
 
-final class CategoryErrorState extends CategoryState {}
+final class CategoryErrorState extends CategoryState {
+  const CategoryErrorState({
+    required this.message,
+    super.categories,
+  });
+
+  final String message;
+
+  @override
+  List<Object?> get props => <Object?>[message, categories];
+}
 
 final class CategoryDoneState extends CategoryState {
-  const CategoryDoneState(this.listCategory);
-  final List<CategoryEntity> listCategory;
-
-  Map<String, dynamic> toJson() {
-    return {
-      'listCategory': listCategory.map((e) => e.toJson()).toList(),
-    };
-  }
-
-  @override
-  String toString() {
-    return 'CategoryDoneState{listCategory: $listCategory}';
-  }
-
-  @override
-  List<Object> get props => [listCategory];
+  const CategoryDoneState(List<CategoryEntity> categories)
+      : super(categories: categories);
 }
