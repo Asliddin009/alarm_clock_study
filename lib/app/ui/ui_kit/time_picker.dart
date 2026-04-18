@@ -12,10 +12,7 @@ Future<TimeOfDay?> showAppTimePickerDialog(
 }
 
 class AppTimePickerDialog extends StatefulWidget {
-  const AppTimePickerDialog({
-    required this.initialTime,
-    super.key,
-  });
+  const AppTimePickerDialog({required this.initialTime, super.key});
 
   final TimeOfDay initialTime;
 
@@ -68,10 +65,7 @@ class _AppTimePickerDialogState extends State<AppTimePickerDialog> {
                     onChanged: (value) => setState(() => _hour = value),
                   ),
                 ),
-                Text(
-                  ':',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
+                Text(':', style: Theme.of(context).textTheme.headlineSmall),
                 Expanded(
                   child: _TimeScrollPicker(
                     value: _minute,
@@ -85,9 +79,9 @@ class _AppTimePickerDialogState extends State<AppTimePickerDialog> {
             const SizedBox(height: 12),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(
-                  TimeOfDay(hour: _hour, minute: _minute),
-                );
+                Navigator.of(
+                  context,
+                ).pop(TimeOfDay(hour: _hour, minute: _minute));
               },
               child: const Text('Сохранить'),
             ),

@@ -5,9 +5,8 @@ import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 
 final class AlarmPlusRepo implements IAlarmRepo {
-  AlarmPlusRepo({
-    required AlarmPermissionService permissionService,
-  }) : _permissionService = permissionService;
+  AlarmPlusRepo({required AlarmPermissionService permissionService})
+    : _permissionService = permissionService;
 
   final AlarmPermissionService _permissionService;
 
@@ -72,7 +71,9 @@ final class AlarmPlusRepo implements IAlarmRepo {
       ),
     );
     if (!didSet) {
-      throw AlarmRepositoryException('Не удалось запланировать системный будильник.');
+      throw AlarmRepositoryException(
+        'Не удалось запланировать системный будильник.',
+      );
     }
   }
 }

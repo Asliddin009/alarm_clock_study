@@ -4,7 +4,10 @@ import 'package:flutter/services.dart';
 /// +7 (###) ###-##-##
 class PhoneInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     String newText = newValue.text;
 
     if (newValue.text.length < oldValue.text.length) {
@@ -45,7 +48,10 @@ class LetterWithSpaceInputFormatter extends TextInputFormatter {
   final bool firstWordCapitalization;
 
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     final text = newValue.text;
 
     // Проверяем, содержит ли текст только пробелы
@@ -70,7 +76,10 @@ class LetterWithSpaceInputFormatter extends TextInputFormatter {
 /// Formatter для ввода даты в формате DD.MM.YYYY
 class DateInputFormatter extends TextInputFormatter {
   @override
-  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
     String newText = newValue.text;
 
     // Если текст сокращается, возвращаем новое значение (удаление символов)
@@ -87,10 +96,12 @@ class DateInputFormatter extends TextInputFormatter {
       formattedText += newText.substring(0, newText.length.clamp(0, 2)); // День
     }
     if (newText.length > 2) {
-      formattedText += '.${newText.substring(2, newText.length.clamp(2, 4))}'; // Месяц
+      formattedText +=
+          '.${newText.substring(2, newText.length.clamp(2, 4))}'; // Месяц
     }
     if (newText.length > 4) {
-      formattedText += '.${newText.substring(4, newText.length.clamp(4, 8))}'; // Год
+      formattedText +=
+          '.${newText.substring(4, newText.length.clamp(4, 8))}'; // Год
     }
 
     // Ограничиваем длину текста до 10 символов (полный формат DD.MM.YYYY)

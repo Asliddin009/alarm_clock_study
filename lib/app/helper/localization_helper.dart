@@ -8,12 +8,6 @@ class LocalizationHelper {
   ///
   /// В случае, если локализация не найдена, выдает exception
   static AppLocalizations getLocalizations(BuildContext context) {
-    final localization = AppLocalizations.of(context);
-    if (localization == null) {
-      throw Exception(
-        'Localizations not found. Ensure localization is initialized properly.',
-      );
-    }
-    return localization;
+    return AppLocalizations.of(context)!;
   }
 }

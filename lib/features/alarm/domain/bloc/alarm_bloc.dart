@@ -8,10 +8,9 @@ part 'alarm_event.dart';
 part 'alarm_state.dart';
 
 class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
-  AlarmBloc({
-    required AlarmService alarmService,
-  })  : _alarmService = alarmService,
-        super(const AlarmInitialState()) {
+  AlarmBloc({required AlarmService alarmService})
+    : _alarmService = alarmService,
+      super(const AlarmInitialState()) {
     on<AlarmStarted>(_onStarted);
     on<AlarmRefreshRequested>(_onRefreshRequested);
     on<AlarmCreateRequested>(_onCreateRequested);
@@ -23,10 +22,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
 
   Stream<AlarmSettings> get ringStream => _alarmService.ringStream;
 
-  Future<void> _onStarted(
-    AlarmStarted event,
-    Emitter<AlarmState> emit,
-  ) async {
+  Future<void> _onStarted(AlarmStarted event, Emitter<AlarmState> emit) async {
     emit(AlarmLoadingState(message: 'Подготавливаем будильники'));
     try {
       await _alarmService.initialize();
@@ -34,9 +30,7 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
       emit(AlarmLoadedState(alarms));
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
-      emit(
-        AlarmErrorState(message: 'Не удалось запустить будильники. $error'),
-      );
+      emit(AlarmErrorState(message: 'Не удалось запустить будильники. $error'));
     }
   }
 
@@ -44,7 +38,9 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
     AlarmRefreshRequested event,
     Emitter<AlarmState> emit,
   ) async {
-    emit(AlarmLoadingState(message: 'Загружаем будильники', alarms: state.alarms));
+    emit(
+      AlarmLoadingState(message: 'Загружаем будильники', alarms: state.alarms),
+    );
     try {
       final alarms = await _alarmService.loadAlarms();
       emit(AlarmLoadedState(alarms));
@@ -106,7 +102,9 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
     AlarmUpdateRequested event,
     Emitter<AlarmState> emit,
   ) async {
-    emit(AlarmLoadingState(message: 'Обновляем будильник', alarms: state.alarms));
+    emit(
+      AlarmLoadingState(message: 'Обновляем будильник', alarms: state.alarms),
+    );
     try {
       final alarms = await _alarmService.updateAlarm(event.alarm);
       emit(AlarmLoadedState(alarms));

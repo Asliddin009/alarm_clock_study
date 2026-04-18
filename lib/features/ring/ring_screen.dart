@@ -1,3 +1,6 @@
+import 'package:alearn/app/helper/localization_helper.dart';
+import 'package:alearn/app/ui/ui_kit/app_container.dart';
+import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
 import 'package:alearn/app/ui/ui_kit/app_snack_bar.dart';
 import 'package:alearn/di/app_dependencies_scope.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
@@ -18,12 +21,13 @@ class AlarmRingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = LocalizationHelper.getLocalizations(context);
     final alarm = _findAlarm(context.watch<AlarmBloc>().state.alarms);
     final resolvedQuestionService =
         questionService ?? AppDependenciesScope.of(context).ringQuestionService;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Пора просыпаться')),
+      appBar: AppBar(title: Text(localizations.wake_up_title)),
       body: SafeArea(
         child: FutureBuilder<RingQuestion?>(
           future: resolvedQuestionService.buildQuestionForAlarm(alarm),
@@ -34,46 +38,56 @@ class AlarmRingScreen extends StatelessWidget {
             final question = snapshot.data;
             return Padding(
               padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    alarm == null
-                        ? 'Будильник уже не найден, но звонок можно безопасно остановить.'
-                        : 'Будильник ${alarm.formattedTime}',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  if (question == null)
-                    const Text(
-                      'Вопрос для квиза сейчас недоступен. Можно выключить будильник вручную.',
-                    )
-                  else ...[
-                    Text(
-                      question.prompt,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    ...question.options.map(
-                      (option) => Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: ElevatedButton(
-                          onPressed: () => _handleAnswer(
-                            context,
-                            option: option,
-                            correctAnswer: question.correctAnswer,
-                          ),
-                          child: Text(option),
-                        ),
+              child: AppEntrance(
+                child: AppContainer(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        alarm == null
+                            ? localizations.ring_alarm_missing
+                            : localizations.ring_alarm_label(
+                                alarm.formattedTime,
+                              ),
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
-                    ),
-                  ],
-                  const Spacer(),
-                  OutlinedButton(
-                    onPressed: () => _stopAlarm(context),
-                    child: const Text('Остановить будильник'),
+                      const SizedBox(height: 16),
+                      if (question == null)
+                        Text(localizations.quiz_unavailable)
+                      else ...[
+                        Text(
+                          question.prompt,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 16),
+                        ...question.options.asMap().entries.map(
+                          (entry) => Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: AppEntrance(
+                              delay: Duration(
+                                milliseconds: 80 + (entry.key * 45),
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () => _handleAnswer(
+                                  context,
+                                  option: entry.value,
+                                  correctAnswer: question.correctAnswer,
+                                ),
+                                child: Text(entry.value),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                      const Spacer(),
+                      OutlinedButton(
+                        onPressed: () => _stopAlarm(context),
+                        child: Text(localizations.stop_alarm),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             );
           },
@@ -97,7 +111,8 @@ class AlarmRingScreen extends StatelessWidget {
     required String correctAnswer,
   }) {
     if (option != correctAnswer) {
-      AppSnackBar.showInfo(context, 'Неверно, попробуйте ещё раз.');
+      final localizations = LocalizationHelper.getLocalizations(context);
+      AppSnackBar.showInfo(context, localizations.wrong_answer);
       return;
     }
     _stopAlarm(context);

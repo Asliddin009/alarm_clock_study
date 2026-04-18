@@ -1,4 +1,6 @@
 import 'package:alearn/app/helper/localization_helper.dart';
+import 'package:alearn/app/ui/ui_kit/app_container.dart';
+import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/ui/widgets/edit_alarm_tile.dart';
@@ -10,10 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class CreateAlarmScreen extends StatefulWidget {
-  const CreateAlarmScreen({
-    this.initialAlarm,
-    super.key,
-  });
+  const CreateAlarmScreen({this.initialAlarm, super.key});
 
   final AlarmEntity? initialAlarm;
 
@@ -30,17 +29,13 @@ class _CreateAlarmScreenState extends State<CreateAlarmScreen> {
   @override
   void initState() {
     super.initState();
-    final initialDate = widget.initialAlarm?.time ?? DateTime.now().add(
-          const Duration(minutes: 1),
-        );
+    final initialDate =
+        widget.initialAlarm?.time ??
+        DateTime.now().add(const Duration(minutes: 1));
     _selectedDateTime = initialDate.copyWith(second: 0, millisecond: 0);
     _isRepeat = widget.initialAlarm?.isRepeat ?? false;
-    _selectedWeekdays = <Weekday>[
-      ...?widget.initialAlarm?.weekdays,
-    ];
-    _selectedCategoryIds = <int>{
-      ...?widget.initialAlarm?.listCategoryIds,
-    };
+    _selectedWeekdays = <Weekday>[...?widget.initialAlarm?.weekdays];
+    _selectedCategoryIds = <int>{...?widget.initialAlarm?.listCategoryIds};
   }
 
   @override
@@ -50,45 +45,54 @@ class _CreateAlarmScreenState extends State<CreateAlarmScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Редактирование будильника' : localization.create_alarm),
+        title: Text(
+          isEditing ? localization.edit_alarm_title : localization.create_alarm,
+        ),
       ),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
           children: [
-            EditItemWidget(
-              title: localization.date,
-              leadingIcon: Icons.calendar_today_outlined,
-              trailing: Text(
-                DateFormat('dd.MM.yyyy').format(_selectedDateTime),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              onTap: _pickDate,
-            ),
-            const SizedBox(height: 12),
-            AlarmTimePickerField(
-              value: _selectedDateTime,
-              onChanged: (value) => setState(() => _selectedDateTime = value),
-            ),
-            const SizedBox(height: 12),
-            Card(
-              margin: EdgeInsets.zero,
-              child: SwitchListTile(
-                value: _isRepeat,
-                title: const Text('Повторять'),
-                onChanged: (value) => setState(() => _isRepeat = value),
+            AppEntrance(
+              child: EditItemWidget(
+                title: localization.date,
+                leadingIcon: Icons.calendar_today_outlined,
+                trailing: Text(
+                  DateFormat('dd.MM.yyyy').format(_selectedDateTime),
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                onTap: _pickDate,
               ),
             ),
             const SizedBox(height: 12),
-            Card(
-              margin: EdgeInsets.zero,
-              child: Padding(
+            AppEntrance(
+              delay: const Duration(milliseconds: 60),
+              child: AlarmTimePickerField(
+                value: _selectedDateTime,
+                onChanged: (value) => setState(() => _selectedDateTime = value),
+              ),
+            ),
+            const SizedBox(height: 12),
+            AppEntrance(
+              delay: const Duration(milliseconds: 110),
+              child: AppContainer(
+                child: SwitchListTile(
+                  value: _isRepeat,
+                  title: Text(localization.repeat_alarm),
+                  onChanged: (value) => setState(() => _isRepeat = value),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            AppEntrance(
+              delay: const Duration(milliseconds: 160),
+              child: AppContainer(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Дни недели',
+                      localization.weekdays_title,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 12),
@@ -104,14 +108,25 @@ class _CreateAlarmScreenState extends State<CreateAlarmScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            _CategorySelector(
-              selectedCategoryIds: _selectedCategoryIds,
-              onChanged: (value) => setState(() => _selectedCategoryIds = value),
+            AppEntrance(
+              delay: const Duration(milliseconds: 220),
+              child: _CategorySelector(
+                selectedCategoryIds: _selectedCategoryIds,
+                onChanged: (value) =>
+                    setState(() => _selectedCategoryIds = value),
+              ),
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _saveAlarm,
-              child: Text(isEditing ? 'Сохранить изменения' : 'Создать'),
+            AppEntrance(
+              delay: const Duration(milliseconds: 280),
+              child: ElevatedButton(
+                onPressed: _saveAlarm,
+                child: Text(
+                  isEditing
+                      ? localization.save_changes_action
+                      : localization.create_action,
+                ),
+              ),
             ),
           ],
         ),
@@ -143,24 +158,24 @@ class _CreateAlarmScreenState extends State<CreateAlarmScreen> {
   void _saveAlarm() {
     if (widget.initialAlarm == null) {
       context.read<AlarmBloc>().add(
-            AlarmCreateRequested(
-              dateTime: _selectedDateTime,
-              isRepeat: _isRepeat,
-              weekdays: _selectedWeekdays,
-              categoryIds: _selectedCategoryIds.toList(growable: false),
-            ),
-          );
+        AlarmCreateRequested(
+          dateTime: _selectedDateTime,
+          isRepeat: _isRepeat,
+          weekdays: _selectedWeekdays,
+          categoryIds: _selectedCategoryIds.toList(growable: false),
+        ),
+      );
     } else {
       context.read<AlarmBloc>().add(
-            AlarmUpdateRequested(
-              widget.initialAlarm!.copyWith(
-                time: _selectedDateTime,
-                isRepeat: _isRepeat,
-                weekdays: _selectedWeekdays,
-                listCategoryIds: _selectedCategoryIds.toList(growable: false),
-              ),
-            ),
-          );
+        AlarmUpdateRequested(
+          widget.initialAlarm!.copyWith(
+            time: _selectedDateTime,
+            isRepeat: _isRepeat,
+            weekdays: _selectedWeekdays,
+            listCategoryIds: _selectedCategoryIds.toList(growable: false),
+          ),
+        ),
+      );
     }
     Navigator.of(context).pop();
   }
@@ -180,44 +195,45 @@ class _CategorySelector extends StatelessWidget {
     return BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) {
         final categories = state.categories;
-        return Card(
-          margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Категории для квиза',
-                  style: Theme.of(context).textTheme.titleMedium,
+        final localization = LocalizationHelper.getLocalizations(context);
+        return AppContainer(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                localization.quiz_categories_title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 12),
+              if (categories.isEmpty)
+                Text(localization.categories_loading_hint)
+              else
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: categories
+                      .map((category) {
+                        final isSelected = selectedCategoryIds.contains(
+                          category.id,
+                        );
+                        return FilterChip(
+                          label: Text(category.name),
+                          selected: isSelected,
+                          onSelected: (_) {
+                            final updated = <int>{...selectedCategoryIds};
+                            if (isSelected) {
+                              updated.remove(category.id);
+                            } else {
+                              updated.add(category.id);
+                            }
+                            onChanged(updated);
+                          },
+                        );
+                      })
+                      .toList(growable: false),
                 ),
-                const SizedBox(height: 12),
-                if (categories.isEmpty)
-                  const Text('Категории загрузятся автоматически.')
-                else
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: categories.map((category) {
-                      final isSelected =
-                          selectedCategoryIds.contains(category.id);
-                      return FilterChip(
-                        label: Text(category.name),
-                        selected: isSelected,
-                        onSelected: (_) {
-                          final updated = <int>{...selectedCategoryIds};
-                          if (isSelected) {
-                            updated.remove(category.id);
-                          } else {
-                            updated.add(category.id);
-                          }
-                          onChanged(updated);
-                        },
-                      );
-                    }).toList(growable: false),
-                  ),
-              ],
-            ),
+            ],
           ),
         );
       },

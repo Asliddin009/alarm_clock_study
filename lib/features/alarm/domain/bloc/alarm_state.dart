@@ -1,9 +1,7 @@
 part of 'alarm_bloc.dart';
 
 sealed class AlarmState extends Equatable {
-  const AlarmState({
-    this.alarms = const <AlarmEntity>[],
-  });
+  const AlarmState({this.alarms = const <AlarmEntity>[]});
 
   final List<AlarmEntity> alarms;
 
@@ -16,10 +14,7 @@ final class AlarmInitialState extends AlarmState {
 }
 
 final class AlarmLoadingState extends AlarmState {
-  const AlarmLoadingState({
-    required this.message,
-    super.alarms,
-  });
+  const AlarmLoadingState({required this.message, super.alarms});
 
   final String message;
 
@@ -32,10 +27,7 @@ final class AlarmLoadedState extends AlarmState {
 }
 
 final class AlarmErrorState extends AlarmState {
-  const AlarmErrorState({
-    required this.message,
-    super.alarms,
-  });
+  const AlarmErrorState({required this.message, super.alarms});
 
   final String message;
 

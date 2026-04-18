@@ -1,3 +1,4 @@
+import 'package:alearn/app/helper/localization_helper.dart';
 import 'package:alearn/app/ui/ui_kit/time_picker.dart';
 import 'package:alearn/features/alarm/ui/widgets/edit_alarm_tile.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,9 @@ class AlarmTimePickerField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = LocalizationHelper.getLocalizations(context);
     return EditItemWidget(
-      title: 'Время',
+      title: localization.time,
       leadingIcon: Icons.schedule,
       trailing: Text(
         TimeOfDay.fromDateTime(value).format(context),

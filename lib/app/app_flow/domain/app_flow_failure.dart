@@ -1,0 +1,1 @@
+enum AppFlowFailure { invalidCredentials, unexpected }

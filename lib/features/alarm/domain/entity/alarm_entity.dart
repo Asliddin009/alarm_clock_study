@@ -15,7 +15,7 @@ class AlarmEntity extends Equatable {
     this.assetAudioPath = defaultAudioAssetPath,
   });
 
-  static const String defaultAudioAssetPath = 'assets/marimba.mp3';
+  static const String defaultAudioAssetPath = 'assets/music/marimba.mp3';
 
   final int id;
   final DateTime time;
@@ -31,14 +31,14 @@ class AlarmEntity extends Equatable {
     final rawWeekdays = json['weekdays'];
     final parsedWeekdays = rawWeekdays is List
         ? rawWeekdays
-            .map((dynamic value) => Weekday.values.byName(value.toString()))
-            .toList(growable: false)
+              .map((dynamic value) => Weekday.values.byName(value.toString()))
+              .toList(growable: false)
         : const <Weekday>[];
     final rawCategoryIds = json['listCategoryIds'] ?? json['listCategoryId'];
     final parsedCategoryIds = rawCategoryIds is List
         ? rawCategoryIds
-            .map((dynamic value) => int.parse(value.toString()))
-            .toList(growable: false)
+              .map((dynamic value) => int.parse(value.toString()))
+              .toList(growable: false)
         : const <int>[];
     final isRepeat = switch (json['isRepeat']) {
       bool value => value,
@@ -55,8 +55,9 @@ class AlarmEntity extends Equatable {
       vibrate: json['vibrate'] as bool? ?? true,
       volume: (json['volume'] as num?)?.toDouble() ?? 0.5,
       listCategoryIds: parsedCategoryIds,
-      assetAudioPath:
-          json['assetAudioPath'] as String? ?? AlarmEntity.defaultAudioAssetPath,
+      assetAudioPath: _normalizeAssetAudioPath(
+        json['assetAudioPath'] as String?,
+      ),
     );
   }
 
@@ -94,7 +95,9 @@ class AlarmEntity extends Equatable {
       'time': time.toIso8601String(),
       'isActive': isActive,
       'isRepeat': isRepeat,
-      'weekdays': weekdays.map((weekday) => weekday.name).toList(growable: false),
+      'weekdays': weekdays
+          .map((weekday) => weekday.name)
+          .toList(growable: false),
       'vibrate': vibrate,
       'volume': volume,
       'assetAudioPath': assetAudioPath,
@@ -104,6 +107,19 @@ class AlarmEntity extends Equatable {
 
   String toEncodedJson() => jsonEncode(toJson());
 
+  static String _normalizeAssetAudioPath(String? rawPath) {
+    if (rawPath == null || rawPath.isEmpty) {
+      return defaultAudioAssetPath;
+    }
+    if (rawPath.startsWith('assets/music/')) {
+      return rawPath;
+    }
+    if (rawPath.startsWith('assets/')) {
+      return 'assets/music/${rawPath.split('/').last}';
+    }
+    return rawPath;
+  }
+
   String get formattedTime {
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
@@ -112,16 +128,16 @@ class AlarmEntity extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-        id,
-        time,
-        isActive,
-        isRepeat,
-        weekdays,
-        vibrate,
-        volume,
-        listCategoryIds,
-        assetAudioPath,
-      ];
+    id,
+    time,
+    isActive,
+    isRepeat,
+    weekdays,
+    vibrate,
+    volume,
+    listCategoryIds,
+    assetAudioPath,
+  ];
 }
 
 enum Weekday {

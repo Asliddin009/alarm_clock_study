@@ -21,13 +21,13 @@ class _ExampleAlarmHomeShortcutButtonState
     }
 
     context.read<AlarmBloc>().add(
-          AlarmCreateRequested(
-            dateTime: dateTime,
-            isRepeat: false,
-            weekdays: const [],
-            categoryIds: const [],
-          ),
-        );
+      AlarmCreateRequested(
+        dateTime: dateTime,
+        isRepeat: false,
+        weekdays: const [],
+        categoryIds: const [],
+      ),
+    );
 
     setState(() => showMenu = false);
   }
@@ -40,28 +40,35 @@ class _ExampleAlarmHomeShortcutButtonState
           onLongPress: () => setState(() => showMenu = true),
           child: FloatingActionButton(
             onPressed: () => _scheduleQuickAlarm(0),
-            backgroundColor: Colors.redAccent,
             heroTag: 'quick-alarm',
-            child: const Text('RING\nNOW', textAlign: TextAlign.center),
+            child: const Text('NOW', textAlign: TextAlign.center),
           ),
         ),
-        if (showMenu)
-          Row(
-            children: [
-              TextButton(
-                onPressed: () => _scheduleQuickAlarm(24),
-                child: const Text('+24h'),
-              ),
-              TextButton(
-                onPressed: () => _scheduleQuickAlarm(36),
-                child: const Text('+36h'),
-              ),
-              TextButton(
-                onPressed: () => _scheduleQuickAlarm(48),
-                child: const Text('+48h'),
-              ),
-            ],
-          ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          child: showMenu
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => _scheduleQuickAlarm(24),
+                        child: const Text('+24h'),
+                      ),
+                      TextButton(
+                        onPressed: () => _scheduleQuickAlarm(36),
+                        child: const Text('+36h'),
+                      ),
+                      TextButton(
+                        onPressed: () => _scheduleQuickAlarm(48),
+                        child: const Text('+48h'),
+                      ),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
       ],
     );
   }

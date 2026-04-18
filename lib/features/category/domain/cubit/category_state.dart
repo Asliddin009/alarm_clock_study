@@ -1,9 +1,7 @@
 part of 'category_cubit.dart';
 
 sealed class CategoryState extends Equatable {
-  const CategoryState({
-    this.categories = const <CategoryEntity>[],
-  });
+  const CategoryState({this.categories = const <CategoryEntity>[]});
 
   final List<CategoryEntity> categories;
 
@@ -20,10 +18,7 @@ final class CategoryLoadingState extends CategoryState {
 }
 
 final class CategoryErrorState extends CategoryState {
-  const CategoryErrorState({
-    required this.message,
-    super.categories,
-  });
+  const CategoryErrorState({required this.message, super.categories});
 
   final String message;
 
@@ -33,5 +28,5 @@ final class CategoryErrorState extends CategoryState {
 
 final class CategoryDoneState extends CategoryState {
   const CategoryDoneState(List<CategoryEntity> categories)
-      : super(categories: categories);
+    : super(categories: categories);
 }

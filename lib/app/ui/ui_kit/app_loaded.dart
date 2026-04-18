@@ -1,3 +1,5 @@
+import 'package:alearn/app/helper/localization_helper.dart';
+import 'package:alearn/app/ui/ui_kit/app_splash_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppLoader extends StatelessWidget {
@@ -5,10 +7,11 @@ class AppLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
+    final localizations = LocalizationHelper.getLocalizations(context);
+    return AppSplashScreen(
+      title: localizations.splash_title,
+      subtitle: localizations.splash_subtitle,
+      showLoader: true,
     );
   }
 }

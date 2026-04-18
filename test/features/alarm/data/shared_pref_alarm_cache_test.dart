@@ -22,9 +22,13 @@ void main() {
     final cache = SharedPrefAlarmCache(sharedPreferences);
 
     final alarms = await cache.getAll();
-    final normalizedJson = jsonDecode(
-      sharedPreferences.getStringList(SharedPrefAlarmCache.storageKey)!.single,
-    ) as Map<String, dynamic>;
+    final normalizedJson =
+        jsonDecode(
+              sharedPreferences
+                  .getStringList(SharedPrefAlarmCache.storageKey)!
+                  .single,
+            )
+            as Map<String, dynamic>;
 
     expect(alarms.single.listCategoryIds, <int>[5]);
     expect(normalizedJson.containsKey('listCategoryIds'), isTrue);

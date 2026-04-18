@@ -1,6 +1,9 @@
 PODS:
   - alarm (0.0.1):
     - Flutter
+  - audioplayers_darwin (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - Flutter (1.0.0)
   - flutter_fgbg (0.0.1):
     - Flutter
@@ -17,6 +20,7 @@ PODS:
 
 DEPENDENCIES:
   - alarm (from `.symlinks/plugins/alarm/ios`)
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
   - Flutter (from `Flutter`)
   - flutter_fgbg (from `.symlinks/plugins/flutter_fgbg/ios`)
   - flutter_ringtone_player (from `.symlinks/plugins/flutter_ringtone_player/ios`)
@@ -27,6 +31,8 @@ DEPENDENCIES:
 EXTERNAL SOURCES:
   alarm:
     :path: ".symlinks/plugins/alarm/ios"
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/darwin"
   Flutter:
     :path: Flutter
   flutter_fgbg:
@@ -42,6 +48,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   alarm: 839eba06f468218db1b9f1736e32322db958e857
+  audioplayers_darwin: 4f9ca89d92d3d21cec7ec580e78ca888e5fb68bd
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_fgbg: d3da78df78454b1808f0829a5da9cd17dfe16444
   flutter_ringtone_player: a77c42464250845611eaa44c27e8714acc800138

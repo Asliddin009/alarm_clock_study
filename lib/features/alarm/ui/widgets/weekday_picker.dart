@@ -16,22 +16,24 @@ class WeekdayPicker extends StatelessWidget {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: Weekday.values.map((weekday) {
-        final isSelected = selectedWeekdays.contains(weekday);
-        return FilterChip(
-          label: Text(weekday.shortLabel),
-          selected: isSelected,
-          onSelected: (_) {
-            final updated = <Weekday>[...selectedWeekdays];
-            if (isSelected) {
-              updated.remove(weekday);
-            } else {
-              updated.add(weekday);
-            }
-            onChanged(updated);
-          },
-        );
-      }).toList(growable: false),
+      children: Weekday.values
+          .map((weekday) {
+            final isSelected = selectedWeekdays.contains(weekday);
+            return FilterChip(
+              label: Text(weekday.shortLabel),
+              selected: isSelected,
+              onSelected: (_) {
+                final updated = <Weekday>[...selectedWeekdays];
+                if (isSelected) {
+                  updated.remove(weekday);
+                } else {
+                  updated.add(weekday);
+                }
+                onChanged(updated);
+              },
+            );
+          })
+          .toList(growable: false),
     );
   }
 }

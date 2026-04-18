@@ -15,7 +15,9 @@ class CategoryCubit extends Cubit<CategoryState> {
     try {
       final baseCategories = await repo.getBaseCategories();
       final fullCategories = await repo.getCategories();
-      emit(CategoryDoneState(_deduplicate([...baseCategories, ...fullCategories])));
+      emit(
+        CategoryDoneState(_deduplicate([...baseCategories, ...fullCategories])),
+      );
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(

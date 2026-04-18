@@ -1,9 +1,10 @@
+import 'package:alearn/features/auth/domain/auth_session.dart';
+
 abstract interface class IAuthRepo {
   String get name;
 
-  Future<String> signInSms(String email);
-  Future<(String accessToken, String refreshToken)> sendSms(
-    String email,
-    String code,
-  );
+  Future<AuthSession?> restoreSession();
+  Future<AuthSession> signIn(String usernameOrEmail, String password);
+  Future<AuthSession> continueAsGuest();
+  Future<void> logout();
 }

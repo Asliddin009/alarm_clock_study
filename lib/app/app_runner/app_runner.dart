@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:alearn/app/app_runner/app.dart';
 import 'package:alearn/app/app_runner/app_env.dart';
+import 'package:alearn/app/helper/localization_helper.dart';
+import 'package:alearn/app/localization/app_localizations.dart';
+import 'package:alearn/app/ui/ui_kit/app_splash_screen.dart';
 import 'package:alearn/di/app_dependencies.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,19 +63,15 @@ class _BootstrapAppState extends State<_BootstrapApp> {
     return FutureBuilder<AppDependencies>(
       future: _bootstrapFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const MaterialApp(
-            home: Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            ),
-          );
-        }
-
         if (snapshot.hasError) {
           return _BootstrapErrorApp(
             error: snapshot.error!,
             onRetry: _retryBootstrap,
           );
+        }
+
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const MaterialApp(home: AppSplashScreen(showLoader: true));
         }
 
         final appDependencies = snapshot.requireData;
@@ -83,10 +82,7 @@ class _BootstrapAppState extends State<_BootstrapApp> {
 }
 
 class _BootstrapErrorApp extends StatelessWidget {
-  const _BootstrapErrorApp({
-    required this.error,
-    required this.onRetry,
-  });
+  const _BootstrapErrorApp({required this.error, required this.onRetry});
 
   final Object error;
   final VoidCallback onRetry;
@@ -94,33 +90,37 @@ class _BootstrapErrorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Ошибка запуска')),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.error_outline,
-                  size: 56,
-                  color: Colors.redAccent,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Builder(
+        builder: (context) {
+          final localizations = LocalizationHelper.getLocalizations(context);
+          return Scaffold(
+            appBar: AppBar(title: Text(localizations.bootstrap_error_title)),
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      size: 56,
+                      color: Colors.redAccent,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(error.toString(), textAlign: TextAlign.center),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: onRetry,
+                      child: Text(localizations.retry),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  error.toString(),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: onRetry,
-                  child: const Text('Повторить'),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

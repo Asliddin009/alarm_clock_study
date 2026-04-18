@@ -29,10 +29,7 @@ class EditItemWidget extends StatelessWidget {
             const SizedBox(width: 12),
           ],
           Expanded(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            child: Text(title, style: Theme.of(context).textTheme.titleMedium),
           ),
           if (trailing != null) trailing!,
         ],

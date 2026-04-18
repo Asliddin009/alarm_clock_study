@@ -16,9 +16,8 @@ class RingQuestion {
 }
 
 class RingQuestionService {
-  RingQuestionService({
-    required ICategoryRepo categoryRepo,
-  }) : _categoryRepo = categoryRepo;
+  RingQuestionService({required ICategoryRepo categoryRepo})
+    : _categoryRepo = categoryRepo;
 
   final ICategoryRepo _categoryRepo;
 
@@ -35,9 +34,8 @@ class RingQuestionService {
       return null;
     }
 
-    final correctWord = category.wordList[alarm == null
-        ? 0
-        : alarm.id % category.wordList.length];
+    final correctWord = category
+        .wordList[alarm == null ? 0 : alarm.id % category.wordList.length];
     final options = _buildOptions(
       categories: categories,
       correctWord: correctWord,
@@ -87,7 +85,11 @@ class RingQuestionService {
 
     final distractors = pool.toList(growable: false)..sort();
     final options = <String>[correctWord.enWord];
-    for (var index = 0; index < distractors.length && options.length < 4; index++) {
+    for (
+      var index = 0;
+      index < distractors.length && options.length < 4;
+      index++
+    ) {
       options.add(distractors[(seed + index) % distractors.length]);
     }
     while (options.length < 4) {
@@ -95,9 +97,6 @@ class RingQuestionService {
     }
 
     final rotation = seed % options.length;
-    return <String>[
-      ...options.skip(rotation),
-      ...options.take(rotation),
-    ];
+    return <String>[...options.skip(rotation), ...options.take(rotation)];
   }
 }

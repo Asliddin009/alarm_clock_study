@@ -4,6 +4,7 @@ import 'package:alearn/features/alarm/domain/service/alarm_service.dart';
 import 'package:alearn/features/alarm/ui/screens/edit_alarm_new.dart';
 import 'package:alearn/features/category/domain/cubit/category_cubit.dart';
 import 'package:alearn/features/category/domain/entity/category_entity.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,8 +12,9 @@ import '../../../helpers/fakes.dart';
 import '../../../helpers/test_app.dart';
 
 void main() {
-  testWidgets('creates an alarm with selected weekday and category',
-      (tester) async {
+  testWidgets('creates an alarm with selected weekday and category', (
+    tester,
+  ) async {
     final alarmRepo = RecordingAlarmRepo();
     final alarmCache = InMemoryAlarmCacheRepo();
     final alarmBloc = AlarmBloc(
@@ -46,7 +48,10 @@ void main() {
     await tester.pump();
     await tester.tap(find.text('Для разработчиков'));
     await tester.pump();
-    await tester.tap(find.text('Создать'));
+    final createButton = find.widgetWithText(ElevatedButton, 'Создать');
+    await tester.ensureVisible(createButton);
+    await tester.pumpAndSettle();
+    await tester.tap(createButton);
     await tester.pumpAndSettle();
 
     expect(alarmCache.alarms, hasLength(1));

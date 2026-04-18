@@ -1,3 +1,5 @@
+import 'package:alearn/app/helper/localization_helper.dart';
+import 'package:alearn/app/ui/ui_kit/app_container.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +17,8 @@ class AlarmTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localization = LocalizationHelper.getLocalizations(context);
+
     return Dismissible(
       key: ValueKey<String>('alarm-${alarm.id}'),
       direction: onDismissed == null
@@ -22,31 +26,58 @@ class AlarmTile extends StatelessWidget {
           : DismissDirection.endToStart,
       background: Container(
         decoration: BoxDecoration(
-          color: Colors.redAccent,
-          borderRadius: BorderRadius.circular(20),
+          color: Theme.of(context).colorScheme.error,
+          borderRadius: BorderRadius.circular(28),
         ),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),
         child: const Icon(Icons.delete_outline, color: Colors.white),
       ),
       onDismissed: (_) => onDismissed?.call(),
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: ListTile(
-          onTap: onPressed,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          title: Text(
-            alarm.formattedTime,
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          subtitle: alarm.weekdays.isEmpty
-              ? null
-              : Text(
-                  alarm.weekdays
-                      .map((weekday) => weekday.shortLabel)
-                      .join(', '),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(28),
+        onTap: onPressed,
+        child: AppContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      alarm.formattedTime,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      alarm.weekdays.isEmpty
+                          ? localization.alarm_one_time
+                          : alarm.weekdays
+                                .map((weekday) => weekday.shortLabel)
+                                .join(', '),
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  ],
                 ),
-          trailing: const Icon(Icons.chevron_right),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                height: 42,
+                width: 42,
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.10),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(
+                  Icons.chevron_right_rounded,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

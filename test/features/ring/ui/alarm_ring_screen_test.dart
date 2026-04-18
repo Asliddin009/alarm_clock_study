@@ -11,8 +11,9 @@ import '../../../helpers/fakes.dart';
 import '../../../helpers/test_app.dart';
 
 void main() {
-  testWidgets('shows a safe fallback when question data is missing',
-      (tester) async {
+  testWidgets('shows a safe fallback when question data is missing', (
+    tester,
+  ) async {
     final alarm = AlarmEntity(
       id: 1,
       time: DateTime(2026, 4, 13, 9, 0),
@@ -36,10 +37,7 @@ void main() {
       buildTestApp(
         BlocProvider<AlarmBloc>.value(
           value: alarmBloc,
-          child: AlarmRingScreen(
-            alarmId: 1,
-            questionService: questionService,
-          ),
+          child: AlarmRingScreen(alarmId: 1, questionService: questionService),
         ),
       ),
     );

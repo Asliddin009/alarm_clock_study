@@ -13,7 +13,10 @@ class CategoryEntity extends Equatable {
       name: json['name'].toString(),
       id: json['id'] as int,
       wordList: (json['wordList'] as List<dynamic>? ?? const <dynamic>[])
-          .map((dynamic value) => WordEntity.fromJson(value as Map<String, dynamic>))
+          .map(
+            (dynamic value) =>
+                WordEntity.fromJson(value as Map<String, dynamic>),
+          )
           .toList(growable: false),
     );
   }

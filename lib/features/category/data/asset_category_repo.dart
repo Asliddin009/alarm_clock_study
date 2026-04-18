@@ -42,7 +42,10 @@ class AssetCategoryRepo implements ICategoryRepo {
     final rawJson = await rootBundle.loadString(_assetPath);
     final rawList = jsonDecode(rawJson) as List<dynamic>;
     return rawList
-        .map((dynamic value) => CategoryEntity.fromJson(value as Map<String, dynamic>))
+        .map(
+          (dynamic value) =>
+              CategoryEntity.fromJson(value as Map<String, dynamic>),
+        )
         .toList(growable: false);
   }
 }

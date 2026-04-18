@@ -1,3 +1,5 @@
+import 'package:alearn/app/data/shared_pref_app_preferences_repo.dart';
+import 'package:alearn/app/domain/i_app_preferences_repo.dart';
 import 'package:alearn/app/app_runner/app_env.dart';
 import 'package:alearn/features/alarm/data/alarm_plus_repo.dart';
 import 'package:alearn/features/alarm/data/permission.dart';
@@ -16,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 final class AppDependencies {
   const AppDependencies._({
     required this.authRepo,
+    required this.appPreferencesRepo,
     required this.alarmRepo,
     required this.alarmCacheRepo,
     required this.alarmService,
@@ -23,7 +26,28 @@ final class AppDependencies {
     required this.ringQuestionService,
   });
 
+  factory AppDependencies.testing({
+    required IAuthRepo authRepo,
+    required IAppPreferencesRepo appPreferencesRepo,
+    required IAlarmRepo alarmRepo,
+    required IAlarmCacheRepo alarmCacheRepo,
+    required AlarmService alarmService,
+    required ICategoryRepo categoryRepo,
+    required RingQuestionService ringQuestionService,
+  }) {
+    return AppDependencies._(
+      authRepo: authRepo,
+      appPreferencesRepo: appPreferencesRepo,
+      alarmRepo: alarmRepo,
+      alarmCacheRepo: alarmCacheRepo,
+      alarmService: alarmService,
+      categoryRepo: categoryRepo,
+      ringQuestionService: ringQuestionService,
+    );
+  }
+
   final IAuthRepo authRepo;
+  final IAppPreferencesRepo appPreferencesRepo;
   final IAlarmRepo alarmRepo;
   final IAlarmCacheRepo alarmCacheRepo;
   final AlarmService alarmService;
@@ -42,6 +66,7 @@ final class AppDependencies {
         ? const UnsupportedAlarmRepo(platformName: 'web')
         : AlarmPlusRepo(permissionService: const AlarmPermissionService());
     final alarmCacheRepo = SharedPrefAlarmCache(sharedPreferences);
+    final appPreferencesRepo = SharedPrefAppPreferencesRepo(sharedPreferences);
     final categoryRepo = const AssetCategoryRepo();
     final alarmService = AlarmService(
       alarmRepo: alarmRepo,
@@ -49,7 +74,8 @@ final class AppDependencies {
     );
 
     return AppDependencies._(
-      authRepo: MockAuthRepo(),
+      authRepo: MockAuthRepo(sharedPreferences),
+      appPreferencesRepo: appPreferencesRepo,
       alarmRepo: alarmRepo,
       alarmCacheRepo: alarmCacheRepo,
       alarmService: alarmService,

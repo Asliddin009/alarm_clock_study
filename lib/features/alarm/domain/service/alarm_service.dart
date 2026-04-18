@@ -8,13 +8,15 @@ class AlarmService {
   AlarmService({
     required IAlarmRepo alarmRepo,
     required IAlarmCacheRepo alarmCacheRepo,
-  })  : _alarmRepo = alarmRepo,
-        _alarmCacheRepo = alarmCacheRepo;
+  }) : _alarmRepo = alarmRepo,
+       _alarmCacheRepo = alarmCacheRepo,
+       _ringStream = alarmRepo.ringStream.asBroadcastStream();
 
   final IAlarmRepo _alarmRepo;
   final IAlarmCacheRepo _alarmCacheRepo;
+  final Stream<AlarmSettings> _ringStream;
 
-  Stream<AlarmSettings> get ringStream => _alarmRepo.ringStream;
+  Stream<AlarmSettings> get ringStream => _ringStream;
 
   Future<void> initialize() {
     return _alarmRepo.requestPermissions();

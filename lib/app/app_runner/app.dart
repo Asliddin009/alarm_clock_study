@@ -1,10 +1,11 @@
+import 'package:alearn/app/app_flow/domain/app_flow_cubit.dart';
+import 'package:alearn/app/app_flow/domain/app_flow_state.dart';
+import 'package:alearn/app/app_flow/ui/app_flow_screen.dart';
 import 'package:alearn/app/localization/app_localizations.dart';
 import 'package:alearn/app/ui/theme/app_theme.dart';
 import 'package:alearn/di/app_dependencies.dart';
 import 'package:alearn/di/app_dependencies_scope.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
-import 'package:alearn/features/alarm/ui/screens/alarm_screen_new.dart';
-import 'package:alearn/features/auth/domain/bloc/auth_bloc.dart';
 import 'package:alearn/features/category/domain/cubit/category_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,8 +21,11 @@ class App extends StatelessWidget {
       appDependencies: appDependencies,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthBloc>(
-            create: (_) => AuthBloc(appDependencies.authRepo),
+          BlocProvider<AppFlowCubit>(
+            create: (_) => AppFlowCubit(
+              authRepo: appDependencies.authRepo,
+              appPreferencesRepo: appDependencies.appPreferencesRepo,
+            )..initialize(),
           ),
           BlocProvider<AlarmBloc>(
             create: (_) =>
@@ -44,14 +48,18 @@ class _AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AppThemeData.light(),
-      darkTheme: AppThemeData.dark(),
-      locale: const Locale('ru'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      home: const AlarmScreen(),
+    return BlocBuilder<AppFlowCubit, AppFlowState>(
+      builder: (context, state) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppThemeData.light(),
+          darkTheme: AppThemeData.dark(),
+          locale: state.locale,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: const AppFlowScreen(),
+        );
+      },
     );
   }
 }

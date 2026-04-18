@@ -150,18 +150,21 @@ class BaseTextField extends StatelessWidget {
         contentPadding: padding,
         isDense: isDense,
         errorStyle: errorStyle,
-        focusedBorder: focusedBorder ??
+        focusedBorder:
+            focusedBorder ??
             defaultBorder.copyWith(
               borderSide: BorderSide(color: theme.colorScheme.primary),
             ),
         border: border ?? defaultBorder,
         disabledBorder: disabledBorder ?? defaultBorder,
         enabledBorder: enabledBorder ?? defaultBorder,
-        errorBorder: errorBorder ??
+        errorBorder:
+            errorBorder ??
             defaultBorder.copyWith(
               borderSide: BorderSide(color: theme.colorScheme.error),
             ),
-        focusedErrorBorder: focusedErrorBorder ??
+        focusedErrorBorder:
+            focusedErrorBorder ??
             defaultBorder.copyWith(
               borderSide: BorderSide(color: theme.colorScheme.error),
             ),

@@ -14,11 +14,11 @@ class SharedPrefAlarmCache implements IAlarmCacheRepo {
   @override
   Future<List<AlarmEntity>> getAll() async {
     try {
-      final rawList = _sharedPreferences.getStringList(storageKey) ?? <String>[];
-      final alarms = rawList
-          .map(AlarmEntity.fromEncodedJson)
-          .toList(growable: false)
-        ..sort((left, right) => left.time.compareTo(right.time));
+      final rawList =
+          _sharedPreferences.getStringList(storageKey) ?? <String>[];
+      final alarms =
+          rawList.map(AlarmEntity.fromEncodedJson).toList(growable: false)
+            ..sort((left, right) => left.time.compareTo(right.time));
       final normalizedList = alarms
           .map((alarm) => alarm.toEncodedJson())
           .toList(growable: false);
@@ -45,7 +45,9 @@ class SharedPrefAlarmCache implements IAlarmCacheRepo {
   Future<void> update(AlarmEntity alarm) async {
     final alarms = await getAll();
     final updatedAlarms = alarms
-        .map((currentAlarm) => currentAlarm.id == alarm.id ? alarm : currentAlarm)
+        .map(
+          (currentAlarm) => currentAlarm.id == alarm.id ? alarm : currentAlarm,
+        )
         .toList(growable: false);
     await _write(updatedAlarms);
   }

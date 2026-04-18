@@ -6,17 +6,19 @@ class AppTextButton extends StatelessWidget {
     required this.text,
     super.key,
     this.buttonStyle,
-    this.height = 35,
-    this.width = 350,
+    this.height = 54,
+    this.width,
     this.alignment,
+    this.icon,
   });
 
   final VoidCallback onPressed;
   final String text;
   final ButtonStyle? buttonStyle;
   final double height;
-  final double width;
+  final double? width;
   final Alignment? alignment;
+  final IconData? icon;
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -27,9 +29,15 @@ class AppTextButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: onPressed,
           style: buttonStyle,
-          child: Text(
-            text,
-            style: const TextStyle(color: Colors.white),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 18),
+                const SizedBox(width: 10),
+              ],
+              Text(text),
+            ],
           ),
         ),
       ),

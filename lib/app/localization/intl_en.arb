@@ -1,0 +1,124 @@
+{
+  "alarm": "Alarm",
+  "no_alarms": "No alarms yet",
+  "create_alarm": "Create alarm",
+  "date": "Date",
+  "time": "Time",
+  "error": "Error",
+  "try_again": "Try again",
+  "select_time": "select the alarm time",
+  "select_language_title": "Choose your interface language",
+  "select_language_subtitle": "You can change it before signing in.",
+  "splash_title": "ALearn",
+  "splash_subtitle": "Wake up, study, and keep English in your daily routine.",
+  "onboarding_skip": "Skip",
+  "onboarding_next": "Next",
+  "onboarding_start": "Choose language",
+  "onboarding_alarm_title": "Wake up with a purpose",
+  "onboarding_alarm_description": "Instead of a passive alarm, the app nudges you into an active start with a small learning step.",
+  "onboarding_words_title": "Repeat useful words offline",
+  "onboarding_words_description": "Keep your vocabulary close at hand and revisit categories even when you are away from the network.",
+  "onboarding_voice_title": "Train your pronunciation calmly",
+  "onboarding_voice_description": "Short voice-focused practice blocks help you speak more clearly before the day even begins.",
+  "russian_language": "Russian",
+  "english_language": "English",
+  "auth_title": "Sign in",
+  "auth_subtitle": "Use the mock account or skip for now.",
+  "email": "Email",
+  "password": "Password",
+  "sign_in": "Sign in",
+  "skip_for_now": "Skip for now",
+  "change_language": "Change language",
+  "mock_auth_hint": "Mock credentials: demo@alearn.app / 123456",
+  "invalid_credentials_error": "Incorrect email or password.",
+  "unexpected_error": "Something went wrong. Please try again.",
+  "nav_alarm": "Alarm",
+  "nav_words": "Words",
+  "nav_pronunciation": "Voice",
+  "nav_profile": "Profile",
+  "alarm_empty_subtitle": "Set a wake-up time and attach a quick English quiz to your morning.",
+  "alarm_one_time": "One-time alarm",
+  "edit_alarm_title": "Edit alarm",
+  "repeat_alarm": "Repeat",
+  "weekdays_title": "Weekdays",
+  "quiz_categories_title": "Quiz categories",
+  "categories_loading_hint": "Categories will appear automatically after loading.",
+  "save_changes_action": "Save changes",
+  "create_action": "Create",
+  "words_screen_title": "Study words",
+  "words_summary_title": "Compact daily study",
+  "words_summary_subtitle": "Browse categories, repeat familiar words, and keep the vocabulary section light and focused.",
+  "words_categories_metric": "Categories",
+  "words_total_metric": "Words",
+  "words_empty_title": "The vocabulary list is still empty",
+  "words_empty_message": "Once categories load, this section will show word groups and quick previews.",
+  "words_empty_preview": "No preview words yet.",
+  "words_word_count": "{count} words",
+  "@words_word_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pronunciation_screen_title": "Pronunciation",
+  "pronunciation_title": "Make your speech cleaner",
+  "pronunciation_subtitle": "Short, repeatable steps to warm up pronunciation before practice.",
+  "pronunciation_breathe_title": "Set the rhythm",
+  "pronunciation_breathe_body": "Take one calm breath and say the phrase slowly, keeping the ending clear.",
+  "pronunciation_listen_title": "Listen for stress",
+  "pronunciation_listen_body": "Focus on the stressed word and keep the rest smooth and short.",
+  "pronunciation_repeat_title": "Repeat in one flow",
+  "pronunciation_repeat_body": "Say the phrase 3 times with the same pace and softer pauses.",
+  "pronunciation_phrase_label": "Practice phrase",
+  "pronunciation_phrase": "I need a little more time.",
+  "pronunciation_translation": "Мне нужно немного больше времени.",
+  "profile_screen_title": "Profile",
+  "profile_guest_title": "Guest mode is active",
+  "profile_guest_subtitle": "You can explore the app now and sign in later whenever you want.",
+  "profile_authorized_title": "Your session is ready",
+  "profile_authorized_subtitle": "Signed in as {name}.",
+  "@profile_authorized_subtitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profile_preferences_title": "Preferences",
+  "profile_language_label": "Interface language",
+  "profile_status_label": "Session",
+  "profile_guest_status": "Guest",
+  "profile_authorized_status": "Authorized",
+  "profile_session_title": "Session control",
+  "profile_session_subtitle": "You can leave the session and come back through the onboarding flow at any time.",
+  "wake_up_title": "Wake up",
+  "ring_alarm_missing": "The alarm is already missing, but you can safely stop the ringing.",
+  "ring_alarm_label": "Alarm {time}",
+  "@ring_alarm_label": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "quiz_unavailable": "The quiz is unavailable right now. You can stop the alarm manually.",
+  "stop_alarm": "Stop alarm",
+  "wrong_answer": "Not quite. Try again.",
+  "root_screen_title": "Start",
+  "root_guest_title": "Guest mode",
+  "root_guest_message": "You can explore the alarm flow now and sign in later.",
+  "root_authorized_title": "Welcome back",
+  "root_authorized_message": "Signed in as {name}.",
+  "@root_authorized_message": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "open_alarm_screen": "Open alarm screen",
+  "logout": "Log out",
+  "bootstrap_error_title": "Startup error",
+  "retry": "Retry"
+}

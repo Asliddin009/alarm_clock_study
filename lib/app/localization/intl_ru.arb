@@ -1,10 +1,124 @@
 {
   "alarm": "Будильник",
-  "no_alarms":"Нет будильников",
-  "create_alarm":"Создание будильника",
-  "date":"Дата",
-  "time":"Время",
-  "error":"Ошибка",
-  "try_again":"Повторите попытку",
-  "select_time":"выберите время будильника"
+  "no_alarms": "Нет будильников",
+  "create_alarm": "Создание будильника",
+  "date": "Дата",
+  "time": "Время",
+  "error": "Ошибка",
+  "try_again": "Повторите попытку",
+  "select_time": "выберите время будильника",
+  "select_language_title": "Выберите язык интерфейса",
+  "select_language_subtitle": "Его можно будет сменить перед авторизацией.",
+  "splash_title": "ALearn",
+  "splash_subtitle": "Просыпайтесь, учитесь и держите английский в ежедневной рутине.",
+  "onboarding_skip": "Пропустить",
+  "onboarding_next": "Далее",
+  "onboarding_start": "Выбрать язык",
+  "onboarding_alarm_title": "Просыпайтесь со смыслом",
+  "onboarding_alarm_description": "Вместо пассивного будильника приложение мягко переводит вас в активное утро через маленький учебный шаг.",
+  "onboarding_words_title": "Повторяйте полезные слова офлайн",
+  "onboarding_words_description": "Держите словарь под рукой и возвращайтесь к категориям даже без подключения к сети.",
+  "onboarding_voice_title": "Спокойно тренируйте произношение",
+  "onboarding_voice_description": "Короткие голосовые практики помогают говорить чище ещё до того, как день по-настоящему начался.",
+  "russian_language": "Русский",
+  "english_language": "Английский",
+  "auth_title": "Авторизация",
+  "auth_subtitle": "Войдите в моковый аккаунт или пока пропустите этот шаг.",
+  "email": "Почта",
+  "password": "Пароль",
+  "sign_in": "Войти",
+  "skip_for_now": "Пропустить пока",
+  "change_language": "Сменить язык",
+  "mock_auth_hint": "Моковые данные: demo@alearn.app / 123456",
+  "invalid_credentials_error": "Неверная почта или пароль.",
+  "unexpected_error": "Что-то пошло не так. Повторите попытку.",
+  "nav_alarm": "Будильник",
+  "nav_words": "Слова",
+  "nav_pronunciation": "Произношение",
+  "nav_profile": "Профиль",
+  "alarm_empty_subtitle": "Добавьте время подъёма и прикрепите короткий английский квиз к утру.",
+  "alarm_one_time": "Разовый будильник",
+  "edit_alarm_title": "Редактирование будильника",
+  "repeat_alarm": "Повторять",
+  "weekdays_title": "Дни недели",
+  "quiz_categories_title": "Категории для квиза",
+  "categories_loading_hint": "Категории появятся автоматически после загрузки.",
+  "save_changes_action": "Сохранить изменения",
+  "create_action": "Создать",
+  "words_screen_title": "Изучение слов",
+  "words_summary_title": "Спокойная ежедневная практика",
+  "words_summary_subtitle": "Просматривайте категории, повторяйте знакомые слова и держите словарь компактным и понятным.",
+  "words_categories_metric": "Категории",
+  "words_total_metric": "Слова",
+  "words_empty_title": "Список слов пока пуст",
+  "words_empty_message": "Когда категории загрузятся, здесь появятся группы слов и быстрые превью.",
+  "words_empty_preview": "Пока нет слов для превью.",
+  "words_word_count": "{count} слов",
+  "@words_word_count": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pronunciation_screen_title": "Произношение",
+  "pronunciation_title": "Сделайте речь чище",
+  "pronunciation_subtitle": "Короткие повторяемые шаги, чтобы разогреть произношение перед практикой.",
+  "pronunciation_breathe_title": "Задайте ритм",
+  "pronunciation_breathe_body": "Сделайте спокойный вдох и произнесите фразу медленно, чётко удерживая окончание.",
+  "pronunciation_listen_title": "Слушайте ударение",
+  "pronunciation_listen_body": "Сфокусируйтесь на ударном слове, а остальные произносите мягко и короче.",
+  "pronunciation_repeat_title": "Повторите одним потоком",
+  "pronunciation_repeat_body": "Произнесите фразу 3 раза в одном темпе и с более мягкими паузами.",
+  "pronunciation_phrase_label": "Фраза для практики",
+  "pronunciation_phrase": "I need a little more time.",
+  "pronunciation_translation": "Мне нужно немного больше времени.",
+  "profile_screen_title": "Профиль",
+  "profile_guest_title": "Активен гостевой режим",
+  "profile_guest_subtitle": "Вы можете изучить приложение сейчас и войти в аккаунт позже.",
+  "profile_authorized_title": "Сессия готова",
+  "profile_authorized_subtitle": "Вы вошли как {name}.",
+  "@profile_authorized_subtitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profile_preferences_title": "Настройки",
+  "profile_language_label": "Язык интерфейса",
+  "profile_status_label": "Сессия",
+  "profile_guest_status": "Гость",
+  "profile_authorized_status": "Авторизован",
+  "profile_session_title": "Управление сессией",
+  "profile_session_subtitle": "Вы можете выйти из сессии и в любой момент снова пройти стартовый сценарий.",
+  "wake_up_title": "Пора просыпаться",
+  "ring_alarm_missing": "Будильник уже не найден, но звонок можно безопасно остановить.",
+  "ring_alarm_label": "Будильник {time}",
+  "@ring_alarm_label": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "quiz_unavailable": "Вопрос для квиза сейчас недоступен. Можно выключить будильник вручную.",
+  "stop_alarm": "Остановить будильник",
+  "wrong_answer": "Неверно, попробуйте ещё раз.",
+  "root_screen_title": "Главный экран",
+  "root_guest_title": "Гостевой режим",
+  "root_guest_message": "Можно изучить сценарий будильника сейчас и авторизоваться позже.",
+  "root_authorized_title": "С возвращением",
+  "root_authorized_message": "Вы вошли как {name}.",
+  "@root_authorized_message": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "open_alarm_screen": "Открыть экран будильников",
+  "logout": "Выйти",
+  "bootstrap_error_title": "Ошибка запуска",
+  "retry": "Повторить"
 }

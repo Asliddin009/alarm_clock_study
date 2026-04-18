@@ -65,7 +65,7 @@ class RecordingAlarmRepo implements IAlarmRepo {
 
 class InMemoryAlarmCacheRepo implements IAlarmCacheRepo {
   InMemoryAlarmCacheRepo([List<AlarmEntity>? initialAlarms])
-      : _alarms = <AlarmEntity>[...initialAlarms ?? const <AlarmEntity>[]];
+    : _alarms = <AlarmEntity>[...initialAlarms ?? const <AlarmEntity>[]];
 
   final List<AlarmEntity> _alarms;
   bool failOnSave = false;
@@ -96,7 +96,9 @@ class InMemoryAlarmCacheRepo implements IAlarmCacheRepo {
     if (failOnUpdate) {
       throw const AlarmCacheException('update failed');
     }
-    final index = _alarms.indexWhere((currentAlarm) => currentAlarm.id == alarm.id);
+    final index = _alarms.indexWhere(
+      (currentAlarm) => currentAlarm.id == alarm.id,
+    );
     if (index >= 0) {
       _alarms[index] = alarm;
     }

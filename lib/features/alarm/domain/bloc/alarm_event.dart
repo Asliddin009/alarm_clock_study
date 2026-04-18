@@ -29,7 +29,12 @@ final class AlarmCreateRequested extends AlarmEvent {
   final List<int> categoryIds;
 
   @override
-  List<Object?> get props => <Object?>[dateTime, isRepeat, weekdays, categoryIds];
+  List<Object?> get props => <Object?>[
+    dateTime,
+    isRepeat,
+    weekdays,
+    categoryIds,
+  ];
 }
 
 final class AlarmDeleteRequested extends AlarmEvent {

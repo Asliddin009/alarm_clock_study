@@ -24,6 +24,8 @@ dependencies:
   shared_preferences: ^2.5.3
   flutter_ringtone_player: ^4.0.0+3
   numberpicker: ^2.1.2
+  audioplayers: ^6.5.1
+  lottie: ^3.3.3
 
   cupertino_icons: ^1.0.8
 
@@ -33,10 +35,17 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
-    - assets/mozart.mp3
-    - assets/nokia.mp3
-    - assets/one_piece.mp3
-    - assets/star_wars.mp3
-    - assets/marimba.mp3
+    - assets/music/mozart.mp3
+    - assets/music/nokia.mp3
+    - assets/music/one_piece.mp3
+    - assets/music/star_wars.mp3
+    - assets/music/marimba.mp3
+    - assets/json/categories.json
+    - assets/images/logo.jpg
+    - assets/lottie/splash_pulse.json
+    - assets/lottie/onboarding_alarm.json
+    - assets/lottie/onboarding_words.json
+    - assets/lottie/onboarding_voice.json

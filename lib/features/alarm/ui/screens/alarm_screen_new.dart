@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:alarm/alarm.dart';
 import 'package:alearn/app/helper/localization_helper.dart';
+import 'package:alearn/app/ui/ui_kit/app_container.dart';
+import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
 import 'package:alearn/app/ui/ui_kit/app_snack_bar.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
@@ -66,24 +68,56 @@ class _AlarmScreenState extends State<AlarmScreen> {
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : alarms.isEmpty
-                    ? Center(child: Text(localization.no_alarms))
-                    : ListView.separated(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: alarms.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
-                        itemBuilder: (context, index) {
-                          final alarm = alarms[index];
-                          return AlarmTile(
-                            alarm: alarm,
-                            onPressed: () => _openEditScreen(alarm),
-                            onDismissed: () {
-                              context.read<AlarmBloc>().add(
-                                    AlarmDeleteRequested(alarm.id),
-                                  );
-                            },
-                          );
-                        },
+                ? Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: AppEntrance(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 480),
+                          child: AppContainer(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  localization.no_alarms,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineSmall,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  localization.alarm_empty_subtitle,
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 140),
+                    itemCount: alarms.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) {
+                      final alarm = alarms[index];
+                      return AppEntrance(
+                        delay: Duration(milliseconds: 60 + (index * 40)),
+                        child: AlarmTile(
+                          alarm: alarm,
+                          onPressed: () => _openEditScreen(alarm),
+                          onDismissed: () {
+                            context.read<AlarmBloc>().add(
+                              AlarmDeleteRequested(alarm.id),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
           ),
           floatingActionButton: Padding(
             padding: const EdgeInsets.all(12),
