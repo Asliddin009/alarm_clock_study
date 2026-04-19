@@ -13,16 +13,22 @@ final class AppFlowState extends Equatable {
   const AppFlowState({
     required this.step,
     required this.isLoading,
+    required this.hasCompletedOnboarding,
     this.locale,
     this.session,
     this.failure,
   });
 
   const AppFlowState.initial()
-    : this(step: AppFlowStep.loading, isLoading: true);
+    : this(
+        step: AppFlowStep.loading,
+        isLoading: true,
+        hasCompletedOnboarding: false,
+      );
 
   final AppFlowStep step;
   final bool isLoading;
+  final bool hasCompletedOnboarding;
   final Locale? locale;
   final AuthSession? session;
   final AppFlowFailure? failure;
@@ -30,6 +36,7 @@ final class AppFlowState extends Equatable {
   AppFlowState copyWith({
     AppFlowStep? step,
     bool? isLoading,
+    bool? hasCompletedOnboarding,
     Object? locale = _localeSentinel,
     Object? session = _sessionSentinel,
     Object? failure = _failureSentinel,
@@ -37,6 +44,8 @@ final class AppFlowState extends Equatable {
     return AppFlowState(
       step: step ?? this.step,
       isLoading: isLoading ?? this.isLoading,
+      hasCompletedOnboarding:
+          hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       locale: identical(locale, _localeSentinel)
           ? this.locale
           : locale as Locale?,
@@ -53,6 +62,7 @@ final class AppFlowState extends Equatable {
   List<Object?> get props => <Object?>[
     step,
     isLoading,
+    hasCompletedOnboarding,
     locale,
     session,
     failure,

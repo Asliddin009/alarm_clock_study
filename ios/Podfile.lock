@@ -4,11 +4,15 @@ PODS:
   - audioplayers_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
+  - awesome_notifications (0.11.0):
+    - Flutter
+    - IosAwnCore (~> 0.11.0)
   - Flutter (1.0.0)
   - flutter_fgbg (0.0.1):
     - Flutter
   - flutter_ringtone_player (0.0.1):
     - Flutter
+  - IosAwnCore (0.11.0)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -21,6 +25,7 @@ PODS:
 DEPENDENCIES:
   - alarm (from `.symlinks/plugins/alarm/ios`)
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/darwin`)
+  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - Flutter (from `Flutter`)
   - flutter_fgbg (from `.symlinks/plugins/flutter_fgbg/ios`)
   - flutter_ringtone_player (from `.symlinks/plugins/flutter_ringtone_player/ios`)
@@ -28,11 +33,17 @@ DEPENDENCIES:
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
+SPEC REPOS:
+  trunk:
+    - IosAwnCore
+
 EXTERNAL SOURCES:
   alarm:
     :path: ".symlinks/plugins/alarm/ios"
   audioplayers_darwin:
     :path: ".symlinks/plugins/audioplayers_darwin/darwin"
+  awesome_notifications:
+    :path: ".symlinks/plugins/awesome_notifications/ios"
   Flutter:
     :path: Flutter
   flutter_fgbg:
@@ -47,15 +58,17 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
 
 SPEC CHECKSUMS:
-  alarm: 839eba06f468218db1b9f1736e32322db958e857
+  alarm: 8a8ed4893eb9bd09e7c5a96bf8ab8104f380f65f
   audioplayers_darwin: 4f9ca89d92d3d21cec7ec580e78ca888e5fb68bd
+  awesome_notifications: 8291dd4082db761556cd8bf7977567f5c960c87e
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_fgbg: d3da78df78454b1808f0829a5da9cd17dfe16444
   flutter_ringtone_player: a77c42464250845611eaa44c27e8714acc800138
+  IosAwnCore: 32019505f4a4909fa9079ee401b2c82aeeab78a8
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
 
-PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+PODFILE CHECKSUM: 4f4decf0c3e08265a1e5b166e154fa7a17ac79a4
 
 COCOAPODS: 1.16.2

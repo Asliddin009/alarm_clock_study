@@ -107,6 +107,23 @@ class AlarmService {
     return loadAlarms();
   }
 
+  Future<List<AlarmEntity>> dismissRingingAlarm(int id) async {
+    final alarms = await loadAlarms();
+    final alarm = _findAlarm(alarms, id);
+
+    await _alarmRepo.deleteAlarm(id);
+    if (alarm == null) {
+      return alarms;
+    }
+
+    if (alarm.isRepeat || alarm.weekdays.isNotEmpty) {
+      return alarms;
+    }
+
+    await _alarmCacheRepo.delete(id);
+    return loadAlarms();
+  }
+
   AlarmEntity? _findAlarm(List<AlarmEntity> alarms, int id) {
     for (final alarm in alarms) {
       if (alarm.id == id) {

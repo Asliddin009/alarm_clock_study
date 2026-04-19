@@ -11,7 +11,19 @@ final class AlarmPlusRepo implements IAlarmRepo {
   final AlarmPermissionService _permissionService;
 
   @override
-  Stream<AlarmSettings> get ringStream => Alarm.ringStream.stream;
+  Stream<AlarmSettings> get ringStream async* {
+    var previousIds = <int>{};
+
+    await for (final ringingSet in Alarm.ringing) {
+      final alarms = ringingSet.alarms.toList(growable: false);
+      for (final alarm in alarms) {
+        if (!previousIds.contains(alarm.id)) {
+          yield alarm;
+        }
+      }
+      previousIds = alarms.map((alarm) => alarm.id).toSet();
+    }
+  }
 
   @override
   Future<void> requestPermissions() {
@@ -62,12 +74,18 @@ final class AlarmPlusRepo implements IAlarmRepo {
         id: alarm.id,
         dateTime: alarm.time,
         assetAudioPath: alarm.assetAudioPath,
-        notificationTitle: notificationTitle,
-        notificationBody: notificationBody,
+
         loopAudio: true,
         vibrate: alarm.vibrate,
-        volume: alarm.volume,
         androidFullScreenIntent: true,
+        volumeSettings: VolumeSettings.fixed(
+          volume: alarm.volume,
+          volumeEnforced: true,
+        ),
+        notificationSettings: NotificationSettings(
+          title: notificationTitle,
+          body: notificationBody,
+        ),
       ),
     );
     if (!didSet) {
@@ -87,7 +105,11 @@ final class UnsupportedAlarmRepo implements IAlarmRepo {
   Stream<AlarmSettings> get ringStream => const Stream<AlarmSettings>.empty();
 
   @override
-  Future<void> requestPermissions() async {}
+  Future<void> requestPermissions() async {
+    throw AlarmRepositoryException(
+      'Платформа $platformName не поддерживает запрос разрешений для будильников.',
+    );
+  }
 
   @override
   Future<void> scheduleAlarm({

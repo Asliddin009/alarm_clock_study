@@ -13,7 +13,7 @@
   "splash_subtitle": "Wake up, study, and keep English in your daily routine.",
   "onboarding_skip": "Skip",
   "onboarding_next": "Next",
-  "onboarding_start": "Choose language",
+  "onboarding_start": "Continue",
   "onboarding_alarm_title": "Wake up with a purpose",
   "onboarding_alarm_description": "Instead of a passive alarm, the app nudges you into an active start with a small learning step.",
   "onboarding_words_title": "Repeat useful words offline",
@@ -36,6 +36,51 @@
   "nav_words": "Words",
   "nav_pronunciation": "Voice",
   "nav_profile": "Profile",
+  "alarm_focus_title": "Morning flow",
+  "alarm_focus_subtitle": "Preview the next 5 study items, spend points when needed, and keep the wake-up routine predictable.",
+  "alarm_points_title": "Points balance",
+  "alarm_points_value": "{count} pts",
+  "@alarm_points_value": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alarm_next_title": "Next alarm",
+  "alarm_next_missing": "No active alarm yet",
+  "alarm_preview_title": "Morning preview",
+  "alarm_preview_subtitle": "These are the 5 words that can appear when the alarm rings.",
+  "alarm_preview_empty": "The preview will appear after you attach categories to the alarm.",
+  "alarm_day_plan_title": "Day plan",
+  "alarm_day_plan_subtitle": "Study 10 words or phrases during the day to earn flexibility for the morning.",
+  "alarm_points_rule_word": "1 word = +1 point",
+  "alarm_points_rule_phrase": "1 phrase = +2 points",
+  "alarm_disable_for_points": "Disable for 10 points",
+  "alarm_postpone_for_points": "Move by 10 min for 2 points",
+  "alarm_permissions_title": "Alarm access",
+  "alarm_permissions_subtitle": "Notifications and exact alarms keep the morning flow reliable.",
+  "alarm_request_permissions": "Request access",
+  "open_settings": "Open settings",
+  "alarm_permissions_ready": "Alarm permissions are enabled.",
+  "alarm_permissions_missing": "Some permissions are still missing. Without them, the alarm may not fire reliably.",
+  "alarm_categories_value": "{count} categories",
+  "@alarm_categories_value": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alarm_questions_value": "{count} questions",
+  "@alarm_questions_value": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alarm_preview_category_label": "Category",
   "alarm_empty_subtitle": "Set a wake-up time and attach a quick English quiz to your morning.",
   "alarm_one_time": "One-time alarm",
   "edit_alarm_title": "Edit alarm",
@@ -103,6 +148,33 @@
     }
   },
   "quiz_unavailable": "The quiz is unavailable right now. You can stop the alarm manually.",
+  "ring_question_prompt": "Choose the translation for \"{word}\"",
+  "@ring_question_prompt": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "ring_progress": "{current} of {total}",
+  "@ring_progress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "ring_points_title": "Morning choices",
+  "ring_points_subtitle": "If you studied during the day, you can spend points instead of finishing the full quiz.",
+  "ring_wrong_answer_delay": "Wrong answer. Next word in 2 seconds.",
+  "ring_disable_now": "Stop for 10 points",
+  "ring_snooze_now": "Snooze 10 min for 2 points",
+  "points_insufficient": "Not enough points for this action yet.",
+  "alarm_disabled_success": "The alarm was turned off.",
+  "alarm_postponed_success": "The alarm was moved by 10 minutes.",
   "stop_alarm": "Stop alarm",
   "wrong_answer": "Not quite. Try again.",
   "root_screen_title": "Start",

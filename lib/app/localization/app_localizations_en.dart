@@ -52,7 +52,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboarding_next => 'Next';
 
   @override
-  String get onboarding_start => 'Choose language';
+  String get onboarding_start => 'Continue';
 
   @override
   String get onboarding_alarm_title => 'Wake up with a purpose';
@@ -122,6 +122,90 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nav_profile => 'Profile';
+
+  @override
+  String get alarm_focus_title => 'Morning flow';
+
+  @override
+  String get alarm_focus_subtitle =>
+      'Preview the next 5 study items, spend points when needed, and keep the wake-up routine predictable.';
+
+  @override
+  String get alarm_points_title => 'Points balance';
+
+  @override
+  String alarm_points_value(int count) {
+    return '$count pts';
+  }
+
+  @override
+  String get alarm_next_title => 'Next alarm';
+
+  @override
+  String get alarm_next_missing => 'No active alarm yet';
+
+  @override
+  String get alarm_preview_title => 'Morning preview';
+
+  @override
+  String get alarm_preview_subtitle =>
+      'These are the 5 words that can appear when the alarm rings.';
+
+  @override
+  String get alarm_preview_empty =>
+      'The preview will appear after you attach categories to the alarm.';
+
+  @override
+  String get alarm_day_plan_title => 'Day plan';
+
+  @override
+  String get alarm_day_plan_subtitle =>
+      'Study 10 words or phrases during the day to earn flexibility for the morning.';
+
+  @override
+  String get alarm_points_rule_word => '1 word = +1 point';
+
+  @override
+  String get alarm_points_rule_phrase => '1 phrase = +2 points';
+
+  @override
+  String get alarm_disable_for_points => 'Disable for 10 points';
+
+  @override
+  String get alarm_postpone_for_points => 'Move by 10 min for 2 points';
+
+  @override
+  String get alarm_permissions_title => 'Alarm access';
+
+  @override
+  String get alarm_permissions_subtitle =>
+      'Notifications and exact alarms keep the morning flow reliable.';
+
+  @override
+  String get alarm_request_permissions => 'Request access';
+
+  @override
+  String get open_settings => 'Open settings';
+
+  @override
+  String get alarm_permissions_ready => 'Alarm permissions are enabled.';
+
+  @override
+  String get alarm_permissions_missing =>
+      'Some permissions are still missing. Without them, the alarm may not fire reliably.';
+
+  @override
+  String alarm_categories_value(int count) {
+    return '$count categories';
+  }
+
+  @override
+  String alarm_questions_value(int count) {
+    return '$count questions';
+  }
+
+  @override
+  String get alarm_preview_category_label => 'Category';
 
   @override
   String get alarm_empty_subtitle =>
@@ -278,6 +362,41 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get quiz_unavailable =>
       'The quiz is unavailable right now. You can stop the alarm manually.';
+
+  @override
+  String ring_question_prompt(String word) {
+    return 'Choose the translation for \"$word\"';
+  }
+
+  @override
+  String ring_progress(int current, int total) {
+    return '$current of $total';
+  }
+
+  @override
+  String get ring_points_title => 'Morning choices';
+
+  @override
+  String get ring_points_subtitle =>
+      'If you studied during the day, you can spend points instead of finishing the full quiz.';
+
+  @override
+  String get ring_wrong_answer_delay => 'Wrong answer. Next word in 2 seconds.';
+
+  @override
+  String get ring_disable_now => 'Stop for 10 points';
+
+  @override
+  String get ring_snooze_now => 'Snooze 10 min for 2 points';
+
+  @override
+  String get points_insufficient => 'Not enough points for this action yet.';
+
+  @override
+  String get alarm_disabled_success => 'The alarm was turned off.';
+
+  @override
+  String get alarm_postponed_success => 'The alarm was moved by 10 minutes.';
 
   @override
   String get stop_alarm => 'Stop alarm';

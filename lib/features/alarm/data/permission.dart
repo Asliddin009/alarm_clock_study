@@ -1,33 +1,26 @@
-import 'package:alearn/features/alarm/domain/alarm_exception.dart';
+import 'package:alearn/app/data/app_notification_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class AlarmPermissionService {
-  const AlarmPermissionService();
+  const AlarmPermissionService({
+    AppNotificationService notificationService = const AppNotificationService(),
+  }) : _notificationService = notificationService;
+
+  final AppNotificationService _notificationService;
 
   Future<void> requestPermissions() async {
-    await _requestIfNeeded(
-      Permission.notification,
-      failureMessage: 'Нужно разрешение на уведомления для будильников.',
-    );
-    await _requestIfNeeded(
-      Permission.scheduleExactAlarm,
-      failureMessage: 'Нужно разрешение на точные будильники.',
-    );
+    await _notificationService.requestPermission();
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      await _requestIfNeeded(Permission.scheduleExactAlarm);
+    }
   }
 
-  Future<void> _requestIfNeeded(
-    Permission permission, {
-    required String failureMessage,
-  }) async {
+  Future<void> _requestIfNeeded(Permission permission) async {
     final status = await permission.status;
     if (status.isGranted || status.isLimited || status.isProvisional) {
       return;
     }
-    final requestedStatus = await permission.request();
-    if (!requestedStatus.isGranted &&
-        !requestedStatus.isLimited &&
-        !requestedStatus.isProvisional) {
-      throw AlarmPermissionException(failureMessage);
-    }
+    await permission.request();
   }
 }

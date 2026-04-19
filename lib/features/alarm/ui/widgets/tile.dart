@@ -7,12 +7,14 @@ class AlarmTile extends StatelessWidget {
   const AlarmTile({
     required this.alarm,
     required this.onPressed,
+    required this.onPreviewPressed,
     this.onDismissed,
     super.key,
   });
 
   final AlarmEntity alarm;
   final VoidCallback onPressed;
+  final VoidCallback onPreviewPressed;
   final VoidCallback? onDismissed;
 
   @override
@@ -58,23 +60,54 @@ class AlarmTile extends StatelessWidget {
                                 .join(', '),
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
+                    const SizedBox(height: 6),
+                    Text(
+                      localization.alarm_categories_value(
+                        alarm.listCategoryIds.length,
+                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
-              Container(
-                height: 42,
-                width: 42,
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primary.withValues(alpha: 0.10),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Icon(
-                  Icons.chevron_right_rounded,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: onPreviewPressed,
+                    borderRadius: BorderRadius.circular(14),
+                    child: Container(
+                      height: 42,
+                      width: 42,
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.10),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Icon(
+                        Icons.visibility_outlined,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    height: 42,
+                    width: 42,
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      Icons.chevron_right_rounded,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

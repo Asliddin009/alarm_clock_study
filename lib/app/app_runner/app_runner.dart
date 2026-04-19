@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
+import 'package:alearn/app/data/app_notification_service.dart';
 import 'package:alearn/app/app_runner/app.dart';
 import 'package:alearn/app/app_runner/app_env.dart';
 import 'package:alearn/app/helper/localization_helper.dart';
@@ -21,8 +22,9 @@ class AppRunner {
     await SystemChrome.setPreferredOrientations(const [
       DeviceOrientation.portraitUp,
     ]);
+    await const AppNotificationService().initialize();
     await Alarm.init();
-    await Alarm.setNotificationOnAppKillContent(
+    await Alarm.setWarningNotificationOnKill(
       'Будильник может не сработать',
       'Если полностью закрыть приложение, будильник может не сработать.',
     );

@@ -1,4 +1,5 @@
 import 'package:alearn/app/domain/i_app_preferences_repo.dart';
+import 'package:alearn/app/ui/utils/app_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final class SharedPrefAppPreferencesRepo implements IAppPreferencesRepo {
@@ -11,7 +12,9 @@ final class SharedPrefAppPreferencesRepo implements IAppPreferencesRepo {
 
   @override
   Future<String?> getLocaleCode() async {
-    return _sharedPreferences.getString(localeStorageKey);
+    String? res = _sharedPreferences.getString(localeStorageKey);
+    res ??= AppUtils.getLocaleCodeFromSystem();
+    return res;
   }
 
   @override

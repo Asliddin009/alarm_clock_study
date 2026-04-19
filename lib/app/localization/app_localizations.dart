@@ -185,7 +185,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboarding_start.
   ///
   /// In en, this message translates to:
-  /// **'Choose language'**
+  /// **'Continue'**
   String get onboarding_start;
 
   /// No description provided for @onboarding_alarm_title.
@@ -319,6 +319,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile'**
   String get nav_profile;
+
+  /// No description provided for @alarm_focus_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning flow'**
+  String get alarm_focus_title;
+
+  /// No description provided for @alarm_focus_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview the next 5 study items, spend points when needed, and keep the wake-up routine predictable.'**
+  String get alarm_focus_subtitle;
+
+  /// No description provided for @alarm_points_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Points balance'**
+  String get alarm_points_title;
+
+  /// No description provided for @alarm_points_value.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pts'**
+  String alarm_points_value(int count);
+
+  /// No description provided for @alarm_next_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Next alarm'**
+  String get alarm_next_title;
+
+  /// No description provided for @alarm_next_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'No active alarm yet'**
+  String get alarm_next_missing;
+
+  /// No description provided for @alarm_preview_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning preview'**
+  String get alarm_preview_title;
+
+  /// No description provided for @alarm_preview_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'These are the 5 words that can appear when the alarm rings.'**
+  String get alarm_preview_subtitle;
+
+  /// No description provided for @alarm_preview_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'The preview will appear after you attach categories to the alarm.'**
+  String get alarm_preview_empty;
+
+  /// No description provided for @alarm_day_plan_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Day plan'**
+  String get alarm_day_plan_title;
+
+  /// No description provided for @alarm_day_plan_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Study 10 words or phrases during the day to earn flexibility for the morning.'**
+  String get alarm_day_plan_subtitle;
+
+  /// No description provided for @alarm_points_rule_word.
+  ///
+  /// In en, this message translates to:
+  /// **'1 word = +1 point'**
+  String get alarm_points_rule_word;
+
+  /// No description provided for @alarm_points_rule_phrase.
+  ///
+  /// In en, this message translates to:
+  /// **'1 phrase = +2 points'**
+  String get alarm_points_rule_phrase;
+
+  /// No description provided for @alarm_disable_for_points.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable for 10 points'**
+  String get alarm_disable_for_points;
+
+  /// No description provided for @alarm_postpone_for_points.
+  ///
+  /// In en, this message translates to:
+  /// **'Move by 10 min for 2 points'**
+  String get alarm_postpone_for_points;
+
+  /// No description provided for @alarm_permissions_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarm access'**
+  String get alarm_permissions_title;
+
+  /// No description provided for @alarm_permissions_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications and exact alarms keep the morning flow reliable.'**
+  String get alarm_permissions_subtitle;
+
+  /// No description provided for @alarm_request_permissions.
+  ///
+  /// In en, this message translates to:
+  /// **'Request access'**
+  String get alarm_request_permissions;
+
+  /// No description provided for @open_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get open_settings;
+
+  /// No description provided for @alarm_permissions_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'Alarm permissions are enabled.'**
+  String get alarm_permissions_ready;
+
+  /// No description provided for @alarm_permissions_missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Some permissions are still missing. Without them, the alarm may not fire reliably.'**
+  String get alarm_permissions_missing;
+
+  /// No description provided for @alarm_categories_value.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} categories'**
+  String alarm_categories_value(int count);
+
+  /// No description provided for @alarm_questions_value.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} questions'**
+  String alarm_questions_value(int count);
+
+  /// No description provided for @alarm_preview_category_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get alarm_preview_category_label;
 
   /// No description provided for @alarm_empty_subtitle.
   ///
@@ -595,6 +739,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'The quiz is unavailable right now. You can stop the alarm manually.'**
   String get quiz_unavailable;
+
+  /// No description provided for @ring_question_prompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the translation for \"{word}\"'**
+  String ring_question_prompt(String word);
+
+  /// No description provided for @ring_progress.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} of {total}'**
+  String ring_progress(int current, int total);
+
+  /// No description provided for @ring_points_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning choices'**
+  String get ring_points_title;
+
+  /// No description provided for @ring_points_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'If you studied during the day, you can spend points instead of finishing the full quiz.'**
+  String get ring_points_subtitle;
+
+  /// No description provided for @ring_wrong_answer_delay.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong answer. Next word in 2 seconds.'**
+  String get ring_wrong_answer_delay;
+
+  /// No description provided for @ring_disable_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop for 10 points'**
+  String get ring_disable_now;
+
+  /// No description provided for @ring_snooze_now.
+  ///
+  /// In en, this message translates to:
+  /// **'Snooze 10 min for 2 points'**
+  String get ring_snooze_now;
+
+  /// No description provided for @points_insufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough points for this action yet.'**
+  String get points_insufficient;
+
+  /// No description provided for @alarm_disabled_success.
+  ///
+  /// In en, this message translates to:
+  /// **'The alarm was turned off.'**
+  String get alarm_disabled_success;
+
+  /// No description provided for @alarm_postponed_success.
+  ///
+  /// In en, this message translates to:
+  /// **'The alarm was moved by 10 minutes.'**
+  String get alarm_postponed_success;
 
   /// No description provided for @stop_alarm.
   ///

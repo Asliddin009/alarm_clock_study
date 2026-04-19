@@ -53,7 +53,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get onboarding_next => 'Далее';
 
   @override
-  String get onboarding_start => 'Выбрать язык';
+  String get onboarding_start => 'Продолжить';
 
   @override
   String get onboarding_alarm_title => 'Просыпайтесь со смыслом';
@@ -124,6 +124,90 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get nav_profile => 'Профиль';
+
+  @override
+  String get alarm_focus_title => 'Утренний сценарий';
+
+  @override
+  String get alarm_focus_subtitle =>
+      'Посмотрите будущие 5 слов, управляйте будильником через поинты и держите утро предсказуемым.';
+
+  @override
+  String get alarm_points_title => 'Баланс поинтов';
+
+  @override
+  String alarm_points_value(int count) {
+    return '$count поинтов';
+  }
+
+  @override
+  String get alarm_next_title => 'Ближайший будильник';
+
+  @override
+  String get alarm_next_missing => 'Пока нет активного будильника';
+
+  @override
+  String get alarm_preview_title => 'Утреннее превью';
+
+  @override
+  String get alarm_preview_subtitle =>
+      'Это 5 слов, которые могут появиться утром во время будильника.';
+
+  @override
+  String get alarm_preview_empty =>
+      'Превью появится после того, как вы привяжете категории к будильнику.';
+
+  @override
+  String get alarm_day_plan_title => 'Дневной план';
+
+  @override
+  String get alarm_day_plan_subtitle =>
+      'Изучите 10 слов или фраз днём, чтобы утром было больше свободы.';
+
+  @override
+  String get alarm_points_rule_word => '1 слово = +1 поинт';
+
+  @override
+  String get alarm_points_rule_phrase => '1 фраза = +2 поинта';
+
+  @override
+  String get alarm_disable_for_points => 'Выключить за 10 поинтов';
+
+  @override
+  String get alarm_postpone_for_points => 'Сдвинуть на 10 минут за 2 поинта';
+
+  @override
+  String get alarm_permissions_title => 'Доступ к будильнику';
+
+  @override
+  String get alarm_permissions_subtitle =>
+      'Уведомления и точные будильники нужны, чтобы утренний сценарий срабатывал стабильно.';
+
+  @override
+  String get alarm_request_permissions => 'Запросить доступ';
+
+  @override
+  String get open_settings => 'Открыть настройки';
+
+  @override
+  String get alarm_permissions_ready => 'Разрешения для будильника включены.';
+
+  @override
+  String get alarm_permissions_missing =>
+      'Часть разрешений не выдана. Без них будильник может сработать нестабильно.';
+
+  @override
+  String alarm_categories_value(int count) {
+    return '$count категорий';
+  }
+
+  @override
+  String alarm_questions_value(int count) {
+    return '$count вопросов';
+  }
+
+  @override
+  String get alarm_preview_category_label => 'Категория';
 
   @override
   String get alarm_empty_subtitle =>
@@ -280,6 +364,43 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get quiz_unavailable =>
       'Вопрос для квиза сейчас недоступен. Можно выключить будильник вручную.';
+
+  @override
+  String ring_question_prompt(String word) {
+    return 'Выберите перевод слова \"$word\"';
+  }
+
+  @override
+  String ring_progress(int current, int total) {
+    return '$current из $total';
+  }
+
+  @override
+  String get ring_points_title => 'Утренние действия';
+
+  @override
+  String get ring_points_subtitle =>
+      'Если днём была подготовка, поинты помогут не проходить весь квиз.';
+
+  @override
+  String get ring_wrong_answer_delay =>
+      'Неверно. Следующее слово через 2 секунды.';
+
+  @override
+  String get ring_disable_now => 'Выключить за 10 поинтов';
+
+  @override
+  String get ring_snooze_now => 'Отложить на 10 минут за 2 поинта';
+
+  @override
+  String get points_insufficient =>
+      'Пока недостаточно поинтов для этого действия.';
+
+  @override
+  String get alarm_disabled_success => 'Будильник выключен.';
+
+  @override
+  String get alarm_postponed_success => 'Будильник перенесён на 10 минут.';
 
   @override
   String get stop_alarm => 'Остановить будильник';

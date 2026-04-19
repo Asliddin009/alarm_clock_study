@@ -11,6 +11,8 @@ import 'package:alearn/features/auth/data/mock_app_repo.dart';
 import 'package:alearn/features/auth/domain/i_auth_repo.dart';
 import 'package:alearn/features/category/data/asset_category_repo.dart';
 import 'package:alearn/features/category/domain/i_category_repo.dart';
+import 'package:alearn/features/points/data/shared_pref_points_repo.dart';
+import 'package:alearn/features/points/domain/i_points_repo.dart';
 import 'package:alearn/features/ring/domain/ring_question_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +25,7 @@ final class AppDependencies {
     required this.alarmCacheRepo,
     required this.alarmService,
     required this.categoryRepo,
+    required this.pointsRepo,
     required this.ringQuestionService,
   });
 
@@ -33,6 +36,7 @@ final class AppDependencies {
     required IAlarmCacheRepo alarmCacheRepo,
     required AlarmService alarmService,
     required ICategoryRepo categoryRepo,
+    required IPointsRepo pointsRepo,
     required RingQuestionService ringQuestionService,
   }) {
     return AppDependencies._(
@@ -42,6 +46,7 @@ final class AppDependencies {
       alarmCacheRepo: alarmCacheRepo,
       alarmService: alarmService,
       categoryRepo: categoryRepo,
+      pointsRepo: pointsRepo,
       ringQuestionService: ringQuestionService,
     );
   }
@@ -52,6 +57,7 @@ final class AppDependencies {
   final IAlarmCacheRepo alarmCacheRepo;
   final AlarmService alarmService;
   final ICategoryRepo categoryRepo;
+  final IPointsRepo pointsRepo;
   final RingQuestionService ringQuestionService;
 
   static Future<AppDependencies> create(AppEnv env) async {
@@ -68,6 +74,7 @@ final class AppDependencies {
     final alarmCacheRepo = SharedPrefAlarmCache(sharedPreferences);
     final appPreferencesRepo = SharedPrefAppPreferencesRepo(sharedPreferences);
     final categoryRepo = const AssetCategoryRepo();
+    final pointsRepo = SharedPrefPointsRepo(sharedPreferences);
     final alarmService = AlarmService(
       alarmRepo: alarmRepo,
       alarmCacheRepo: alarmCacheRepo,
@@ -80,6 +87,7 @@ final class AppDependencies {
       alarmCacheRepo: alarmCacheRepo,
       alarmService: alarmService,
       categoryRepo: categoryRepo,
+      pointsRepo: pointsRepo,
       ringQuestionService: RingQuestionService(categoryRepo: categoryRepo),
     );
   }

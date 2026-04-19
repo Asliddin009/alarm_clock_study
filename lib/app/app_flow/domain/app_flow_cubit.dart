@@ -43,6 +43,7 @@ final class AppFlowCubit extends Cubit<AppFlowState> {
           hasCompletedOnboarding: hasCompletedOnboarding,
         ),
         isLoading: false,
+        hasCompletedOnboarding: hasCompletedOnboarding,
         locale: locale,
         session: session,
       ),
@@ -60,7 +61,11 @@ final class AppFlowCubit extends Cubit<AppFlowState> {
       state.copyWith(
         isLoading: false,
         locale: Locale(localeCode),
-        step: state.session == null ? AppFlowStep.auth : AppFlowStep.root,
+        step: state.session != null
+            ? AppFlowStep.root
+            : state.hasCompletedOnboarding
+            ? AppFlowStep.auth
+            : AppFlowStep.onboarding,
       ),
     );
   }
@@ -85,9 +90,8 @@ final class AppFlowCubit extends Cubit<AppFlowState> {
     emit(
       state.copyWith(
         isLoading: false,
-        step: state.locale == null
-            ? AppFlowStep.languageSelection
-            : AppFlowStep.auth,
+        hasCompletedOnboarding: true,
+        step: state.session == null ? AppFlowStep.auth : AppFlowStep.root,
       ),
     );
   }
@@ -163,7 +167,13 @@ final class AppFlowCubit extends Cubit<AppFlowState> {
     emit(state.copyWith(isLoading: true, failure: null));
     await _authRepo.logout();
     emit(
-      state.copyWith(isLoading: false, session: null, step: AppFlowStep.auth),
+      state.copyWith(
+        isLoading: false,
+        session: null,
+        step: state.hasCompletedOnboarding
+            ? AppFlowStep.auth
+            : AppFlowStep.onboarding,
+      ),
     );
   }
 
@@ -172,11 +182,11 @@ final class AppFlowCubit extends Cubit<AppFlowState> {
     required bool hasSession,
     required bool hasCompletedOnboarding,
   }) {
-    if (!hasCompletedOnboarding && localeCode == null && !hasSession) {
-      return AppFlowStep.onboarding;
-    }
     if (localeCode == null) {
       return AppFlowStep.languageSelection;
+    }
+    if (!hasCompletedOnboarding && !hasSession) {
+      return AppFlowStep.onboarding;
     }
     if (!hasSession) {
       return AppFlowStep.auth;

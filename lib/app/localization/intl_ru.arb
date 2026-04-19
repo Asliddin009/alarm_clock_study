@@ -13,7 +13,7 @@
   "splash_subtitle": "Просыпайтесь, учитесь и держите английский в ежедневной рутине.",
   "onboarding_skip": "Пропустить",
   "onboarding_next": "Далее",
-  "onboarding_start": "Выбрать язык",
+  "onboarding_start": "Продолжить",
   "onboarding_alarm_title": "Просыпайтесь со смыслом",
   "onboarding_alarm_description": "Вместо пассивного будильника приложение мягко переводит вас в активное утро через маленький учебный шаг.",
   "onboarding_words_title": "Повторяйте полезные слова офлайн",
@@ -36,6 +36,51 @@
   "nav_words": "Слова",
   "nav_pronunciation": "Произношение",
   "nav_profile": "Профиль",
+  "alarm_focus_title": "Утренний сценарий",
+  "alarm_focus_subtitle": "Посмотрите будущие 5 слов, управляйте будильником через поинты и держите утро предсказуемым.",
+  "alarm_points_title": "Баланс поинтов",
+  "alarm_points_value": "{count} поинтов",
+  "@alarm_points_value": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alarm_next_title": "Ближайший будильник",
+  "alarm_next_missing": "Пока нет активного будильника",
+  "alarm_preview_title": "Утреннее превью",
+  "alarm_preview_subtitle": "Это 5 слов, которые могут появиться утром во время будильника.",
+  "alarm_preview_empty": "Превью появится после того, как вы привяжете категории к будильнику.",
+  "alarm_day_plan_title": "Дневной план",
+  "alarm_day_plan_subtitle": "Изучите 10 слов или фраз днём, чтобы утром было больше свободы.",
+  "alarm_points_rule_word": "1 слово = +1 поинт",
+  "alarm_points_rule_phrase": "1 фраза = +2 поинта",
+  "alarm_disable_for_points": "Выключить за 10 поинтов",
+  "alarm_postpone_for_points": "Сдвинуть на 10 минут за 2 поинта",
+  "alarm_permissions_title": "Доступ к будильнику",
+  "alarm_permissions_subtitle": "Уведомления и точные будильники нужны, чтобы утренний сценарий срабатывал стабильно.",
+  "alarm_request_permissions": "Запросить доступ",
+  "open_settings": "Открыть настройки",
+  "alarm_permissions_ready": "Разрешения для будильника включены.",
+  "alarm_permissions_missing": "Часть разрешений не выдана. Без них будильник может сработать нестабильно.",
+  "alarm_categories_value": "{count} категорий",
+  "@alarm_categories_value": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alarm_questions_value": "{count} вопросов",
+  "@alarm_questions_value": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "alarm_preview_category_label": "Категория",
   "alarm_empty_subtitle": "Добавьте время подъёма и прикрепите короткий английский квиз к утру.",
   "alarm_one_time": "Разовый будильник",
   "edit_alarm_title": "Редактирование будильника",
@@ -103,6 +148,33 @@
     }
   },
   "quiz_unavailable": "Вопрос для квиза сейчас недоступен. Можно выключить будильник вручную.",
+  "ring_question_prompt": "Выберите перевод слова \"{word}\"",
+  "@ring_question_prompt": {
+    "placeholders": {
+      "word": {
+        "type": "String"
+      }
+    }
+  },
+  "ring_progress": "{current} из {total}",
+  "@ring_progress": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "ring_points_title": "Утренние действия",
+  "ring_points_subtitle": "Если днём была подготовка, поинты помогут не проходить весь квиз.",
+  "ring_wrong_answer_delay": "Неверно. Следующее слово через 2 секунды.",
+  "ring_disable_now": "Выключить за 10 поинтов",
+  "ring_snooze_now": "Отложить на 10 минут за 2 поинта",
+  "points_insufficient": "Пока недостаточно поинтов для этого действия.",
+  "alarm_disabled_success": "Будильник выключен.",
+  "alarm_postponed_success": "Будильник перенесён на 10 минут.",
   "stop_alarm": "Остановить будильник",
   "wrong_answer": "Неверно, попробуйте ещё раз.",
   "root_screen_title": "Главный экран",
