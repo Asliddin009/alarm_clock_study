@@ -7,6 +7,7 @@ import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 import 'package:alearn/features/category/domain/entity/category_entity.dart';
 import 'package:alearn/features/category/domain/i_category_repo.dart';
+import 'package:alearn/features/points/domain/i_points_repo.dart';
 
 class RecordingAlarmRepo implements IAlarmRepo {
   final List<AlarmEntity> scheduled = <AlarmEntity>[];
@@ -149,5 +150,29 @@ class FakeCategoryRepo implements ICategoryRepo {
       }
     }
     return null;
+  }
+}
+
+class InMemoryPointsRepo implements IPointsRepo {
+  InMemoryPointsRepo([this._balance = 12]);
+
+  int _balance;
+
+  @override
+  Future<int> addPoints(int amount) async {
+    _balance += amount;
+    return _balance;
+  }
+
+  @override
+  Future<int> getBalance() async => _balance;
+
+  @override
+  Future<int> spendPoints(int amount) async {
+    if (_balance < amount) {
+      throw StateError('Not enough points.');
+    }
+    _balance -= amount;
+    return _balance;
   }
 }

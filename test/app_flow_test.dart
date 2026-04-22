@@ -3,6 +3,7 @@ import 'package:alearn/app/data/shared_pref_app_preferences_repo.dart';
 import 'package:alearn/di/app_dependencies.dart';
 import 'package:alearn/features/alarm/domain/service/alarm_service.dart';
 import 'package:alearn/features/auth/data/mock_app_repo.dart';
+import 'package:alearn/features/points/data/shared_pref_points_repo.dart';
 import 'package:alearn/features/ring/domain/ring_question_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,6 +33,7 @@ Future<Widget> _buildApp({
         alarmCacheRepo: alarmCacheRepo,
       ),
       categoryRepo: categoryRepo,
+      pointsRepo: SharedPrefPointsRepo(sharedPreferences),
       ringQuestionService: RingQuestionService(categoryRepo: categoryRepo),
     ),
   );
@@ -39,38 +41,45 @@ Future<Widget> _buildApp({
 
 Future<void> _pumpPastSplash(WidgetTester tester) async {
   await tester.pump();
-  await tester.pump(const Duration(milliseconds: 1300));
-  await tester.pumpAndSettle();
+  await tester.pump(const Duration(milliseconds: 1700));
+  await tester.pump(const Duration(milliseconds: 500));
+}
+
+Future<void> _pumpUi(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 700));
 }
 
 void main() {
-  testWidgets('first launch shows the onboarding screen', (tester) async {
-    await tester.pumpWidget(await _buildApp());
-    await _pumpPastSplash(tester);
-
-    expect(find.byKey(const Key('onboarding-screen')), findsOneWidget);
-  });
-
-  testWidgets('finishing onboarding opens the language selection screen', (
+  testWidgets('first launch shows the language selection screen', (
     tester,
   ) async {
     await tester.pumpWidget(await _buildApp());
     await _pumpPastSplash(tester);
 
-    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
-    await tester.pumpAndSettle();
-
     expect(find.byKey(const Key('language-selection-screen')), findsOneWidget);
   });
 
-  testWidgets('choosing a language opens the auth screen', (tester) async {
+  testWidgets('choosing a language opens the onboarding screen', (
+    tester,
+  ) async {
     await tester.pumpWidget(await _buildApp());
     await _pumpPastSplash(tester);
 
-    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
-    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('language-option-ru')));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
+
+    expect(find.byKey(const Key('onboarding-screen')), findsOneWidget);
+  });
+
+  testWidgets('finishing onboarding opens the auth screen', (tester) async {
+    await tester.pumpWidget(await _buildApp());
+    await _pumpPastSplash(tester);
+
+    await tester.tap(find.byKey(const Key('language-option-ru')));
+    await _pumpUi(tester);
+    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
+    await _pumpUi(tester);
 
     expect(find.byKey(const Key('auth-screen')), findsOneWidget);
   });
@@ -79,12 +88,12 @@ void main() {
     await tester.pumpWidget(await _buildApp());
     await _pumpPastSplash(tester);
 
-    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
-    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('language-option-ru')));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
+    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
+    await _pumpUi(tester);
     await tester.tap(find.byKey(const Key('auth-skip-button')));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
 
     expect(find.byKey(const Key('root-screen')), findsOneWidget);
   });
@@ -93,10 +102,10 @@ void main() {
     await tester.pumpWidget(await _buildApp());
     await _pumpPastSplash(tester);
 
-    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
-    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('language-option-en')));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
+    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
+    await _pumpUi(tester);
     await tester.enterText(
       find.byKey(const Key('auth-email-field')),
       MockAuthRepo.demoEmail,
@@ -106,7 +115,7 @@ void main() {
       MockAuthRepo.demoPassword,
     );
     await tester.tap(find.byKey(const Key('auth-sign-in-button')));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
 
     expect(find.byKey(const Key('root-screen')), findsOneWidget);
   });
@@ -115,19 +124,19 @@ void main() {
     await tester.pumpWidget(await _buildApp());
     await _pumpPastSplash(tester);
 
-    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
-    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('language-option-en')));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
+    await tester.tap(find.byKey(const Key('onboarding-skip-button')));
+    await _pumpUi(tester);
     await tester.tap(find.byKey(const Key('auth-skip-button')));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
     await tester.tap(find.text('Profile'));
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
     final logoutButton = find.byKey(const Key('root-logout-button'));
     await tester.ensureVisible(logoutButton);
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
     await tester.tap(logoutButton);
-    await tester.pumpAndSettle();
+    await _pumpUi(tester);
 
     expect(find.byKey(const Key('auth-screen')), findsOneWidget);
   });
@@ -137,6 +146,7 @@ void main() {
       await _buildApp(
         initialPreferences: <String, Object>{
           SharedPrefAppPreferencesRepo.localeStorageKey: 'en',
+          SharedPrefAppPreferencesRepo.onboardingStorageKey: true,
         },
       ),
     );
