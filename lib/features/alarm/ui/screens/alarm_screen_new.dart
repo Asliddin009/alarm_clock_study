@@ -324,7 +324,7 @@ class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
                       : ListView.separated(
                           padding: const EdgeInsets.only(bottom: 168),
                           itemCount: alarms.length,
-                          separatorBuilder: (_, __) =>
+                          separatorBuilder: (_, _) =>
                               const SizedBox(height: 12),
                           itemBuilder: (context, index) {
                             final alarm = alarms[index];

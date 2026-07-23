@@ -12,27 +12,37 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  alarm: ^3.1.7
-  another_flushbar: ^1.12.30
-  bloc: ^8.1.4
-  intl: ^0.20.2 
-  equatable: ^2.0.5 
-  flutter_bloc: ^8.1.4
-  flutter_launcher_icons: ^0.13.1
-  hydrated_bloc: ^9.1.5
-  permission_handler: ^11.1.0
-  shared_preferences: ^2.5.3
-  flutter_ringtone_player: ^4.0.0+3
-  numberpicker: ^2.1.2
-  audioplayers: ^6.5.1
-  lottie: ^3.3.3
+  # State management
+  bloc: ^9.2.1
+  flutter_bloc: ^9.1.1
+  hydrated_bloc: ^11.0.0
+  equatable: ^2.1.0
 
-  cupertino_icons: ^1.0.8
+  # Alarms & notifications
+  alarm: ^5.5.0
+  awesome_notifications: ^0.12.1
+  flutter_ringtone_player: ^4.0.0+4
+  permission_handler: ^12.0.3
+
+  # Storage
+  shared_preferences: ^2.5.5
+
+  # Media
+  audioplayers: ^6.8.1
+  lottie: ^3.5.1
+
+  # UI
+  numberpicker: ^2.1.2
+  cupertino_icons: ^1.0.9
+
+  # Utils
+  intl: ^0.20.2
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   generate: true
