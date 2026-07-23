@@ -120,7 +120,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nav_words => 'Слова';
 
   @override
-  String get nav_pronunciation => 'Произношение';
+  String get nav_pronunciation => 'Речь';
 
   @override
   String get nav_profile => 'Профиль';

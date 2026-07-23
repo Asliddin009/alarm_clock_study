@@ -1,5 +1,6 @@
 import 'package:alearn/app/app_flow/domain/app_flow_cubit.dart';
 import 'package:alearn/app/helper/localization_helper.dart';
+import 'package:alearn/app/ui/theme/app_color.dart';
 import 'package:alearn/app/ui/ui_kit/app_container.dart';
 import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
 import 'package:alearn/app/ui/ui_kit/app_text_button.dart';
@@ -46,8 +47,6 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = LocalizationHelper.getLocalizations(context);
-
     return Scaffold(
       key: const Key('root-screen'),
       extendBody: true,
@@ -64,36 +63,91 @@ class _RootScreenState extends State<RootScreen> {
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(14, 0, 14, 14),
         child: AppContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          borderRadius: 30,
-          child: NavigationBar(
-            selectedIndex: _selectedIndex,
-            backgroundColor: Colors.transparent,
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-            elevation: 0,
-            onDestinationSelected: _onDestinationSelected,
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.alarm_outlined),
-                selectedIcon: const Icon(Icons.alarm_rounded),
-                label: localizations.nav_alarm,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          borderRadius: 28,
+          child: Row(
+            children: [
+              Expanded(
+                child: _NavItem(
+                  icon: Icons.alarm_outlined,
+                  selectedIcon: Icons.alarm_rounded,
+                  selected: _selectedIndex == 0,
+                  onTap: () => _onDestinationSelected(0),
+                ),
               ),
-              NavigationDestination(
-                icon: const Icon(Icons.menu_book_outlined),
-                selectedIcon: const Icon(Icons.menu_book_rounded),
-                label: localizations.nav_words,
+              Expanded(
+                child: _NavItem(
+                  icon: Icons.menu_book_outlined,
+                  selectedIcon: Icons.menu_book_rounded,
+                  selected: _selectedIndex == 1,
+                  onTap: () => _onDestinationSelected(1),
+                ),
               ),
-              NavigationDestination(
-                icon: const Icon(Icons.mic_none_rounded),
-                selectedIcon: const Icon(Icons.mic_rounded),
-                label: localizations.nav_pronunciation,
+              Expanded(
+                child: _NavItem(
+                  icon: Icons.mic_none_rounded,
+                  selectedIcon: Icons.mic_rounded,
+                  selected: _selectedIndex == 2,
+                  onTap: () => _onDestinationSelected(2),
+                ),
               ),
-              NavigationDestination(
-                icon: const Icon(Icons.person_outline_rounded),
-                selectedIcon: const Icon(Icons.person_rounded),
-                label: localizations.nav_profile,
+              Expanded(
+                child: _NavItem(
+                  icon: Icons.person_outline_rounded,
+                  selectedIcon: Icons.person_rounded,
+                  selected: _selectedIndex == 3,
+                  onTap: () => _onDestinationSelected(3),
+                ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  const _NavItem({
+    required this.icon,
+    required this.selectedIcon,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final IconData selectedIcon;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final activeBg = isDark
+        ? ColorResource.forestAccent.withValues(alpha: 0.35)
+        : ColorResource.mint.withValues(alpha: 0.35);
+    final activeFg = isDark ? ColorResource.white : ColorResource.forest;
+    final inactiveFg = isDark
+        ? ColorResource.white.withValues(alpha: 0.5)
+        : ColorResource.muted;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeOutCubic,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
+          decoration: BoxDecoration(
+            color: selected ? activeBg : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Icon(
+            selected ? selectedIcon : icon,
+            color: selected ? activeFg : inactiveFg,
+            size: 24,
           ),
         ),
       ),
