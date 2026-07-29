@@ -5,6 +5,7 @@ import 'package:alearn/app/helper/localization_helper.dart';
 import 'package:alearn/app/ui/ui_kit/app_container.dart';
 import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
 import 'package:alearn/app/ui/ui_kit/app_snack_bar.dart';
+import 'package:alearn/app/ui/ui_kit/base_app_bar.dart';
 import 'package:alearn/di/app_dependencies_scope.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
@@ -269,7 +270,10 @@ class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
         final isLoading = state is AlarmLoadingState && alarms.isEmpty;
 
         return Scaffold(
-          appBar: AppBar(title: Text(localization.alarm)),
+          appBar: BaseAppBar(
+            title: localization.alarm,
+            showBackButton: false,
+          ),
           body: SafeArea(
             bottom: false,
             child: FutureBuilder<bool>(

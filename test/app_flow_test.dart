@@ -33,6 +33,7 @@ Future<Widget> _buildApp({
         alarmCacheRepo: alarmCacheRepo,
       ),
       categoryRepo: categoryRepo,
+      categoryProgressRepo: InMemoryCategoryProgressRepo(),
       pointsRepo: SharedPrefPointsRepo(sharedPreferences),
       ringQuestionService: RingQuestionService(categoryRepo: categoryRepo),
     ),

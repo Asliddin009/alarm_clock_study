@@ -26,6 +26,10 @@ class WordEntity extends Equatable {
   final List<String> examplesRu;
   final List<String> examplesEn;
 
+  /// A word entity models both single words and multi-word phrases; there is
+  /// no separate content type yet, so a phrase is inferred from whitespace.
+  bool get isPhrase => enWord.trim().contains(' ');
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'ruWord': ruWord,

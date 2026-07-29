@@ -23,13 +23,16 @@ void main() {
         alarmCacheRepo: alarmCache,
       ),
     );
-    final categoryCubit = CategoryCubit(
-      FakeCategoryRepo(
-        baseCategories: const <CategoryEntity>[
-          CategoryEntity(id: 1, name: 'Для разработчиков', wordList: []),
-        ],
-      ),
-    )..getCategories();
+    final categoryCubit =
+        CategoryCubit(
+          repo: FakeCategoryRepo(
+            baseCategories: const <CategoryEntity>[
+              CategoryEntity(id: 1, name: 'Для разработчиков', wordList: []),
+            ],
+          ),
+          progressRepo: InMemoryCategoryProgressRepo(),
+          pointsRepo: InMemoryPointsRepo(),
+        )..getCategories();
 
     await tester.pumpWidget(
       buildTestApp(

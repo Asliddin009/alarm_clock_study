@@ -1,6 +1,7 @@
 import 'package:alearn/app/helper/localization_helper.dart';
 import 'package:alearn/app/ui/ui_kit/app_container.dart';
 import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
+import 'package:alearn/app/ui/ui_kit/base_app_bar.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/ui/widgets/edit_alarm_tile.dart';
@@ -44,10 +45,10 @@ class _CreateAlarmScreenState extends State<CreateAlarmScreen> {
     final isEditing = widget.initialAlarm != null;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          isEditing ? localization.edit_alarm_title : localization.create_alarm,
-        ),
+      appBar: BaseAppBar(
+        title: isEditing
+            ? localization.edit_alarm_title
+            : localization.create_alarm,
       ),
       body: SafeArea(
         child: ListView(

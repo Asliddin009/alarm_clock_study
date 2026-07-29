@@ -70,6 +70,8 @@ abstract final class AppThemeData {
         centerTitle: false,
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         foregroundColor: isDark ? ColorResource.white : ColorResource.black,
         titleTextStyle: textTheme.titleLarge?.copyWith(
           color: isDark ? ColorResource.white : ColorResource.black,

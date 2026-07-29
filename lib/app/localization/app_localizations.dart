@@ -572,6 +572,84 @@ abstract class AppLocalizations {
   /// **'{count} words'**
   String words_word_count(int count);
 
+  /// No description provided for @words_study_action.
+  ///
+  /// In en, this message translates to:
+  /// **'Study'**
+  String get words_study_action;
+
+  /// No description provided for @words_progress_count.
+  ///
+  /// In en, this message translates to:
+  /// **'{studied}/{total} learned'**
+  String words_progress_count(int studied, int total);
+
+  /// No description provided for @words_favorite_add_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorites'**
+  String get words_favorite_add_label;
+
+  /// No description provided for @words_favorite_remove_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favorites'**
+  String get words_favorite_remove_label;
+
+  /// No description provided for @words_favorites_section_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorites'**
+  String get words_favorites_section_title;
+
+  /// No description provided for @words_all_categories_section_title.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get words_all_categories_section_title;
+
+  /// No description provided for @category_word_type_word.
+  ///
+  /// In en, this message translates to:
+  /// **'Word'**
+  String get category_word_type_word;
+
+  /// No description provided for @category_word_type_phrase.
+  ///
+  /// In en, this message translates to:
+  /// **'Phrase'**
+  String get category_word_type_phrase;
+
+  /// No description provided for @category_detail_example_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Example'**
+  String get category_detail_example_label;
+
+  /// No description provided for @category_detail_flip_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the card to reveal the translation'**
+  String get category_detail_flip_hint;
+
+  /// No description provided for @category_detail_counter.
+  ///
+  /// In en, this message translates to:
+  /// **'{index} of {total}'**
+  String category_detail_counter(int index, int total);
+
+  /// No description provided for @category_detail_empty.
+  ///
+  /// In en, this message translates to:
+  /// **'This category has no words yet.'**
+  String get category_detail_empty;
+
+  /// No description provided for @category_detail_studied_badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Learned'**
+  String get category_detail_studied_badge;
+
   /// No description provided for @pronunciation_screen_title.
   ///
   /// In en, this message translates to:

@@ -10,6 +10,8 @@ import 'package:alearn/features/alarm/domain/service/alarm_service.dart';
 import 'package:alearn/features/auth/data/mock_app_repo.dart';
 import 'package:alearn/features/auth/domain/i_auth_repo.dart';
 import 'package:alearn/features/category/data/asset_category_repo.dart';
+import 'package:alearn/features/category/data/shared_pref_category_progress_repo.dart';
+import 'package:alearn/features/category/domain/i_category_progress_repo.dart';
 import 'package:alearn/features/category/domain/i_category_repo.dart';
 import 'package:alearn/features/points/data/shared_pref_points_repo.dart';
 import 'package:alearn/features/points/domain/i_points_repo.dart';
@@ -25,6 +27,7 @@ final class AppDependencies {
     required this.alarmCacheRepo,
     required this.alarmService,
     required this.categoryRepo,
+    required this.categoryProgressRepo,
     required this.pointsRepo,
     required this.ringQuestionService,
   });
@@ -36,6 +39,7 @@ final class AppDependencies {
     required IAlarmCacheRepo alarmCacheRepo,
     required AlarmService alarmService,
     required ICategoryRepo categoryRepo,
+    required ICategoryProgressRepo categoryProgressRepo,
     required IPointsRepo pointsRepo,
     required RingQuestionService ringQuestionService,
   }) {
@@ -46,6 +50,7 @@ final class AppDependencies {
       alarmCacheRepo: alarmCacheRepo,
       alarmService: alarmService,
       categoryRepo: categoryRepo,
+      categoryProgressRepo: categoryProgressRepo,
       pointsRepo: pointsRepo,
       ringQuestionService: ringQuestionService,
     );
@@ -57,6 +62,7 @@ final class AppDependencies {
   final IAlarmCacheRepo alarmCacheRepo;
   final AlarmService alarmService;
   final ICategoryRepo categoryRepo;
+  final ICategoryProgressRepo categoryProgressRepo;
   final IPointsRepo pointsRepo;
   final RingQuestionService ringQuestionService;
 
@@ -74,6 +80,9 @@ final class AppDependencies {
     final alarmCacheRepo = SharedPrefAlarmCache(sharedPreferences);
     final appPreferencesRepo = SharedPrefAppPreferencesRepo(sharedPreferences);
     final categoryRepo = const AssetCategoryRepo();
+    final categoryProgressRepo = SharedPrefCategoryProgressRepo(
+      sharedPreferences,
+    );
     final pointsRepo = SharedPrefPointsRepo(sharedPreferences);
     final alarmService = AlarmService(
       alarmRepo: alarmRepo,
@@ -87,6 +96,7 @@ final class AppDependencies {
       alarmCacheRepo: alarmCacheRepo,
       alarmService: alarmService,
       categoryRepo: categoryRepo,
+      categoryProgressRepo: categoryProgressRepo,
       pointsRepo: pointsRepo,
       ringQuestionService: RingQuestionService(categoryRepo: categoryRepo),
     );

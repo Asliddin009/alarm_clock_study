@@ -270,6 +270,50 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
+  String get words_study_action => 'Изучать';
+
+  @override
+  String words_progress_count(int studied, int total) {
+    return '$studied/$total изучено';
+  }
+
+  @override
+  String get words_favorite_add_label => 'Добавить в избранное';
+
+  @override
+  String get words_favorite_remove_label => 'Убрать из избранного';
+
+  @override
+  String get words_favorites_section_title => 'Избранное';
+
+  @override
+  String get words_all_categories_section_title => 'Все категории';
+
+  @override
+  String get category_word_type_word => 'Слово';
+
+  @override
+  String get category_word_type_phrase => 'Фраза';
+
+  @override
+  String get category_detail_example_label => 'Пример';
+
+  @override
+  String get category_detail_flip_hint =>
+      'Нажмите на карточку, чтобы увидеть перевод';
+
+  @override
+  String category_detail_counter(int index, int total) {
+    return '$index из $total';
+  }
+
+  @override
+  String get category_detail_empty => 'В этой категории пока нет слов.';
+
+  @override
+  String get category_detail_studied_badge => 'Изучено';
+
+  @override
   String get pronunciation_screen_title => 'Произношение';
 
   @override

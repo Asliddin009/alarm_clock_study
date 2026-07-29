@@ -268,6 +268,50 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get words_study_action => 'Study';
+
+  @override
+  String words_progress_count(int studied, int total) {
+    return '$studied/$total learned';
+  }
+
+  @override
+  String get words_favorite_add_label => 'Add to favorites';
+
+  @override
+  String get words_favorite_remove_label => 'Remove from favorites';
+
+  @override
+  String get words_favorites_section_title => 'Favorites';
+
+  @override
+  String get words_all_categories_section_title => 'All categories';
+
+  @override
+  String get category_word_type_word => 'Word';
+
+  @override
+  String get category_word_type_phrase => 'Phrase';
+
+  @override
+  String get category_detail_example_label => 'Example';
+
+  @override
+  String get category_detail_flip_hint =>
+      'Tap the card to reveal the translation';
+
+  @override
+  String category_detail_counter(int index, int total) {
+    return '$index of $total';
+  }
+
+  @override
+  String get category_detail_empty => 'This category has no words yet.';
+
+  @override
+  String get category_detail_studied_badge => 'Learned';
+
+  @override
   String get pronunciation_screen_title => 'Pronunciation';
 
   @override

@@ -33,8 +33,11 @@ class App extends StatelessWidget {
                   ..add(const AlarmStarted()),
           ),
           BlocProvider<CategoryCubit>(
-            create: (_) =>
-                CategoryCubit(appDependencies.categoryRepo)..getCategories(),
+            create: (_) => CategoryCubit(
+              repo: appDependencies.categoryRepo,
+              progressRepo: appDependencies.categoryProgressRepo,
+              pointsRepo: appDependencies.pointsRepo,
+            )..getCategories(),
           ),
         ],
         child: const _AppView(),

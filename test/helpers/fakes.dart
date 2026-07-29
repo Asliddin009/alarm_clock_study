@@ -6,6 +6,7 @@ import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 import 'package:alearn/features/category/domain/entity/category_entity.dart';
+import 'package:alearn/features/category/domain/i_category_progress_repo.dart';
 import 'package:alearn/features/category/domain/i_category_repo.dart';
 import 'package:alearn/features/points/domain/i_points_repo.dart';
 
@@ -150,6 +151,33 @@ class FakeCategoryRepo implements ICategoryRepo {
       }
     }
     return null;
+  }
+}
+
+class InMemoryCategoryProgressRepo implements ICategoryProgressRepo {
+  final Set<int> _favoriteIds = <int>{};
+  final Map<int, Set<int>> _studiedByCategory = <int, Set<int>>{};
+
+  @override
+  Future<Set<int>> getFavoriteIds() async => <int>{..._favoriteIds};
+
+  @override
+  Future<Set<int>> toggleFavorite(int categoryId) async {
+    if (!_favoriteIds.remove(categoryId)) {
+      _favoriteIds.add(categoryId);
+    }
+    return <int>{..._favoriteIds};
+  }
+
+  @override
+  Future<Set<int>> getStudiedWordIndexes(int categoryId) async =>
+      <int>{...?_studiedByCategory[categoryId]};
+
+  @override
+  Future<Set<int>> markWordStudied(int categoryId, int wordIndex) async {
+    final studied = _studiedByCategory.putIfAbsent(categoryId, () => <int>{});
+    studied.add(wordIndex);
+    return <int>{...studied};
   }
 }
 

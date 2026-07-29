@@ -49,6 +49,7 @@ void main() {
         alarmCacheRepo: InMemoryAlarmCacheRepo(<AlarmEntity>[alarm]),
       ),
       categoryRepo: FakeCategoryRepo(),
+      categoryProgressRepo: InMemoryCategoryProgressRepo(),
       pointsRepo: InMemoryPointsRepo(),
       ringQuestionService: questionService,
     );

@@ -72,6 +72,7 @@ void main() {
         alarmCacheRepo: alarmCache,
       ),
       categoryRepo: categoryRepo,
+      categoryProgressRepo: InMemoryCategoryProgressRepo(),
       pointsRepo: InMemoryPointsRepo(),
       ringQuestionService: RingQuestionService(categoryRepo: categoryRepo),
     );

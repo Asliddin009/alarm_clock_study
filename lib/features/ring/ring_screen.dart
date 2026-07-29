@@ -4,6 +4,7 @@ import 'package:alearn/app/helper/localization_helper.dart';
 import 'package:alearn/app/ui/ui_kit/app_container.dart';
 import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
 import 'package:alearn/app/ui/ui_kit/app_snack_bar.dart';
+import 'package:alearn/app/ui/ui_kit/base_app_bar.dart';
 import 'package:alearn/di/app_dependencies_scope.dart';
 import 'package:alearn/features/alarm/domain/bloc/alarm_bloc.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
@@ -175,7 +176,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     final alarm = _findAlarm(context.watch<AlarmBloc>().state.alarms);
 
     return Scaffold(
-      appBar: AppBar(title: Text(localizations.wake_up_title)),
+      appBar: BaseAppBar(title: localizations.wake_up_title),
       body: SafeArea(
         child: _isLoading
             ? const Center(child: CircularProgressIndicator())

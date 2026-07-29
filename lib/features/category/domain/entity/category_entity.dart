@@ -6,6 +6,7 @@ class CategoryEntity extends Equatable {
     required this.name,
     required this.id,
     required this.wordList,
+    this.languages = const <String>['ru', 'en'],
   });
 
   factory CategoryEntity.fromJson(Map<String, dynamic> json) {
@@ -18,21 +19,30 @@ class CategoryEntity extends Equatable {
                 WordEntity.fromJson(value as Map<String, dynamic>),
           )
           .toList(growable: false),
+      languages: (json['languages'] as List<dynamic>? ?? const <dynamic>['ru', 'en'])
+          .map((dynamic value) => value.toString())
+          .toList(growable: false),
     );
   }
 
   final String name;
   final List<WordEntity> wordList;
   final int id;
+  final List<String> languages;
+
+  int get phraseCount => wordList.where((word) => word.isPhrase).length;
+
+  int get wordCount => wordList.length - phraseCount;
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'name': name,
       'wordList': wordList.map((word) => word.toJson()).toList(growable: false),
       'id': id,
+      'languages': languages.toList(growable: false),
     };
   }
 
   @override
-  List<Object?> get props => <Object?>[name, id, wordList];
+  List<Object?> get props => <Object?>[name, id, wordList, languages];
 }
