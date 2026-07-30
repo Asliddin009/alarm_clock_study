@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:alarm/alarm.dart';
 import 'package:alearn/app/helper/localization_helper.dart';
 import 'package:alearn/app/ui/ui_kit/app_container.dart';
 import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
@@ -35,9 +34,10 @@ class AlarmScreen extends StatefulWidget {
 }
 
 class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
-  StreamSubscription<AlarmSettings>? _ringStreamSubscription;
+  StreamSubscription<int>? _ringStreamSubscription;
   late Future<bool> _permissionsFuture;
   int _reloadSeed = 0;
+  bool _isRingScreenOpen = false;
 
   @override
   void initState() {
@@ -47,13 +47,28 @@ class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
     _ringStreamSubscription = context.read<AlarmBloc>().ringStream.listen(
       _openRingScreen,
     );
+    // Приложение могли открыть уже звонящим будильником — тогда поток молчит,
+    // и узнать о звонке можно только опросив систему.
+    unawaited(_openRingScreenIfAlarmIsRinging());
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(_refreshPermissionsState());
+      unawaited(_openRingScreenIfAlarmIsRinging());
     }
+  }
+
+  Future<void> _openRingScreenIfAlarmIsRinging() async {
+    if (_isRingScreenOpen) {
+      return;
+    }
+    final alarmId = await context.read<AlarmBloc>().findRingingAlarmId();
+    if (alarmId == null) {
+      return;
+    }
+    await _openRingScreen(alarmId);
   }
 
   @override
@@ -127,15 +142,22 @@ class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
     await _refreshPermissionsState();
   }
 
-  Future<void> _openRingScreen(AlarmSettings alarmSettings) async {
-    if (!mounted) {
+  Future<void> _openRingScreen(int alarmId) async {
+    if (!mounted || _isRingScreenOpen) {
       return;
     }
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => AlarmRingScreen(alarmId: alarmSettings.id),
-      ),
-    );
+    // Звонок приходит и из потока, и из опроса системы — без флага экран
+    // квиза открылся бы дважды.
+    _isRingScreenOpen = true;
+    try {
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => AlarmRingScreen(alarmId: alarmId),
+        ),
+      );
+    } finally {
+      _isRingScreenOpen = false;
+    }
     if (!mounted) {
       return;
     }

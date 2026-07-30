@@ -2,8 +2,14 @@ import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/data/permission.dart';
 import 'package:alearn/features/alarm/domain/alarm_exception.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
+import 'package:alearn/features/alarm/domain/entity/alarm_ring_event.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 
+/// Реализация поверх пакета `alarm`.
+///
+/// Держит будильник живым через фоновую аудиосессию, поэтому не переживает
+/// выгрузку приложения. Используется на Android и на iOS ниже 26, где нет
+/// AlarmKit.
 final class AlarmPlusRepo implements IAlarmRepo {
   AlarmPlusRepo({required AlarmPermissionService permissionService})
     : _permissionService = permissionService;
@@ -11,14 +17,14 @@ final class AlarmPlusRepo implements IAlarmRepo {
   final AlarmPermissionService _permissionService;
 
   @override
-  Stream<AlarmSettings> get ringStream async* {
+  Stream<AlarmRingEvent> get ringStream async* {
     var previousIds = <int>{};
 
     await for (final ringingSet in Alarm.ringing) {
       final alarms = ringingSet.alarms.toList(growable: false);
       for (final alarm in alarms) {
         if (!previousIds.contains(alarm.id)) {
-          yield alarm;
+          yield AlarmRingEvent(alarmId: alarm.id);
         }
       }
       previousIds = alarms.map((alarm) => alarm.id).toSet();
@@ -31,7 +37,7 @@ final class AlarmPlusRepo implements IAlarmRepo {
   }
 
   @override
-  Future<void> scheduleAlarm({
+  Future<AlarmEntity> scheduleAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -41,10 +47,13 @@ final class AlarmPlusRepo implements IAlarmRepo {
       notificationTitle: notificationTitle,
       notificationBody: notificationBody,
     );
+    // Пакет адресует будильники по доменному id, отдельный системный
+    // идентификатор ему не нужен.
+    return alarm;
   }
 
   @override
-  Future<void> updateAlarm({
+  Future<AlarmEntity> updateAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -54,14 +63,37 @@ final class AlarmPlusRepo implements IAlarmRepo {
       notificationTitle: notificationTitle,
       notificationBody: notificationBody,
     );
+    return alarm;
   }
 
   @override
-  Future<void> deleteAlarm(int id) async {
+  Future<void> deleteAlarm({required int id, String? nativeAlarmId}) async {
     final didDelete = await Alarm.stop(id);
     if (!didDelete) {
       throw AlarmRepositoryException('Не удалось удалить системный будильник.');
     }
+  }
+
+  @override
+  Future<void> stopAlarm({required int id, String? nativeAlarmId}) {
+    // У пакета нет разделения «заглушить» и «снять с расписания»: повторы он
+    // всё равно не планирует, каждый будильник одноразовый.
+    return deleteAlarm(id: id, nativeAlarmId: nativeAlarmId);
+  }
+
+  @override
+  Future<AlarmRingEvent?> getRingingAlarm() async {
+    final ringingAlarms = Alarm.ringing.valueOrNull?.alarms;
+    if (ringingAlarms == null || ringingAlarms.isEmpty) {
+      return null;
+    }
+    return AlarmRingEvent(alarmId: ringingAlarms.first.id);
+  }
+
+  @override
+  Future<Set<String>> getScheduledAlarmKeys() async {
+    final alarms = await Alarm.getAlarms();
+    return alarms.map((alarm) => alarm.id.toString()).toSet();
   }
 
   Future<void> _setAlarm({
@@ -102,7 +134,7 @@ final class UnsupportedAlarmRepo implements IAlarmRepo {
   final String platformName;
 
   @override
-  Stream<AlarmSettings> get ringStream => const Stream<AlarmSettings>.empty();
+  Stream<AlarmRingEvent> get ringStream => const Stream<AlarmRingEvent>.empty();
 
   @override
   Future<void> requestPermissions() async {
@@ -112,7 +144,7 @@ final class UnsupportedAlarmRepo implements IAlarmRepo {
   }
 
   @override
-  Future<void> scheduleAlarm({
+  Future<AlarmEntity> scheduleAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -123,7 +155,7 @@ final class UnsupportedAlarmRepo implements IAlarmRepo {
   }
 
   @override
-  Future<void> updateAlarm({
+  Future<AlarmEntity> updateAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -134,9 +166,22 @@ final class UnsupportedAlarmRepo implements IAlarmRepo {
   }
 
   @override
-  Future<void> deleteAlarm(int id) {
+  Future<void> deleteAlarm({required int id, String? nativeAlarmId}) {
     throw AlarmRepositoryException(
       'Платформа $platformName не поддерживает удаление будильников.',
     );
   }
+
+  @override
+  Future<void> stopAlarm({required int id, String? nativeAlarmId}) {
+    throw AlarmRepositoryException(
+      'Платформа $platformName не поддерживает остановку будильников.',
+    );
+  }
+
+  @override
+  Future<AlarmRingEvent?> getRingingAlarm() async => null;
+
+  @override
+  Future<Set<String>> getScheduledAlarmKeys() async => const <String>{};
 }

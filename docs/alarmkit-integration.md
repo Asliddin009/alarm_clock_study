@@ -146,11 +146,31 @@ await alarmkit.cancelAll();
 варианта ответа. То есть примитивный квиз «выбери перевод» — да, реализуем.
 Полноценный `AlarmRingScreen` со сессией вопросов, очками и снек-барами — нет.
 
-### 4.3 Твой Flutter-экран — открывается по кнопке
+### 4.3 Твой Flutter-экран — открывается по кнопке, но есть блокер
 
-Рабочий путь: кнопка в алерте/Live Activity открывает приложение, и уже там
-показывается настоящий `AlarmRingScreen`. Делается через App Intent с
-`openAppWhenRun` — код в разделе 5.3.
+Задумка: кнопка в алерте открывает приложение через App Intent с
+`openAppWhenRun`, и там показывается настоящий `AlarmRingScreen`.
+
+**Плагин 0.4.0 этого не позволяет.** Проверено по его исходнику
+`FlutterAlarmkitPlugin.swift`:
+
+| Метод | Кнопки в алерте |
+|---|---|
+| `scheduleOneShotAlarm` (строка 576) | только `stopButton` |
+| `scheduleRecurrentAlarm` (строка 842) | только `stopButton` |
+| `setCountdownAlarm` (строка 699) | `stopButton` + `secondaryButton`, поведение `.countdown` |
+
+Вторичная кнопка есть только у countdown-будильников, и её поведение жёстко
+задано как `.countdown` (перезапуск отсчёта), а не `.custom` (запуск своего
+интента). То есть приложение она не открывает даже там.
+
+Варианты: форкнуть плагин и добавить `secondaryButtonBehavior: .custom` в сборку
+`AlarmPresentation.Alert`, либо завести issue в апстрим. До этого рабочий
+сценарий — пользователь жмёт системный Stop и открывает приложение сам,
+а квиз ждёт его внутри.
+
+Заготовки Swift и инструкция лежат в
+[ios/AlarmkitWidgetCustom/](../ios/AlarmkitWidgetCustom/README.md).
 
 ### 4.4 Ключевой компромисс, который надо принять осознанно
 
@@ -171,11 +191,12 @@ AlarmKit **отнимает**.
 
 Мой совет: брать AlarmKit и заменить принуждение на мотивацию —
 
-- Stop останавливает звук, но приложение открывается на квизе через
-  `openAppWhenRun` на второй кнопке (сделай её основной, яркой: «Учить»).
 - Если квиз не пройден в течение N минут — шлёшь локальное уведомление
   («Ты не забрал 50 очков за утро») или ставишь ещё один AlarmKit-алярм.
 - Streak / очки (`pointsRepo` уже есть в проекте) как основной драйвер.
+- Когда пользователь всё-таки откроет приложение, квиз встретит его сам:
+  `AlarmService.findRingingAlarmId()` опрашивает систему на старте и на
+  возврате из фона, так что экран открывается без всякой кнопки в алерте.
 
 Будильник, который не звонит, учит английскому хуже, чем будильник, который
 звонит, но который можно выключить.
@@ -184,17 +205,49 @@ AlarmKit **отнимает**.
 
 ## 5. Пошаговая установка
 
-### 5.1 Xcode (две ручные операции)
+### 5.1 Xcode (одна ручная операция)
 
-Значения должны совпадать **точно** — плагин ищет их по имени.
+**Widget Extension.** File → New → Target → Widget Extension.
+Имя: `AlarmkitWidget` — должно совпадать **точно**, плагин ищет по нему.
+Отметить только **Live Activity**, снять «Include Configuration Intent».
 
-1. **Widget Extension.** File → New → Target → Widget Extension.
-   Имя: `AlarmkitWidget`. Отметить только **Live Activity**, снять
-   «Include Configuration Intent».
-2. **App Groups.** Для обоих таргетов — `Runner` и `AlarmkitWidgetExtension` —
-   Signing & Capabilities → + Capability → App Groups → добавить
-   `group.flutter-alarmkit`.
-   Без этого не работают кастомные цвета кнопок.
+Xcode 26 создаёт таргет с именем `AlarmkitWidgetExtension` и папкой
+`AlarmkitWidget`. Список TARGETS живёт внутри редактора проекта (клик по синей
+иконке `Runner` вверху навигатора), а не в файловом навигаторе.
+
+### 5.1.1 App Groups: не подключаем
+
+Инструкция плагина (`InstallationSteps.md`) требует App Group
+`group.flutter-alarmkit` для обоих таргетов. **Сделать это невозможно**, и
+причин две.
+
+Главная: **проект подписывается бесплатным Apple ID** (персональная команда,
+профили выпускаются на 7 дней). App Groups — функция платного Apple Developer
+Program, на бесплатном аккаунте она недоступна в принципе, никакое имя группы
+не подойдёт.
+
+Вторая: даже на платном аккаунте конкретно `group.flutter-alarmkit` не
+получить — идентификаторы App Group уникальны глобально во всей экосистеме
+Apple, и этот уже занят чужим аккаунтом:
+
+```
+An Application Group with Identifier 'group.flutter-alarmkit' is not available.
+Please enter a different string
+```
+
+Своё имя потребовало бы форка: плагин хардкодит идентификатор в
+`FlutterAlarmkitPlugin.swift`, который лежит в pub-cache и перезаписывается при
+каждом `flutter pub get`.
+
+Группа используется ровно в одном месте — передать цвета заливки кнопок в
+виджет (`loadButtonTints`). Без неё кнопки берут дефолтные цвета AlarmKit;
+текст и иконки кнопок задаются через `AlarmButton` и работают, основной
+tint-цвет идёт через `AlarmAttributes` и тоже работает.
+
+Поэтому `group.flutter-alarmkit` удалён из
+[Runner.entitlements](../ios/Runner/Runner.entitlements), а `--doctor` навсегда
+останется с одним `[FAIL]` про entitlements и одним `[WARN]` про расширение.
+Это осознанное отклонение, а не недоделка.
 
 ### 5.2 Автоматическая настройка
 
@@ -217,45 +270,41 @@ dart run flutter_alarmkit:setup --doctor
 
 Должно быть всё зелёное до первой сборки.
 
-> ⚠️ Повторный запуск `setup` перезаписывает файлы в `ios/AlarmkitWidget/`.
-> Все правки из 5.3 после этого придётся накатывать заново — держи их в git и
-> сверяйся с диффом.
+`setup` уже выполнен: он пропатчил [Info.plist](../ios/Runner/Info.plist),
+добавил `FlutterImplicitEngineDelegate` в
+[AppDelegate.swift](../ios/Runner/AppDelegate.swift), настроил entitlements и
+переставил build phases. Осталась только ручная часть 5.1 — таргет и App Group.
 
-### 5.3 Кастомизация: кнопка, открывающая приложение
+> Повторный запуск `setup` сохраняет осознанные правки в `ios/AlarmkitWidget/`
+> (перезаписать их можно только флагом `--force`). Но Xcode при создании
+> таргета перетирает файлы виджета сам, поэтому порядок именно такой:
+> сначала вся работа в Xcode, потом `setup` с закрытым Xcode.
 
-В `ios/AlarmkitWidget/AppIntents.swift` добавить свой интент:
+#### Тексты разрешений
 
-```swift
-@available(iOS 26.0, *)
-public struct StudyIntent: LiveActivityIntent {
-    public static var title: LocalizedStringResource = "Учить слова"
-    public static var openAppWhenRun: Bool { true }   // ← поднимает приложение
+Плагин вписывает в Info.plist шаблонные английские строки; они заменены на
+осмысленные русские. Отдельно стоит знать про два ключа:
 
-    @Parameter(title: "alarmID")
-    public var alarmID: String
-
-    public init(alarmID: String) { self.alarmID = alarmID }
-    public init() { self.alarmID = "" }
-
-    public func perform() throws -> some IntentResult {
-        // Намеренно НЕ вызываем AlarmManager.shared.stop — звук продолжается,
-        // пока пользователь не пройдёт квиз в приложении.
-        return .result()
-    }
-}
+```
+NSBonjourServices        = _alarmkit._tcp
+NSLocalNetworkUsageDescription
 ```
 
-В `ios/AlarmkitWidget/AlarmkitWidgetLiveActivity.swift`, в `AlarmControls`,
-заменить маппинг вторичной кнопки в состоянии `.alert`:
+Плагин объявляет их обязательными и помечает как «required for AlarmKit local
+network communication». Это выглядит ошибкой: AlarmKit работает целиком на
+устройстве, а Live Activity общается через App Group и ActivityKit — сети там
+нет. Ключи оставлены, чтобы `--doctor` не ругался, но перед релизом в App Store
+их стоит попробовать убрать: иначе пользователь увидит запрос доступа к
+локальной сети, никак не связанный с будильниками.
 
-```swift
-case .alert:
-    if let btn = presentation.alert.secondaryButton {
-        ButtonView(config: btn,
-                   intent: StudyIntent(alarmID: state.alarmID.uuidString),
-                   tint: repeatTint)
-    }
-```
+### 5.3 Кастомизация виджета
+
+Заготовки и пошаговая инструкция вынесены в отдельную папку, чтобы `setup` и
+Xcode их не задели:
+[ios/AlarmkitWidgetCustom/](../ios/AlarmkitWidgetCustom/README.md).
+
+Там же описан блокер из раздела 4.3 — без правки нативной части плагина кнопка
+«Учить» в алерте не появится.
 
 > Поведение `openAppWhenRun` на `LiveActivityIntent` обязательно проверить на
 > реальном устройстве с iOS 26 — в симуляторе AlarmKit ведёт себя иначе.
@@ -280,15 +329,19 @@ FlutterAlarmkit().alarmUpdates().listen((event) { /* ... */ });
 ```
 
 Матчинг `alarmId` (UUID из AlarmKit) на твой `AlarmEntity.id` (int) — через
-новое поле `nativeAlarmId`, см. 6.1.
+новое поле `nativeAlarmId`, см. 6.1. Реализация — в `AlarmKitRepo.ringStream`
+и `AlarmKitRepo.getRingingAlarm()`, разбор идентификаторов — в 6.8.
 
 ---
 
-## 6. Что править в коде проекта
+## 6. Что изменено в коде проекта
 
-Текущий [alarmkit_repo.dart](../lib/features/alarm/data/alarmkit_repo.dart)
-закомментирован не случайно — он не собирается против нынешних интерфейсов.
-Три несовпадения, которые надо устранить **до** раскомментирования.
+Всё в этом разделе **уже реализовано**. Раздел оставлен как запись того, что
+поменялось и почему.
+
+Отправная точка: [alarmkit_repo.dart](../lib/features/alarm/data/alarmkit_repo.dart)
+был закомментирован не случайно — он не собирался против тогдашних интерфейсов.
+Три несовпадения пришлось устранить до раскомментирования.
 
 ### 6.1 `AlarmEntity` не хранит нативный id
 
@@ -355,11 +408,21 @@ AlarmKit принимает только `.caf` / `.aiff` / `.wav` до 30 се�
 
 ```bash
 for f in mozart nokia one_piece star_wars marimba; do
-  afconvert -f caff -d LEI16@44100 "assets/music/$f.mp3" "assets/music/$f.caf"
+  afconvert -f caff -d ima4 "assets/music/$f.mp3" "assets/music/$f.caf"
 done
 ```
 
-Файлы добавить в `assets:` и переключить `AlarmEntity.defaultAudioAssetPath`.
+Кодек `ima4`, а не `LEI16` из README плагина: несжатый PCM раздул пять файлов
+с 745 КБ до 10.4 МБ, IMA4 даёт 2.6 МБ при том же качестве. iOS принимает его
+в системных звуках наравне с PCM.
+
+Дефолт `AlarmEntity.defaultAudioAssetPath` **остался mp3**, и в
+[pubspec.yaml](../pubspec.yaml) лежат оба набора. Причина: `.caf` — контейнер
+Apple, а `AlarmPlusRepo` играет тот же ассет на Android через ExoPlayer.
+Сущность хранит логический выбор звука, а `AlarmKitRepo._resolveAlarmKitSoundPath`
+подменяет расширение на `.caf` при планировании. Если формат вообще незнакомый,
+метод возвращает `null` — система сыграет свой звук, и это лучше, чем упавшее
+планирование.
 
 ### 6.5 Повторяющиеся будильники: убрать ручное перепланирование
 
@@ -378,41 +441,73 @@ final alarmRepo = kIsWeb
     : AlarmPlusRepo(permissionService: const AlarmPermissionService());
 ```
 
-Заменить на проверку версии iOS в рантайме (`device_info_plus`), с фолбэком:
+Реализовано без `device_info_plus`: вместо номера версии проверяется сама
+способность плагина работать.
 
 ```dart
-final alarmRepo = switch (await _resolvePlatform()) {
-  _Platform.web       => const UnsupportedAlarmRepo(platformName: 'web'),
-  _Platform.ios26Plus => AlarmKitRepo(permissionService: const AlarmPermissionService()),
-  _                   => AlarmPlusRepo(permissionService: const AlarmPermissionService()),
-};
+static Future<bool> _isAlarmKitAvailable() async {
+  if (defaultTargetPlatform != TargetPlatform.iOS) return false;
+  try {
+    await alarmkit.FlutterAlarmkit().getPlatformVersion();
+    return true;
+  } on Object {
+    return false;
+  }
+}
 ```
 
-Проверять именно версию ОС, а не `Platform.isIOS`: на iOS 25 и ниже любой вызов
-плагина кидает `PlatformException(code: 'UNSUPPORTED_VERSION')`.
+На iOS ниже 26 вызов кидает `PlatformException(UNSUPPORTED_VERSION)`, на других
+платформах плагин не зарегистрирован и бросает `MissingPluginException`. Оба
+случая означают «AlarmKit нет» — а проба ещё и переживёт смену минимальной
+версии в будущих релизах плагина, в отличие от захардкоженной цифры 26.
 
 ### 6.7 Сверка состояния при старте
 
 Главный приём против «работает через раз»: **системе верить больше, чем кэшу.**
-При каждом запуске приложения сверять `getAlarms()` с `SharedPrefAlarmCache` —
-удалять из кэша будильники, которых нет в системе, и перепланировать активные,
-которые из системы пропали. Логичное место — `AlarmService.initialize()`.
+`AlarmService.initialize()` сверяет `getScheduledAlarmKeys()` с
+`SharedPrefAlarmCache` и чинит расхождения.
+
+Одно важное отличие от первоначального замысла. Сначала логика **удаляла** из
+кэша будильники, пропавшие из системы. Тест поймал последствие: сработавший
+одноразовый будильник исчезал из списка. Хуже того, если
+`getScheduledAlarmKeys()` вернёт пусто по внешней причине — переустановка
+приложения, сброс хранилища пакета — стёрся бы весь список пользователя.
+
+Поэтому сверка не удаляет ничего. Сработавший одноразовый будильник просто
+переводится в `isActive: false` и остаётся в списке — ровно как в системных
+«Часах». Ошибка опроса системы прерывает сверку целиком, ошибка на отдельном
+будильнике не мешает остальным.
+
+### 6.8 Определение звонящего будильника при холодном старте
+
+`ringStream` ловит только те звонки, что случились при живом приложении. Когда
+приложение открывают уже звонящим будильником, поток молчит.
+
+Добавлен `IAlarmRepo.getRingingAlarm()` (у AlarmKit — поиск состояния
+`alerting` в `getAlarms()`, у пакета `alarm` — `Alarm.ringing.valueOrNull`) и
+`AlarmService.findRingingAlarmId()`. `AlarmScreen` вызывает его в `initState`
+и при возврате из фона; флаг `_isRingScreenOpen` не даёт открыть экран квиза
+дважды, когда звонок придёт и из потока, и из опроса.
 
 ---
 
-## 7. Порядок работ
+## 7. Что осталось сделать
 
-1. Отрефакторить `IAlarmRepo` / `AlarmEntity` / `AlarmService` (6.1–6.3) —
-   `AlarmPlusRepo` при этом продолжает работать. Прогнать тесты в `test/features/alarm/`.
-2. Конвертировать звуки (6.4).
-3. Установка плагина (5.1–5.2), `--doctor` зелёный.
-4. Раскомментировать и починить `AlarmKitRepo` под новые сигнатуры.
-5. DI с рантайм-проверкой версии (6.6) + сверка состояния (6.7).
-6. Кастомный `StudyIntent` (5.3) и открытие `AlarmRingScreen` (5.4).
-7. Проверка на **физическом** устройстве с iOS 26: приложение выгружено из
-   App Switcher, Low Power Mode, беззвучный режим, Focus.
+Код готов и покрыт тестами. Осталась ручная часть, которую нельзя выполнить из
+командной строки:
 
-Пункты 1–2 полезны сами по себе и ничего не ломают — с них и стоит начать.
+1. **Xcode: создать Widget Extension и App Group** — раздел 5.1. Это блокирует
+   всё остальное: без таргета `--doctor` не станет зелёным, а Live Activity
+   не появится.
+2. Закрыть Xcode, повторно выполнить `dart run flutter_alarmkit:setup`.
+3. `cd ios && pod install`, затем `flutter run --release`.
+4. Решить, что делать с блокером вторичной кнопки из раздела 4.3 — форк плагина
+   или issue в апстрим.
+5. Перед релизом попробовать убрать `NSBonjourServices` /
+   `NSLocalNetworkUsageDescription` — см. 5.2.
+6. Проверка на **физическом** устройстве с iOS 26: приложение выгружено из
+   App Switcher, Low Power Mode, беззвучный режим, Focus. Симулятор для
+   AlarmKit не показателен.
 
 ---
 

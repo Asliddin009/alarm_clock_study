@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/alarm_exception.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
+import 'package:alearn/features/alarm/domain/entity/alarm_ring_event.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_repo.dart';
 import 'package:alearn/features/category/domain/entity/category_entity.dart';
@@ -14,16 +14,28 @@ class RecordingAlarmRepo implements IAlarmRepo {
   final List<AlarmEntity> scheduled = <AlarmEntity>[];
   final List<AlarmEntity> updated = <AlarmEntity>[];
   final List<int> deletedIds = <int>[];
-  final StreamController<AlarmSettings> ringController =
-      StreamController<AlarmSettings>.broadcast();
+  final List<int> stoppedIds = <int>[];
+  final StreamController<AlarmRingEvent> ringController =
+      StreamController<AlarmRingEvent>.broadcast();
+
+  /// Что репозиторий считает стоящим в системе — для проверки сверки на старте.
+  Set<String> scheduledAlarmKeys = <String>{};
+
+  /// Нативный идентификатор, который фейк проставляет при планировании.
+  /// null повторяет поведение пакета `alarm`, строка — поведение AlarmKit.
+  String? nativeAlarmIdToAssign;
+
+  /// Будильник, который «звонит» в момент опроса системы.
+  AlarmRingEvent? ringingAlarm;
 
   bool failOnSchedule = false;
   bool failOnUpdate = false;
   bool failOnDelete = false;
+  bool failOnGetScheduledKeys = false;
   bool permissionsRequested = false;
 
   @override
-  Stream<AlarmSettings> get ringStream => ringController.stream;
+  Stream<AlarmRingEvent> get ringStream => ringController.stream;
 
   @override
   Future<void> requestPermissions() async {
@@ -31,7 +43,7 @@ class RecordingAlarmRepo implements IAlarmRepo {
   }
 
   @override
-  Future<void> scheduleAlarm({
+  Future<AlarmEntity> scheduleAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -39,11 +51,15 @@ class RecordingAlarmRepo implements IAlarmRepo {
     if (failOnSchedule) {
       throw const AlarmRepositoryException('schedule failed');
     }
-    scheduled.add(alarm);
+    final result = nativeAlarmIdToAssign == null
+        ? alarm
+        : alarm.copyWith(nativeAlarmId: nativeAlarmIdToAssign);
+    scheduled.add(result);
+    return result;
   }
 
   @override
-  Future<void> updateAlarm({
+  Future<AlarmEntity> updateAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -51,15 +67,35 @@ class RecordingAlarmRepo implements IAlarmRepo {
     if (failOnUpdate) {
       throw const AlarmRepositoryException('update failed');
     }
-    updated.add(alarm);
+    final result = nativeAlarmIdToAssign == null
+        ? alarm
+        : alarm.copyWith(nativeAlarmId: nativeAlarmIdToAssign);
+    updated.add(result);
+    return result;
   }
 
   @override
-  Future<void> deleteAlarm(int id) async {
+  Future<void> deleteAlarm({required int id, String? nativeAlarmId}) async {
     if (failOnDelete) {
       throw const AlarmRepositoryException('delete failed');
     }
     deletedIds.add(id);
+  }
+
+  @override
+  Future<void> stopAlarm({required int id, String? nativeAlarmId}) async {
+    stoppedIds.add(id);
+  }
+
+  @override
+  Future<AlarmRingEvent?> getRingingAlarm() async => ringingAlarm;
+
+  @override
+  Future<Set<String>> getScheduledAlarmKeys() async {
+    if (failOnGetScheduledKeys) {
+      throw const AlarmRepositoryException('getScheduledAlarmKeys failed');
+    }
+    return scheduledAlarmKeys;
   }
 
   Future<void> dispose() => ringController.close();

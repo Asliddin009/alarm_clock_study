@@ -13,8 +13,11 @@ class AlarmEntity extends Equatable {
     this.volume = 0.5,
     this.listCategoryIds = const <int>[],
     this.assetAudioPath = defaultAudioAssetPath,
+    this.nativeAlarmId,
   });
 
+  /// Логический путь к звуку. Репозитории сами приводят его к формату,
+  /// который понимает конкретная платформа (AlarmKit требует .caf/.aiff/.wav).
   static const String defaultAudioAssetPath = 'assets/music/marimba.mp3';
 
   final int id;
@@ -26,6 +29,13 @@ class AlarmEntity extends Equatable {
   final double volume;
   final List<int> listCategoryIds;
   final String assetAudioPath;
+
+  /// Идентификатор будильника в системном планировщике.
+  ///
+  /// AlarmKit выдаёт UUID при планировании, и без него будильник нельзя ни
+  /// отменить, ни остановить. Пакет `alarm` адресует будильники по [id], для
+  /// него поле остаётся null.
+  final String? nativeAlarmId;
 
   factory AlarmEntity.fromJson(Map<String, dynamic> json) {
     final rawWeekdays = json['weekdays'];
@@ -58,6 +68,7 @@ class AlarmEntity extends Equatable {
       assetAudioPath: _normalizeAssetAudioPath(
         json['assetAudioPath'] as String?,
       ),
+      nativeAlarmId: json['nativeAlarmId'] as String?,
     );
   }
 
@@ -75,6 +86,7 @@ class AlarmEntity extends Equatable {
     double? volume,
     List<int>? listCategoryIds,
     String? assetAudioPath,
+    String? nativeAlarmId,
   }) {
     return AlarmEntity(
       id: id ?? this.id,
@@ -86,6 +98,23 @@ class AlarmEntity extends Equatable {
       volume: volume ?? this.volume,
       listCategoryIds: listCategoryIds ?? this.listCategoryIds,
       assetAudioPath: assetAudioPath ?? this.assetAudioPath,
+      nativeAlarmId: nativeAlarmId ?? this.nativeAlarmId,
+    );
+  }
+
+  /// Отдельный метод, потому что [copyWith] не умеет ставить null:
+  /// после отмены системного будильника UUID обязан обнулиться.
+  AlarmEntity withoutNativeAlarmId({bool? isActive}) {
+    return AlarmEntity(
+      id: id,
+      time: time,
+      isActive: isActive ?? this.isActive,
+      isRepeat: isRepeat,
+      weekdays: weekdays,
+      vibrate: vibrate,
+      volume: volume,
+      listCategoryIds: listCategoryIds,
+      assetAudioPath: assetAudioPath,
     );
   }
 
@@ -102,6 +131,7 @@ class AlarmEntity extends Equatable {
       'volume': volume,
       'assetAudioPath': assetAudioPath,
       'listCategoryIds': listCategoryIds,
+      'nativeAlarmId': nativeAlarmId,
     };
   }
 
@@ -137,6 +167,7 @@ class AlarmEntity extends Equatable {
     volume,
     listCategoryIds,
     assetAudioPath,
+    nativeAlarmId,
   ];
 }
 
