@@ -1,4 +1,3 @@
-import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/service/alarm_service.dart';
 import 'package:equatable/equatable.dart';
@@ -20,7 +19,10 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
 
   final AlarmService _alarmService;
 
-  Stream<AlarmSettings> get ringStream => _alarmService.ringStream;
+  Stream<int> get ringStream => _alarmService.ringStream;
+
+  /// Смотри [AlarmService.findRingingAlarmId].
+  Future<int?> findRingingAlarmId() => _alarmService.findRingingAlarmId();
 
   Future<void> _onStarted(AlarmStarted event, Emitter<AlarmState> emit) async {
     emit(AlarmLoadingState(message: 'Подготавливаем будильники'));

@@ -38,6 +38,7 @@ dependencies:
   # Utils
   intl: ^0.20.2
   flutter_launcher_icons: ^0.14.4
+  flutter_alarmkit: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -48,11 +49,18 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
+    # mp3 играет пакет alarm (Android и iOS ниже 26).
     - assets/music/mozart.mp3
     - assets/music/nokia.mp3
     - assets/music/one_piece.mp3
     - assets/music/star_wars.mp3
     - assets/music/marimba.mp3
+    # caf нужен AlarmKit: он не принимает mp3, только .caf/.aiff/.wav до 30 сек.
+    - assets/music/mozart.caf
+    - assets/music/nokia.caf
+    - assets/music/one_piece.caf
+    - assets/music/star_wars.caf
+    - assets/music/marimba.caf
     - assets/json/categories.json
     - assets/images/logo.jpg
     - assets/lottie/splash_pulse.json
