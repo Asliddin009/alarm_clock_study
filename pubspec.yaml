@@ -20,6 +20,9 @@ dependencies:
 
   # Alarms & notifications
   alarm: ^5.5.0
+  # System-level alarms on iOS 26+. Pinned exactly: the plugin is pre-1.0 and
+  # its API still breaks between minor versions.
+  flutter_alarmkit: 0.4.0
   awesome_notifications: ^0.12.1
   flutter_ringtone_player: ^4.0.0+4
   permission_handler: ^12.0.3
@@ -53,6 +56,13 @@ flutter:
     - assets/music/one_piece.mp3
     - assets/music/star_wars.mp3
     - assets/music/marimba.mp3
+    # AlarmKit only accepts .caf/.aiff/.wav under 30s, so every ringtone ships
+    # in both formats: .mp3 for the `alarm` package, .caf for AlarmKit.
+    - assets/music/mozart.caf
+    - assets/music/nokia.caf
+    - assets/music/one_piece.caf
+    - assets/music/star_wars.caf
+    - assets/music/marimba.caf
     - assets/json/categories.json
     - assets/images/logo.jpg
     - assets/lottie/splash_pulse.json

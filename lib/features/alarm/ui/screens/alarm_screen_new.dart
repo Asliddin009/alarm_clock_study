@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:alarm/alarm.dart';
 import 'package:alearn/app/helper/localization_helper.dart';
 import 'package:alearn/app/ui/ui_kit/app_container.dart';
 import 'package:alearn/app/ui/ui_kit/app_entrance.dart';
@@ -13,7 +12,6 @@ import 'package:alearn/features/alarm/ui/screens/edit_alarm_new.dart';
 import 'package:alearn/features/alarm/ui/widgets/shortcut_button.dart';
 import 'package:alearn/features/alarm/ui/widgets/tile.dart';
 import 'package:alearn/features/ring/ring_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -35,24 +33,41 @@ class AlarmScreen extends StatefulWidget {
 }
 
 class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
-  StreamSubscription<AlarmSettings>? _ringStreamSubscription;
-  late Future<bool> _permissionsFuture;
+  StreamSubscription<int>? _ringStreamSubscription;
+  Future<bool> _permissionsFuture = Future<bool>.value(false);
   int _reloadSeed = 0;
+  bool _isRingScreenOpen = false;
+  bool _didInitDependencies = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _permissionsFuture = _loadPermissionsReady();
     _ringStreamSubscription = context.read<AlarmBloc>().ringStream.listen(
       _openRingScreen,
     );
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didInitDependencies) {
+      return;
+    }
+    _didInitDependencies = true;
+    // Both of these reach for AppDependenciesScope, which is off limits until
+    // dependencies are ready.
+    _permissionsFuture = _loadPermissionsReady();
+    // A system alarm can launch the app itself, so the ring may already have
+    // happened before this screen existed.
+    unawaited(_openRingScreenForActiveAlarm());
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(_refreshPermissionsState());
+      unawaited(_openRingScreenForActiveAlarm());
     }
   }
 
@@ -67,21 +82,11 @@ class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
     return widget.permissionsReadyLoader?.call() ?? _hasAlarmPermissions();
   }
 
-  Future<bool> _hasAlarmPermissions() async {
-    try {
-      final trackedStatuses = <PermissionStatus>[
-        await Permission.notification.status,
-      ];
-      if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-        trackedStatuses.add(await Permission.scheduleExactAlarm.status);
-      }
-      return trackedStatuses.every(
-        (status) =>
-            status.isGranted || status.isLimited || status.isProvisional,
-      );
-    } on Object {
-      return false;
-    }
+  Future<bool> _hasAlarmPermissions() {
+    // Asking the repository rather than permission_handler directly: on iOS 26+
+    // the gate is AlarmKit's own authorization, which no generic permission
+    // plugin knows about.
+    return AppDependenciesScope.of(context).alarmRepo.hasPermissions();
   }
 
   Future<void> _refreshPermissionsState() async {
@@ -127,15 +132,31 @@ class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
     await _refreshPermissionsState();
   }
 
-  Future<void> _openRingScreen(AlarmSettings alarmSettings) async {
-    if (!mounted) {
+  Future<void> _openRingScreenForActiveAlarm() async {
+    if (_isRingScreenOpen || !mounted) {
       return;
     }
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => AlarmRingScreen(alarmId: alarmSettings.id),
-      ),
-    );
+    final ringingIds = await context.read<AlarmBloc>().getRingingAlarmIds();
+    if (ringingIds.isEmpty) {
+      return;
+    }
+    await _openRingScreen(ringingIds.first);
+  }
+
+  Future<void> _openRingScreen(int alarmId) async {
+    if (_isRingScreenOpen || !mounted) {
+      return;
+    }
+    _isRingScreenOpen = true;
+    try {
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => AlarmRingScreen(alarmId: alarmId),
+        ),
+      );
+    } finally {
+      _isRingScreenOpen = false;
+    }
     if (!mounted) {
       return;
     }
@@ -270,10 +291,7 @@ class _AlarmScreenState extends State<AlarmScreen> with WidgetsBindingObserver {
         final isLoading = state is AlarmLoadingState && alarms.isEmpty;
 
         return Scaffold(
-          appBar: BaseAppBar(
-            title: localization.alarm,
-            showBackButton: false,
-          ),
+          appBar: BaseAppBar(title: localization.alarm, showBackButton: false),
           body: SafeArea(
             bottom: false,
             child: FutureBuilder<bool>(

@@ -1,4 +1,3 @@
-import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/service/alarm_service.dart';
 import 'package:equatable/equatable.dart';
@@ -20,7 +19,14 @@ class AlarmBloc extends Bloc<AlarmEvent, AlarmState> {
 
   final AlarmService _alarmService;
 
-  Stream<AlarmSettings> get ringStream => _alarmService.ringStream;
+  /// Emits the id of an alarm that has just started ringing.
+  Stream<int> get ringStream => _alarmService.ringStream;
+
+  /// Ids of alarms the system reports as ringing right now.
+  ///
+  /// An iOS 26+ alarm can launch the app itself, in which case the ring already
+  /// happened before anyone subscribed to [ringStream].
+  Future<Set<int>> getRingingAlarmIds() => _alarmService.getRingingAlarmIds();
 
   Future<void> _onStarted(AlarmStarted event, Emitter<AlarmState> emit) async {
     emit(AlarmLoadingState(message: 'Подготавливаем будильники'));

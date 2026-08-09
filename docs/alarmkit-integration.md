@@ -3,6 +3,10 @@
 Документ описывает переход с пакета `alarm` (`AlarmPlusRepo`) на системный AlarmKit
 через плагин [`flutter_alarmkit`](https://pub.dev/packages/flutter_alarmkit).
 
+> **Статус: миграция выполнена, кроме двух шагов в Xcode GUI.**
+> Код, ассеты и конфиги на месте; `AlarmKitRepo` выбирается в рантайме на
+> iOS 26+, `AlarmPlusRepo` остаётся фолбэком. Что осталось — раздел 7.
+
 ---
 
 ## 1. Почему текущий будильник «работает через раз»
@@ -400,19 +404,41 @@ final alarmRepo = switch (await _resolvePlatform()) {
 
 ---
 
-## 7. Порядок работ
+## 7. Что сделано и что осталось
 
-1. Отрефакторить `IAlarmRepo` / `AlarmEntity` / `AlarmService` (6.1–6.3) —
-   `AlarmPlusRepo` при этом продолжает работать. Прогнать тесты в `test/features/alarm/`.
-2. Конвертировать звуки (6.4).
-3. Установка плагина (5.1–5.2), `--doctor` зелёный.
-4. Раскомментировать и починить `AlarmKitRepo` под новые сигнатуры.
-5. DI с рантайм-проверкой версии (6.6) + сверка состояния (6.7).
-6. Кастомный `StudyIntent` (5.3) и открытие `AlarmRingScreen` (5.4).
-7. Проверка на **физическом** устройстве с iOS 26: приложение выгружено из
-   App Switcher, Low Power Mode, беззвучный режим, Focus.
+### Сделано
 
-Пункты 1–2 полезны сами по себе и ничего не ломают — с них и стоит начать.
+- [x] `IAlarmRepo` больше не импортирует `package:alarm` — ring-стрим отдаёт
+      доменный `Stream<int>`, `scheduleAlarm`/`updateAlarm` возвращают сущность,
+      `deleteAlarm`/`stopAlarm` принимают нативный id (6.1–6.3).
+- [x] `AlarmEntity.nativeAlarmId` сериализуется и переживает перезапуск.
+- [x] Звуки сконвертированы в `.caf` (IMA4, 2.6 МБ на пять файлов) и
+      объявлены в `pubspec.yaml` рядом с `.mp3` (6.4).
+- [x] `flutter_alarmkit: 0.4.0` добавлен, `dart run flutter_alarmkit:setup`
+      отработал: `Info.plist`, `AppDelegate.swift`, `Runner.entitlements`,
+      `ios/AlarmkitWidget/`, порядок build phases.
+- [x] `AlarmKitRepo` написан под новые сигнатуры и работает.
+- [x] DI выбирает реализацию рантайм-проверкой (6.6), сверка состояния с
+      системой — в `AlarmService.syncWithSystem` (6.7).
+- [x] Повторяющиеся будильники: AlarmKit держит расписание сам, а на
+      `AlarmPlusRepo` `AlarmService` перевзводит их после звонка.
+
+### Осталось
+
+- [ ] **Xcode GUI, шаг 1:** создать Widget Extension `AlarmkitWidget` (5.1).
+- [ ] **Xcode GUI, шаг 2:** App Group `group.flutter-alarmkit` на оба таргета.
+- [ ] Закрыть Xcode → `dart run flutter_alarmkit:setup` → `--doctor` зелёный.
+- [ ] Кастомный `StudyIntent` с `openAppWhenRun` (5.3) — правится только после
+      того, как таргет виджета существует.
+- [ ] Проверка на **физическом** устройстве с iOS 26: приложение выгружено из
+      App Switcher, Low Power Mode, беззвучный режим, Focus.
+
+### Чем проверялось
+
+На симуляторе iOS 26.5 будильник планируется через AlarmKit и получает UUID,
+который остаётся тем же после `simctl terminate` и перезапуска — то есть
+расписание живёт в системе, а не в процессе приложения. На iOS 18.6 DI
+уходит в `AlarmPlusRepo`, будильник звонит и открывает `AlarmRingScreen`.
 
 ---
 

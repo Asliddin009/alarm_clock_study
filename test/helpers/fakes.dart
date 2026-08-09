@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:alarm/alarm.dart';
 import 'package:alearn/features/alarm/domain/alarm_exception.dart';
 import 'package:alearn/features/alarm/domain/entity/alarm_entity.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
@@ -11,11 +10,21 @@ import 'package:alearn/features/category/domain/i_category_repo.dart';
 import 'package:alearn/features/points/domain/i_points_repo.dart';
 
 class RecordingAlarmRepo implements IAlarmRepo {
+  RecordingAlarmRepo({
+    this.supportsNativeRecurrence = true,
+    this.nativeAlarmIdPrefix = 'native-',
+  });
+
   final List<AlarmEntity> scheduled = <AlarmEntity>[];
   final List<AlarmEntity> updated = <AlarmEntity>[];
   final List<int> deletedIds = <int>[];
-  final StreamController<AlarmSettings> ringController =
-      StreamController<AlarmSettings>.broadcast();
+  final List<int> stoppedIds = <int>[];
+  final StreamController<int> ringController =
+      StreamController<int>.broadcast();
+
+  /// Ids the fake system reports as still scheduled; null means "all of them".
+  Set<int>? systemScheduledIds;
+  Set<int> systemRingingIds = <int>{};
 
   bool failOnSchedule = false;
   bool failOnUpdate = false;
@@ -23,7 +32,15 @@ class RecordingAlarmRepo implements IAlarmRepo {
   bool permissionsRequested = false;
 
   @override
-  Stream<AlarmSettings> get ringStream => ringController.stream;
+  final bool supportsNativeRecurrence;
+
+  final String nativeAlarmIdPrefix;
+
+  @override
+  bool get ringsWhenAppIsTerminated => true;
+
+  @override
+  Stream<int> get ringStream => ringController.stream;
 
   @override
   Future<void> requestPermissions() async {
@@ -31,7 +48,10 @@ class RecordingAlarmRepo implements IAlarmRepo {
   }
 
   @override
-  Future<void> scheduleAlarm({
+  Future<bool> hasPermissions() async => true;
+
+  @override
+  Future<AlarmEntity> scheduleAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -40,10 +60,11 @@ class RecordingAlarmRepo implements IAlarmRepo {
       throw const AlarmRepositoryException('schedule failed');
     }
     scheduled.add(alarm);
+    return alarm.copyWith(nativeAlarmId: '$nativeAlarmIdPrefix${alarm.id}');
   }
 
   @override
-  Future<void> updateAlarm({
+  Future<AlarmEntity> updateAlarm({
     required AlarmEntity alarm,
     required String notificationTitle,
     required String notificationBody,
@@ -52,14 +73,33 @@ class RecordingAlarmRepo implements IAlarmRepo {
       throw const AlarmRepositoryException('update failed');
     }
     updated.add(alarm);
+    return alarm.copyWith(nativeAlarmId: '$nativeAlarmIdPrefix${alarm.id}');
   }
 
   @override
-  Future<void> deleteAlarm(int id) async {
+  Future<void> deleteAlarm({required int id, String? nativeAlarmId}) async {
     if (failOnDelete) {
       throw const AlarmRepositoryException('delete failed');
     }
     deletedIds.add(id);
+  }
+
+  @override
+  Future<void> stopAlarm({required int id, String? nativeAlarmId}) async {
+    stoppedIds.add(id);
+  }
+
+  @override
+  Future<Set<int>> getScheduledAlarmIds(List<AlarmEntity> alarms) async {
+    final knownIds = alarms.map((alarm) => alarm.id).toSet();
+    return systemScheduledIds?.intersection(knownIds) ?? knownIds;
+  }
+
+  @override
+  Future<Set<int>> getRingingAlarmIds(List<AlarmEntity> alarms) async {
+    return systemRingingIds.intersection(
+      alarms.map((alarm) => alarm.id).toSet(),
+    );
   }
 
   Future<void> dispose() => ringController.close();
@@ -170,8 +210,9 @@ class InMemoryCategoryProgressRepo implements ICategoryProgressRepo {
   }
 
   @override
-  Future<Set<int>> getStudiedWordIndexes(int categoryId) async =>
-      <int>{...?_studiedByCategory[categoryId]};
+  Future<Set<int>> getStudiedWordIndexes(int categoryId) async => <int>{
+    ...?_studiedByCategory[categoryId],
+  };
 
   @override
   Future<Set<int>> markWordStudied(int categoryId, int wordIndex) async {

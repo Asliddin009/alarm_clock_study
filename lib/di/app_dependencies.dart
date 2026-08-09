@@ -2,6 +2,7 @@ import 'package:alearn/app/data/shared_pref_app_preferences_repo.dart';
 import 'package:alearn/app/domain/i_app_preferences_repo.dart';
 import 'package:alearn/app/app_runner/app_env.dart';
 import 'package:alearn/features/alarm/data/alarm_plus_repo.dart';
+import 'package:alearn/features/alarm/data/alarmkit_repo.dart';
 import 'package:alearn/features/alarm/data/permission.dart';
 import 'package:alearn/features/alarm/data/shared_pref_alarm_cache.dart';
 import 'package:alearn/features/alarm/domain/repo/i_alarm_cache_repo.dart';
@@ -17,6 +18,7 @@ import 'package:alearn/features/points/data/shared_pref_points_repo.dart';
 import 'package:alearn/features/points/domain/i_points_repo.dart';
 import 'package:alearn/features/ring/domain/ring_question_service.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_alarmkit/flutter_alarmkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final class AppDependencies {
@@ -74,10 +76,8 @@ final class AppDependencies {
     }
 
     final sharedPreferences = await SharedPreferences.getInstance();
-    final alarmRepo = kIsWeb
-        ? const UnsupportedAlarmRepo(platformName: 'web')
-        : AlarmPlusRepo(permissionService: const AlarmPermissionService());
     final alarmCacheRepo = SharedPrefAlarmCache(sharedPreferences);
+    final alarmRepo = await _createAlarmRepo(alarmCacheRepo);
     final appPreferencesRepo = SharedPrefAppPreferencesRepo(sharedPreferences);
     final categoryRepo = const AssetCategoryRepo();
     final categoryProgressRepo = SharedPrefCategoryProgressRepo(
@@ -100,5 +100,36 @@ final class AppDependencies {
       pointsRepo: pointsRepo,
       ringQuestionService: RingQuestionService(categoryRepo: categoryRepo),
     );
+  }
+
+  /// Picks the best alarm backend the device can actually deliver.
+  ///
+  /// AlarmKit is the only option on iOS that keeps ringing after the app is
+  /// terminated, but it exists only from iOS 26. Rather than reading the OS
+  /// version, we ask the plugin — every call on an older iOS fails with
+  /// `UNSUPPORTED_VERSION`, and on Android the plugin isn't registered at all.
+  static Future<IAlarmRepo> _createAlarmRepo(
+    IAlarmCacheRepo alarmCacheRepo,
+  ) async {
+    const permissionService = AlarmPermissionService();
+
+    if (kIsWeb) {
+      return const UnsupportedAlarmRepo(platformName: 'web');
+    }
+
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      try {
+        await FlutterAlarmkit().getPlatformVersion();
+        return AlarmKitRepo(
+          permissionService: permissionService,
+          alarmCacheRepo: alarmCacheRepo,
+        );
+      } on Object {
+        // iOS 25 or older: fall through to the in-process implementation, which
+        // does not survive app termination.
+      }
+    }
+
+    return AlarmPlusRepo(permissionService: permissionService);
   }
 }

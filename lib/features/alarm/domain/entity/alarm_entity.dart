@@ -13,6 +13,7 @@ class AlarmEntity extends Equatable {
     this.volume = 0.5,
     this.listCategoryIds = const <int>[],
     this.assetAudioPath = defaultAudioAssetPath,
+    this.nativeAlarmId,
   });
 
   static const String defaultAudioAssetPath = 'assets/music/marimba.mp3';
@@ -26,6 +27,13 @@ class AlarmEntity extends Equatable {
   final double volume;
   final List<int> listCategoryIds;
   final String assetAudioPath;
+
+  /// Identifier the operating system gave this alarm when it was scheduled.
+  ///
+  /// AlarmKit hands out a UUID that is the only handle for cancelling or
+  /// stopping the alarm, so it has to survive an app restart — the alarm may
+  /// well outlive the process that created it.
+  final String? nativeAlarmId;
 
   factory AlarmEntity.fromJson(Map<String, dynamic> json) {
     final rawWeekdays = json['weekdays'];
@@ -58,6 +66,7 @@ class AlarmEntity extends Equatable {
       assetAudioPath: _normalizeAssetAudioPath(
         json['assetAudioPath'] as String?,
       ),
+      nativeAlarmId: json['nativeAlarmId'] as String?,
     );
   }
 
@@ -75,6 +84,8 @@ class AlarmEntity extends Equatable {
     double? volume,
     List<int>? listCategoryIds,
     String? assetAudioPath,
+    String? nativeAlarmId,
+    bool clearNativeAlarmId = false,
   }) {
     return AlarmEntity(
       id: id ?? this.id,
@@ -86,6 +97,9 @@ class AlarmEntity extends Equatable {
       volume: volume ?? this.volume,
       listCategoryIds: listCategoryIds ?? this.listCategoryIds,
       assetAudioPath: assetAudioPath ?? this.assetAudioPath,
+      nativeAlarmId: clearNativeAlarmId
+          ? null
+          : nativeAlarmId ?? this.nativeAlarmId,
     );
   }
 
@@ -102,6 +116,7 @@ class AlarmEntity extends Equatable {
       'volume': volume,
       'assetAudioPath': assetAudioPath,
       'listCategoryIds': listCategoryIds,
+      if (nativeAlarmId != null) 'nativeAlarmId': nativeAlarmId,
     };
   }
 
@@ -118,6 +133,40 @@ class AlarmEntity extends Equatable {
       return 'assets/music/${rawPath.split('/').last}';
     }
     return rawPath;
+  }
+
+  /// The next moment this alarm should ring, strictly after [moment].
+  ///
+  /// A one-shot alarm keeps its [time]. A repeating one is projected onto the
+  /// next matching day — daily when no [weekdays] are picked, otherwise the
+  /// nearest selected weekday within the coming week.
+  DateTime nextOccurrenceAfter(DateTime moment) {
+    if (!isRepeat && weekdays.isEmpty) {
+      return time;
+    }
+
+    final selectedWeekdays = weekdays.isEmpty
+        ? Weekday.values.toSet()
+        : weekdays.toSet();
+    final startOfDay = DateTime(moment.year, moment.month, moment.day);
+
+    // Eight days rather than seven: today may already be past the alarm time,
+    // in which case a weekly alarm lands on the same weekday next week.
+    for (var offset = 0; offset <= 8; offset += 1) {
+      final day = startOfDay.add(Duration(days: offset));
+      final candidate = DateTime(
+        day.year,
+        day.month,
+        day.day,
+        time.hour,
+        time.minute,
+      );
+      if (candidate.isAfter(moment) &&
+          selectedWeekdays.contains(Weekday.values[candidate.weekday - 1])) {
+        return candidate;
+      }
+    }
+    return time;
   }
 
   String get formattedTime {
@@ -137,6 +186,7 @@ class AlarmEntity extends Equatable {
     volume,
     listCategoryIds,
     assetAudioPath,
+    nativeAlarmId,
   ];
 }
 

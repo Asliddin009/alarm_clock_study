@@ -11,14 +11,33 @@ class AlarmPermissionService {
 
   Future<void> requestPermissions() async {
     await _notificationService.requestPermission();
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    if (_isAndroid) {
       await _requestIfNeeded(Permission.scheduleExactAlarm);
     }
   }
 
+  Future<bool> hasPermissions() async {
+    try {
+      final trackedStatuses = <PermissionStatus>[
+        await Permission.notification.status,
+        if (_isAndroid) await Permission.scheduleExactAlarm.status,
+      ];
+      return trackedStatuses.every(_isUsable);
+    } on Object {
+      return false;
+    }
+  }
+
+  bool get _isAndroid =>
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+
+  bool _isUsable(PermissionStatus status) {
+    return status.isGranted || status.isLimited || status.isProvisional;
+  }
+
   Future<void> _requestIfNeeded(Permission permission) async {
     final status = await permission.status;
-    if (status.isGranted || status.isLimited || status.isProvisional) {
+    if (_isUsable(status)) {
       return;
     }
     await permission.request();
